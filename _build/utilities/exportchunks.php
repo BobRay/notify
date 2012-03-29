@@ -26,119 +26,113 @@
  * MODx ExportChunks Snippet
  *
  * Description Extracts chunks from MODX install to build files
-  *
+ *
  * @package exportchunks
  *
  */
- /* @var $category string */
+/* @var $category string */
 
- /* Usage
-  *
-  * Create a snippet called ExportCategorys, paste the code or
-  * use this for the snippet code:
-  *     return include 'path/to/this/file';
-  *
-  * Put a tag for the snippet on a page and preview the page
-  *
-  * Minimal snippet call [[!ExportCategory? &category=`MyCategory`]]
-  *
-  * Optional properties:
-  *
-  * &chunkPath  (directory for chunk code files)
-  * defaults to assets/mycomponents/{categoryLower}/core/components/{categoryLower}/elements/chunks/
-  *
-  * &transportPath (directory for transport.chunks.php file)
-  * defaults to assets/mycomponents/{categoryLower}/_build/data/transport.chunks.php
-  *
-  * &debug (if &debug=`1`, displays debug info - no files are written)
- */
+/* Usage
+ *
+ * Create a snippet called ExportCategorys, paste the code or
+ * use this for the snippet code:
+ *     return include 'path/to/this/file';
+ *
+ * Put a tag for the snippet on a page and preview the page
+ *
+ * Minimal snippet call [[!ExportCategory? &category=`MyCategory`]]
+ *
+ * Optional properties:
+ *
+ * &chunkPath  (directory for chunk code files)
+ * defaults to assets/mycomponents/{categoryLower}/core/components/{categoryLower}/elements/chunks/
+ *
+ * &transportPath (directory for transport.chunks.php file)
+ * defaults to assets/mycomponents/{categoryLower}/_build/data/
+ *
+ * &debug (if &debug=`1`, displays debug info - no files are written)
+*/
 
 $props =& $scriptProperties;
-    /* @var $modx modX */
-    $debug = $modx->getOption('debug', $props, null);
+/* @var $modx modX */
+$debug = $modx->getOption('debug', $props, null);
 
-    $category = $modx->getOption('category', $props, null);
-    /* @var $categoryObj modCategory */
-    $categoryObj = $modx->getObject('modCategory', array('category' => $category));
-    if (! $categoryObj) {
-       return 'Could not find category: ' . $category;
-    }
-    $categoryId = $categoryObj->get('id');
-    $categoryLower = strtolower($category);
-    if ($debug) {
-        echo '<br />Category: ' . $category;
-    }
-    $chunks = $modx->getCollection('modChunk', array('category' => $categoryId));
-    if (empty($chunks)) {
-       return 'No Chunks found in category: ' . $category;
-    }
-    $chunkPath = $modx->getOption('chunkPath', $props, null);
-    $chunkPath = empty ($chunkPath)? $modx->getOption('assets_path') . 'mycomponents/' . $categoryLower . '/core/components/' . $categoryLower . '/elements/chunks/'  : $chunkPath;
+$category = $modx->getOption('category', $props, null);
+/* @var $categoryObj modCategory */
+$categoryObj = $modx->getObject('modCategory', array('category' => $category));
+if (!$categoryObj) {
+    return 'Could not find category: ' . $category;
+}
+$categoryId = $categoryObj->get('id');
+$categoryLower = strtolower($category);
+if ($debug) {
+    echo '<br />Category: ' . $category;
+}
+$chunks = $modx->getCollection('modChunk', array('category' => $categoryId));
+if (empty($chunks)) {
+    return 'No Chunks found in category: ' . $category;
+}
+$chunkPath = $modx->getOption('chunkPath', $props, null);
+$chunkPath = empty ($chunkPath) ? $modx->getOption('assets_path') . 'mycomponents/' . $categoryLower . '/core/components/' . $categoryLower . '/elements/chunks/' : $chunkPath;
 
-    $transportPath = $modx->getOption('transportPath', $props, null);
-    $transportPath = empty ($transportPath)? $modx->getOption('assets_path') . 'mycomponents/' . $categoryLower . '/_build/data/' : $transportPath;
+$transportPath = $modx->getOption('transportPath', $props, null);
+$transportPath = empty ($transportPath) ? $modx->getOption('assets_path') . 'mycomponents/' . $categoryLower . '/_build/data/' : $transportPath;
 
-    if (! is_dir($transportPath)) {
-       return 'Bad transportPath: ' . $transportPath;
-    }
+if (!is_dir($transportPath)) {
+    return 'Bad transportPath: ' . $transportPath;
+}
 
-    $transportFile = $transportPath . 'transport.chunks.php';
-    $transportFp = fopen($transportFile, 'w');
-    if (! $transportFp) {
-       return 'Could not open transport file: ' . $transportFile;
-    }
-    if ($debug) {
-        echo '<br />TransportFile: ' . $transportFile;
-    }
-    echo '<br /><br />Processing<br />';
+$transportFile = $transportPath . 'transport.chunks.php';
+$transportFp = fopen($transportFile, 'w');
+if (!$transportFp) {
+    return 'Could not open transport file: ' . $transportFile;
+}
+if ($debug) {
+    echo '<br />TransportFile: ' . $transportFile;
+}
+echo '<br /><br />Processing<br />';
 
-    $i = 1;
+$i = 1;
+
+if (!$debug) {
     fwrite($transportFp, "<?php\n\n");
     fwrite($transportFp, "\$chunks = array();\n\n");
-    foreach ($chunks as $chunk) {
-       /* @var $chunk modChunk */
-        $content = $chunk->getContent();
-        $fileName = $chunkPath . strtolower($chunk->get('name')) . '.chunk.html';
-        echo '<br /><br />Chunk: ' . $chunk->get('name');
-        if ($debug) {
-            echo '<br />Chunk File: ' . $fileName;
-        }
+}
+foreach ($chunks as $chunk) {
+    /* @var $chunk modChunk */
+    $content = $chunk->getContent();
+    $fileName = $chunkPath . strtolower($chunk->get('name')) . '.chunk.html';
+    echo '<br /><br />Chunk: ' . $chunk->get('name');
+    if ($debug) {
+        echo '<br />Chunk File: ' . $fileName;
+    }
 
-        if (! $debug) {
-            $fp = fopen($fileName, 'w');
-            if (!$fp) {
-                return 'Could not open chunk file: ' . $fileName;
-            }
-            echo '<br />ChunkFile: ' . $fileName;
-            fwrite($fp, $content);
-            fclose($fp);
+    if (!$debug) {
+        $fp = fopen($fileName, 'w');
+        if (!$fp) {
+            return 'Could not open chunk file: ' . $fileName;
         }
+        echo '<br />ChunkFile: ' . $fileName;
+        fwrite($fp, $content);
+        fclose($fp);
 
-       fwrite($transportFp, '$chunks[' . $i . '] = $modx->newObject(' . "'modChunk');" . "\n");
-        fwrite($transportFp,'$chunks[' . $i . '] ->fromArray(array(' . "\n" );
-        fwrite($transportFp,"    'id' => " . $i . ",\n");
+
+        fwrite($transportFp, '$chunks[' . $i . '] = $modx->newObject(' . "'modChunk');" . "\n");
+        fwrite($transportFp, '$chunks[' . $i . '] ->fromArray(array(' . "\n");
+        fwrite($transportFp, "    'id' => " . $i . ",\n");
         fwrite($transportFp, "    'name' => '" . $chunk->get('name') . "',\n");
         fwrite($transportFp, "    'description' => '" . $chunk->get('description') . "',\n");
         fwrite($transportFp, "    'snippet' => file_get_contents(\$sources['source_core']." . "'/elements/chunks/" . strtolower($chunk->get('name')) . ".chunk.html'),\n");
-
-        /* ToDo: write properties array */
-        fwrite($transportFp, "    'properties' => '',\n");
+        $properties = $chunk->get('properties');
+        $properties = empty($properties) ? '' : $modx->toJSON($properties);
+        fwrite($transportFp, "    'properties' => '" . $properties . "',\n");
         fwrite($transportFp, "),'',true,true);\n");
-
-
-        $i++;
     }
-   fwrite($transportFp, 'return $chunks;');
-   fclose($transportFp);
-   return '<br /><br />Finished';
-/*
-$chunks = array();
 
-$chunks[1]= $modx->newObject('modChunk');
-$chunks[1]->fromArray(array(
-    'id' => 1,
-    'name' => 'MyChunk1',
-    'description' => 'MyChunk1 for Notify',
-    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/mychunk1.chunk.tpl'),
-    'properties' => '',
-),'',true,true);*/
+    $i++;
+}
+if (!$debug) {
+    fwrite($transportFp, 'return $chunks;');
+    fclose($transportFp);
+}
+return '<br /><br />Finished';

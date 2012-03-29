@@ -176,6 +176,13 @@ switch ($modx->event->name) {
         $fields = $resource->toArray();
         $fields['url'] = $url;
 
+        $txt = $resource->getTVValue('nf_email_address_for_test');
+        if (empty($txt)) {
+            $txt = $modx->getOption('emailsender');
+            $resource->setTVValue('nf_email_address_for_test', $txt);
+
+        }
+
         $txt = $resource->getTVValue('nf_subscriber_email');
         if (empty($txt)) {
             $txt = $modx->getChunk('NfSubScriberEmail', $fields);
