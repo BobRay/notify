@@ -134,7 +134,7 @@ switch ($modx->event->name) {
 
         if ($emailit || $sendTestEmail) {
             $preview = true;
-            //$nf->setMailHeaders();
+
             $nf->initializeMailer();
 
             if ($emailit) {
@@ -167,7 +167,10 @@ switch ($modx->event->name) {
         $output = $nf->getHtml();
         /* make unprocessed tags visible */
         $output = str_replace('[[', '[ [', $output);
-        $output = str_replace('<body>', '<body>' . $header . "\n\n", $output);
+        $pattern = '~(<body[^>]*>)~';
+        $replacement = '$1' . $header . "<br /><br />";
+        $output =  preg_replace($pattern,$replacement, $output );
+        //$output = str_replace('<body>', '<body>' . $header . "\n\n", $output);
 
         $modx->resource->_output = $output;
         break;

@@ -406,7 +406,7 @@ class Notify
         $i = 1;
         $fp = fopen($this->logFile, 'w');
         if (!$fp) {
-            $this->setError('Could not open log file');
+            $this->setError('Could not open log file (make sure /logs directory exists): ' . $this->logFile);
         } else {
             //fwrite($fp,print_r($recipients, true));
         }
