@@ -165,6 +165,7 @@ switch ($modx->event->name) {
             }
         }
         $output = $nf->getHtml();
+        /* make unprocessed tags visible */
         $output = str_replace('[[', '[ [', $output);
         $output = str_replace('<body>', '<body>' . $header . "\n\n", $output);
 
