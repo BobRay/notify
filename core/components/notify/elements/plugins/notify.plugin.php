@@ -106,7 +106,7 @@ switch ($modx->event->name) {
 
         } else {
             /* just return without modifying output */
-            return;
+            return '';
         }
 
         /* turn the TVs off to prevent accidental resending */
@@ -204,8 +204,7 @@ switch ($modx->event->name) {
             $resource->setTVValue('nf_tweet', $txt);
         }
         break;
-
-
 }
+return '';
 
 
