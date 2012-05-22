@@ -122,7 +122,9 @@ class Notify
         }
 
         /* Bulk email settings */
-        $this->groups = $this->modx->resource->getTVValue('Groups');
+        $this->groups = $this->modx->resource->getTVValue('nf_groups');
+        $this->tags = $this->modx->resource->getTVValue('nf_tags');
+
         $batchSize = $this->modx->resource->getTVValue('BatchSize');
         $this->batchSize = empty($batchSize)? 50 : $batchSize;
         $batchDelay = $this->modx->resource->getTVValue('BatchDelay');
@@ -462,6 +464,5 @@ class Notify
     public function getErrors() {
         return count($this->errors);
     }
-
 
 } /* end class */
