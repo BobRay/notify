@@ -36,6 +36,12 @@ define('PKG_VERSION','1.0.0');
 define('PKG_RELEASE','beta1');
 define('PKG_CATEGORY','Notify');
 
+
+define('MODX_BASE_URL','http://localhost/addons/');
+define('MODX_MANAGER_URL','http://localhost/addons/manager/');
+define('MODX_ASSETS_URL','http://localhost/addons/assets/');
+define('MODX_CONNECTORS_URL','http://localhost/addons/connectors/');
+
 /* Set package options - you can turn these on one-by-one
  * as you create the transport package
  * */
@@ -115,7 +121,7 @@ $builder->registerNamespace(PKG_NAME_LOWER,false,true,'{core_path}components/'.P
 /* create category  The category is required and will automatically
  * have the name of your package
  */
-
+/* @var $category modCategory */
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
 $category->set('category',PKG_CATEGORY);
