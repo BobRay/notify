@@ -93,11 +93,6 @@ switch ($modx->event->name) {
 
             $nf->setHtml($txt);
 
-            /* convert all images and links to full urls */
-            //$nf->fullUrls($base_url);
-            /* Fix image attributes */
-            //$nf->imgAttributes();
-            //$html = $nf->getHtml();
             if ($inlineCss) {
                 $nf->inlineCss();
             }
@@ -175,10 +170,15 @@ switch ($modx->event->name) {
         $modx->resource->_output = $output;
         break;
     case 'OnDocFormPrerender':
-
         $url = $modx->makeUrl($id, "", "", "full");
         $fields = $resource->toArray();
         $fields['url'] = $url;
+        /* Turn these off so notices are not sent on every save */
+        $resource->setTVValue('nf_notify_subscribers', 'No');
+        $resource->setTVValue('nf_twitter', 'No');
+        $resource->setTVValue('nf_send_test_email', 'No');
+
+
 
         $txt = $resource->getTVValue('nf_email_address_for_test');
         if (empty($txt)) {
