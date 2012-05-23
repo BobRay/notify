@@ -26,4 +26,15 @@ $chunks[3] ->fromArray(array(
     'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/nfsubscriberemail.chunk.html'),
     'properties' => '',
 ),'',true,true);
+
+$chunks[4] = $modx->newObject('modChunk');
+$chunks[4] ->fromArray(array(
+    'id' => 4,
+    'name' => 'NfSubscriberEmail-fancy',
+    'description' => 'HTML for Fancy Notify subscriber email',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/nfsubscriberemail-fancy.chunk.html'),
+    'properties' => '',
+),'',true,true);
+
+
 return $chunks;
