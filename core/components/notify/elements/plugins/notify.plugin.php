@@ -71,6 +71,7 @@ switch ($modx->event->name) {
         $nf = new Notify($modx, $sp);
 
         /* Get TV values */
+        $sendTweet = $modx->resource->getTVValue('nf_twitter') == 'Yes';
         $preview = $modx->resource->getTVValue('nf_preview_email') == 'Yes';
         $emailit = $modx->resource->getTVValue('nf_notify_subscribers') == 'Yes';
         $inlineCss = $modx->resource->getTVValue('InlineCss') == 'Yes';
@@ -143,7 +144,9 @@ switch ($modx->event->name) {
                 $nf->sendTestEmail($testEmailAddress, $username);
             }
         }
-
+        if ($sendTweet) {
+            $nf->tweet();
+        }
 
         $errors = $nf->getErrors();
         if (!empty($errors)) {
@@ -154,6 +157,9 @@ switch ($modx->event->name) {
             }
             if ($emailit) {
                 $header .= '<h3>Bulk Email sent successfully</h3>';
+            }
+            if ($sendTweet) {
+                $header .= '<h3>Tweet sent successfully</h3>';
             }
             if ($preview && !($sendTestEmail || $emailit)) {
                 $header .= '<h3>Preview of Email:</h3>';

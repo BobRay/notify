@@ -330,6 +330,9 @@ class Notify
             //$total = $this->modx->getCount($this->userClass,$c);
             $c->select($this->modx->getSelectColumns($this->userClass,$this->userClass),"", array('id','username','active'));
             $c->sortby($this->modx->escape($this->sortByAlias).'.'.$this->modx->escape($this->sortBy),'ASC');
+            /* ToDo: Get these in batches with offset to conserve memory
+             * $c->limit($number, $offset);
+             */
             $users = $this->modx->getIterator($this->userClass,$c);
 
 
@@ -338,61 +341,69 @@ class Notify
                 $this->setError('User Group: ' . $userGroupName . ' has no members');
             }*/
 
-                foreach ($users as $user) {
-                    /* @var $user modUser */
-                    /* get the user id */
-                    /* get the user object and username */
+            foreach ($users as $user) {
+                /* @var $user modUser */
 
-                    $username = $user->get('username');
+                $username = $user->get('username');
 
-                    /* get the user's profile and extract email and fullname */
-
-                    $profile = $user->getOne($this->profileAlias);
-                    $userTags = $profile->get('comment');
-                    if (! $profile) {
-                        $this->setError('No Profile for: ' . $username);
-                    } else {
-                        $email = $profile->get('email');
-                        $fullName = $profile->get('fullname');
-                    }
-
-                    /* fall back to username if fullname is empty */
-                    $fullName = empty($fullName) ? $username : $fullName;
-
-                    /* process tags if Tags TV is set */
-                    if (!empty ($this->tags)) {
-                        $tags = explode(',',$this->tags);
-                        $hasTag = false;
-
-                        foreach ($tags as $tag) {
-                            $tag = trim($tag);
-
-
-                            if ( (!empty($tag)) && stristr($userTags,$tag)) {
-                                $hasTag = true;
-                            }
+                $profile = $user->getOne($this->profileAlias);
+                $userTags = null;
+                if (! $profile) {
+                    $this->setError('No Profile for: ' . $username);
+                } else {
+                    if ( $this->modx->getOption('sbs_use_comment_field', null, null) == 'No') {
+                        $field = $this->modx->getOption('sbs_extended_field');
+                        if (empty($field)) {
+                            $this->setError('sbs_extended_field is not set');
+                        } else {
+                            $extended = $profile->get('extended');
+                            $userTags = $extended[$field];
                         }
-                        if (! $hasTag) {
-                            continue;
+                    } else {
+                        $userTags = $profile->get('comment');
+                    }
+                    $email = $profile->get('email');
+                    $fullName = $profile->get('fullname');
+                }
+
+                /* fall back to username if fullname is empty */
+                $fullName = empty($fullName) ? $username : $fullName;
+
+                /* process tags if Tags TV is set */
+                if (!empty ($this->tags)) {
+                    $tags = explode(',',$this->tags);
+                    $hasTag = false;
+
+                    foreach ($tags as $tag) {
+                        $tag = trim($tag);
+
+
+                        if ( (!empty($tag)) && stristr($userTags,$tag)) {
+                            $hasTag = true;
                         }
                     }
-
-                    if (! empty($email)) {
-                        /* add user data to recipient array */
-
-                        /* Either no tags are in use or this user has a tag.
-                         * Add user to recipient array */
-                        $recipients[] = array(
-                            'group' => $userGroupName,
-                            'email' => $email,
-                            'fullName' => $fullName,
-                            'userTags' => $userTags,
-                        );
-                    } else {
-                        $this->setError('User: ' . $username . ' has no email address');
+                    if (! $hasTag) {
+                        continue;
                     }
                 }
+
+                if (! empty($email)) {
+                    /* add user data to recipient array */
+
+                    /* Either no tags are in use or this user has a tag.
+                     * Add user to recipient array */
+                    $recipients[] = array(
+                        'group' => $userGroupName,
+                        'email' => $email,
+                        'fullName' => $fullName,
+                        'userTags' => $userTags,
+                    );
+                } else {
+                    $this->setError('User: ' . $username . ' has no email address');
+                }
             }
+        }
+
 
         unset($users);
 
@@ -449,6 +460,55 @@ class Notify
             $this->setError('Test email not sent');
         }
         return;
+    }
+
+    public function tweet() {
+
+        require_once(MODX_CORE_PATH . 'components/notify/model/twitteroauth.php');
+        $consumer_key = $this->modx->getOption('twitter_consumer_key',null,null);
+        if (! $consumer_key) {
+            $this->setError('twitter_consumer_key is not set');
+        }
+        $consumer_secret = $this->modx->getOption('twitter_consumer_secret',null,null);
+        if (! $consumer_secret) {
+            $this->setError('twitter_consumer_secret is not set');
+        }
+        $oauth_token = $this->modx->getOption('twitter_oauth_token',null,null);
+        if (! $oauth_token) {
+            $this->setError('twitter_oauth_token is not set');
+        }        
+        $oauth_secret = $this->modx->getOption('twitter_oauth_secret',null,null);
+        if (! $oauth_secret) {
+            $this->setError('twitter_oauth_secret is not set');
+        }        
+        $msg = $this->modx->resource->getTVValue('nf_tweet');
+
+        if (empty($msg)) {
+            $this->setError('Tweet TV is empty');
+        } else {
+            //$text = 'Tweeted from PHP - just testing some code';
+            $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
+            $response = $tweet->post('statuses/update', array('status' => $msg));
+
+            //$response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay'));
+
+            if (!$response) {
+                $this->setError("<h3>Unknown error using the Twitter API</h3>\n");
+            } elseif ($response->error) {
+                $this->setError("<h3>Twitter said, there was an error</h3>\n
+                <p>$response->error</code</p>\n
+                <p>Full response:</p>\n
+                <pre>" . var_dump($response) . "</pre><br />");
+            } else {
+                 /* debugging stuff */
+                /*echo "<_pre>" . var_dump($response) . "</pre_>"; */
+
+               /* foreach ($response as $x) {
+                    echo ($x->text). "\n";
+
+                }*/
+            }
+        }
     }
     public function showErrorStrings() {
            $retVal = '';
