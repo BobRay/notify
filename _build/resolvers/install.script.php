@@ -134,12 +134,7 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         } else {
             $modx->log(xPDO::LOG_LEVEL_INFO, 'Failed to attach TVs to Templates');
         }
-
-
-
-
-
-
+        break;
     /* This code will execute during an uninstall */
     case xPDOTransport::ACTION_UNINSTALL:
         $modx->log(xPDO::LOG_LEVEL_INFO,'Uninstalling . . .');
