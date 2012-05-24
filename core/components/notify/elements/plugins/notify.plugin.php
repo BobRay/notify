@@ -168,10 +168,15 @@ switch ($modx->event->name) {
         $output = $nf->getHtml();
         /* make unprocessed tags visible */
         $output = str_replace('[[', '[ [', $output);
-        $pattern = '~(<body[^>]*>)~';
-        $replacement = '$1' . $header . "<br /><br />";
-        $output =  preg_replace($pattern,$replacement, $output );
-        //$output = str_replace('<body>', '<body>' . $header . "\n\n", $output);
+
+        /* inject header if there is a body tag */
+        if (strstr($output, '<body>')) {
+            $pattern = '~(<body[^>]*>)~';
+            $replacement = '$1' . $header . "<br /><br />";
+            $output =  preg_replace($pattern,$replacement, $output );
+        } else {
+            $output = $header . $output;
+        }
 
         $modx->resource->_output = $output;
         break;

@@ -19,8 +19,9 @@ Go to System | Package Management on the main menu in the MODX Manager and click
         
 <p>The various options are independent, so you can send yourself a test email, send a message to subscribers, or send a Tweet without activating the other options.</p>
         
-<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information is the URL, and you're free to change or delete it. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group or Tag. If you modify the Tpl chunks, put a <fixedpre>[[+url]]</fixedpre>placeholder tag where you wnat the page URL and Notify will fill that in for you.</p>
+<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group or Tag.</p>
         
+
 <h3>Groups</h3>
         
 <p>Email is only sent to active users. The Groups TV can contain a comma-separated list (no spaces) of User Groups to send to. You can specify them by name or by User Group ID number. By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by editing the &quot;nf_groups&quot; TV and changing the default value. If you leave the Groups TV blank, the email message will be sent to all active users on your site. </p>
