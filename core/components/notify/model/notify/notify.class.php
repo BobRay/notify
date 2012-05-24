@@ -227,7 +227,7 @@ class Notify
         $this->html = $ctis->convert();
     }
 
-    protected function strReplaceAssoc(array $replace, $subject) {
+    public function strReplaceAssoc(array $replace, $subject) {
            return str_replace(array_keys($replace), array_values($replace), $subject);
     }
 

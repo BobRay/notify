@@ -90,7 +90,17 @@ switch ($modx->event->name) {
             $fields = $modx->resource->toArray();
             $fields['url'] = $url;
 
-            $txt = $modx->getChunk('NfSubScriberEmail', $fields);
+            /* Get email text from TV */
+            $txt = $modx->resource->getTVValue('nf_subscriber_email');
+            /* replace any placeholders in email */
+            $replace = $modx->resource->toArray();
+            foreach ($replace as $k=>$v) {
+                $replace['[[+' . $k . ']]'] = $v;
+                unset ($replace[$k]);
+            }
+            $replace['[[+url]]'] = $modx->makeUrl($modx->resource->get('id'), "", "", "full");
+            $replace['[[++site_name]]'] = $modx->getOption('site_name',null, '');
+            $txt = $nf->strReplaceAssoc($replace,$txt);
 
             $nf->setHtml($txt);
 
