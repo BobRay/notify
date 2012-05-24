@@ -74,6 +74,7 @@ class Notify
     protected $sortBy;
     protected $sortByAlias;
     protected $tags;
+    protected $recipients;
 
 
     public function __construct(&$modx, &$props)
@@ -303,107 +304,63 @@ class Notify
     public function sendBulkEmail()
     {
         /* @var $user modUser */
-        if (empty ($this->groups)) {
-            $this->setError('No User Groups selected to send bulk email to');
-            return false;
-        }
-        $recipients = array();
-        $userGroupNames = explode(',', $this->groups);
-        /* Build Recipient array */
-        foreach ($userGroupNames as $userGroupName) {
-            /* @var $group modUserGroup */
-            $userGroupName = trim($userGroupName);
-            /* allow UserGroup name or ID */
-            $c = intval($userGroupName);
-            $c = is_int($c) && !empty($c) ? $userGroupName : array('name' => $userGroupName);
-            $group = $this->modx->getObject('modUserGroup',$c);
 
-            if (empty($group)) {
-                $this->setError('Could not find User Group: ' . $userGroupName);
-            }
-            //***
-            /* get users */
+
+
+        $this->recipients = array();
+
+        /* if groups is empty, send to all active users */
+        if (empty ($this->groups)) {
             $c = $this->modx->newQuery($this->userClass);
-            $c->innerJoin('modUserGroupMember','UserGroupMembers');
+            $c->select($this->modx->getSelectColumns($this->userClass,$this->userClass),"", array('id','username','active'));
+                        $c->sortby($this->modx->escape($this->sortByAlias).'.'.$this->modx->escape($this->sortBy),'ASC');
             $c->where(array(
-                'UserGroupMembers.user_group' => $group->get('id'),
                 'active' => '1',
             ));
-            //$total = $this->modx->getCount($this->userClass,$c);
-            $c->select($this->modx->getSelectColumns($this->userClass,$this->userClass),"", array('id','username','active'));
-            $c->sortby($this->modx->escape($this->sortByAlias).'.'.$this->modx->escape($this->sortBy),'ASC');
-            /* ToDo: Get these in batches with offset to conserve memory
-             * $c->limit($number, $offset);
-             */
             $users = $this->modx->getIterator($this->userClass,$c);
+            $this->addUsers($users, 'All Users');
+            unset($users);
+        } else {  /* send to named groups */
 
-            foreach ($users as $user) {
-                /* @var $user modUser */
+            $userGroupNames = explode(',', $this->groups);
+            /* Build Recipient array */
+            foreach ($userGroupNames as $userGroupName) {
+                /* @var $group modUserGroup */
+                $userGroupName = trim($userGroupName);
+                /* allow UserGroup name or ID */
+                $g = intval($userGroupName);
+                $g = is_int($g) && !empty($g) ? $userGroupName : array('name' => $userGroupName);
+                $group = $this->modx->getObject('modUserGroup',$g);
 
-                $username = $user->get('username');
-
-                $profile = $user->getOne($this->profileAlias);
-                $userTags = null;
-                if (! $profile) {
-                    $this->setError('No Profile for: ' . $username);
+                if (empty($group)) {
+                    $this->setError('Could not find User Group: ' . $userGroupName);
                 } else {
-                    if ( $this->modx->getOption('sbs_use_comment_field', null, null) == 'No') {
-                        $field = $this->modx->getOption('sbs_extended_field');
-                        if (empty($field)) {
-                            $this->setError('sbs_extended_field is not set');
-                        } else {
-                            $extended = $profile->get('extended');
-                            $userTags = $extended[$field];
-                        }
-                    } else {
-                        $userTags = $profile->get('comment');
-                    }
-                    $email = $profile->get('email');
-                    $fullName = $profile->get('fullname');
+                    /* get users */
+                    $c = $this->modx->newQuery($this->userClass);
+                    $c->select($this->modx->getSelectColumns($this->userClass,$this->userClass),"", array('id','username','active'));
+                    $c->sortby($this->modx->escape($this->sortByAlias).'.'.$this->modx->escape($this->sortBy),'ASC');
+                    $c->where(array(
+                        'UserGroupMembers.user_group' => $group->get('id'),
+                        'active' => '1',
+                    ));
+                    $c->innerJoin('modUserGroupMember','UserGroupMembers');
+                    //$total = $this->modx->getCount($this->userClass,$c);
+
+                    /* ToDo: Get these in batches with offset to conserve memory
+                     * $c->limit($number, $offset);
+                     */
+                    $users = $this->modx->getIterator($this->userClass,$c);
+                    $this->addUsers($users, $userGroupName);
+                    unset($users);
                 }
 
-                /* fall back to username if fullname is empty */
-                $fullName = empty($fullName) ? $username : $fullName;
-
-                /* process tags if Tags TV is set */
-                if (!empty ($this->tags)) {
-                    $tags = explode(',',$this->tags);
-                    $hasTag = false;
-
-                    foreach ($tags as $tag) {
-                        $tag = trim($tag);
-
-
-                        if ( (!empty($tag)) && stristr($userTags,$tag)) {
-                            $hasTag = true;
-                        }
-                    }
-                    if (! $hasTag) {
-                        continue;
-                    }
-                }
-
-                if (! empty($email)) {
-                    /* add user data to recipient array */
-
-                    /* Either no tags are in use or this user has a tag.
-                     * Add user to recipient array */
-                    $recipients[] = array(
-                        'group' => $userGroupName,
-                        'email' => $email,
-                        'fullName' => $fullName,
-                        'userTags' => $userTags,
-                    );
-                } else {
-                    $this->setError('User: ' . $username . ' has no email address');
-                }
             }
         }
 
 
-        unset($users);
 
-        if (empty($recipients)) {
+
+        if (empty($this->recipients)) {
             $this->setError('No Recipients to send to');
         }
         /* skip mail send if any errors are set */
@@ -411,16 +368,16 @@ class Notify
             $this->setError('Bulk Emails not sent');
             return false;
         }
-        /* $recipients array now complete and no errors - send bulk emails */
+        /* $this->recipients array now complete and no errors - send bulk emails */
         $i = 1;
         $fp = fopen($this->logFile, 'w');
         if (!$fp) {
             $this->setError('Could not open log file (make sure /logs directory exists): ' . $this->logFile);
         } else {
             fwrite($fp, "MESSAGE\n*****************************\n" . $this->html . "\n*****************************\n\n");
-            //fwrite($fp,print_r($recipients, true));
+            //fwrite($fp,print_r($this->recipients, true));
         }
-        foreach ($recipients as $recipient) {
+        foreach ($this->recipients as $recipient) {
             if ($this->sendMail($recipient['email'], $recipient['fullName'])) {
                 if ($fp) {
                     fwrite($fp, 'Successful send to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') User Tags: ' . $recipient['userTags'] . "\n");
@@ -447,6 +404,69 @@ class Notify
         return true;
 
 
+    }
+    protected function addUsers($users, $userGroupName) {
+        foreach ($users as $user) {
+            /* @var $user modUser */
+
+            $username = $user->get('username');
+
+            $profile = $user->getOne($this->profileAlias);
+            $userTags = null;
+            if (! $profile) {
+                $this->setError('No Profile for: ' . $username);
+            } else {
+                if ( $this->modx->getOption('sbs_use_comment_field', null, null) == 'No') {
+                    $field = $this->modx->getOption('sbs_extended_field');
+                    if (empty($field)) {
+                        $this->setError('sbs_extended_field is not set');
+                    } else {
+                        $extended = $profile->get('extended');
+                        $userTags = $extended[$field];
+                    }
+                } else {
+                    $userTags = $profile->get('comment');
+                }
+                $email = $profile->get('email');
+                $fullName = $profile->get('fullname');
+            }
+
+            /* fall back to username if fullname is empty */
+            $fullName = empty($fullName) ? $username : $fullName;
+
+            /* process tags if Tags TV is set */
+            if (!empty ($this->tags)) {
+                $tags = explode(',',$this->tags);
+                $hasTag = false;
+
+                foreach ($tags as $tag) {
+                    $tag = trim($tag);
+
+
+                    if ( (!empty($tag)) && stristr($userTags,$tag)) {
+                        $hasTag = true;
+                    }
+                }
+                if (! $hasTag) {
+                    continue;
+                }
+            }
+
+            if (! empty($email)) {
+                /* add user data to recipient array */
+
+                /* Either no tags are in use or this user has a tag.
+                 * Add user to recipient array */
+                $this->recipients[] = array(
+                    'group' => $userGroupName,
+                    'email' => $email,
+                    'fullName' => $fullName,
+                    'userTags' => $userTags,
+                );
+            } else {
+                $this->setError('User: ' . $username . ' has no email address');
+            }
+        }
     }
     public function sendTestEmail($address, $name){
         if (empty($address)) {
