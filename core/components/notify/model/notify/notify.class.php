@@ -96,7 +96,7 @@ class Notify
         $this->userClass = $this->modx->getOption('userClass',$this->props,'modUser');
         $this->profileAlias = $this->modx->getOption('profileAlias',$this->props,'Profile');
         $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
-        $this->logFile = $this->corePath . 'logs/' . $this->modx->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
+        $this->logFile = $this->corePath . 'notify-logs/' . $this->modx->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
         $this->errors = array();
         $cssBasePath = $this->modx->resource->getTVValue('CssBasePath');
         $this->tags = $this->modx->resource->getTVValue('Tags');
@@ -285,6 +285,8 @@ class Notify
 
     }
 
+    /* Sends an individual email */
+
     public function sendMail($address, $name)
     {
         $this->modx->mail->address('to', $address, $name);
@@ -421,6 +423,7 @@ class Notify
         if (!$fp) {
             $this->setError('Could not open log file (make sure /logs directory exists): ' . $this->logFile);
         } else {
+            fwrite($fp, "MESSAGE\n*****************************\n" . $this->html . "\n*****************************\n\n");
             //fwrite($fp,print_r($recipients, true));
         }
         foreach ($recipients as $recipient) {
