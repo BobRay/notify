@@ -337,12 +337,6 @@ class Notify
              */
             $users = $this->modx->getIterator($this->userClass,$c);
 
-
-           /* $ugms = $group->getMany('UserGroupMembers');
-            if (empty ($ugms)) {
-                $this->setError('User Group: ' . $userGroupName . ' has no members');
-            }*/
-
             foreach ($users as $user) {
                 /* @var $user modUser */
 
