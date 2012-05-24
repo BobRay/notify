@@ -1,5 +1,5 @@
 <h3>Overview</h3>
-<p>Notify will let you send an email notification to Subscribers on your site (or to all users) when a page is created or updated (or just when you feel like sending them a message). Rather than sending the whole page, Notify sends a message with a link to the new or updated page. Optionally, you can specify tags for the message and only subscribers with those tags set will receive the email. Notify works in conjunction with the Subscribe extra, which lets users register at your site and manage their preferences (tags). </p>
+<p>Notify will let you send an email notification to Subscribers on your site (or to all active users) when a page is created or updated (or just when you feel like sending them a message). Rather than sending the whole page, Notify sends a message with a link to the new or updated page. Optionally, you can specify tags for the message and only subscribers with those tags set will receive the email. Notify works in conjunction with the Subscribe extra, which lets users register at your site and manage their preferences (tags). </p>
 
 <h3>Installing Notify for MODX Revolution</h3>
 <p>
@@ -23,7 +23,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
         
 <h3>Groups</h3>
         
-<p>Email is only sent to active users. The Groups TV can contain a comma-separated list (no spaces) of User Groups to send to. You can specify them by name or by User Group ID number. By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by editing the &quot;nf_groups&quot; TV and changing the default value. If you leave the Groups TV blank, the email message will be sent to all users on your site. </p>
+<p>Email is only sent to active users. The Groups TV can contain a comma-separated list (no spaces) of User Groups to send to. You can specify them by name or by User Group ID number. By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by editing the &quot;nf_groups&quot; TV and changing the default value. If you leave the Groups TV blank, the email message will be sent to all active users on your site. </p>
         
 <h3>Tags</h3>
 <p>The Tags TV is blank by default, so the email is sent to all members of User Groups specified in the Groups TV. If you enter a comma-separated list of tags in the Tags TV, only users who have those tags (interests) will receive the email. You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and let users manage their own interest lists. See the Subscribe package documentation for more information on how the Tags are stored.</p>
@@ -36,7 +36,9 @@ sbs_extended_field   (name of the extended field you want to use)
 </fixedpre></pre>
         
 <p>You'll have to create the extended field for each user.</p>
-        
+  
+<h3>Email Log</h3>
+<p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
         
 <h3>Posting Updates to Twitter</h3>
 <p>In order for Notify to post updates to Twitter, you'll neeed to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify System Settings.</p>
