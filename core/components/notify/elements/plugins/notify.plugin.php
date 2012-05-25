@@ -38,13 +38,10 @@
 
 /* ToDo: Internationalize error messages */
 /* @var $modx modX */
-/* @var $id int */
 /* @var $resource modResource */
 
 
 $sp =& $scriptProperties;
-$base_url = $modx->getOption('site_url');
-$header = '';
 
 /* Act only when previewing from the back end */
 if (!$modx->user->hasSessionContext('mgr')) {
@@ -68,81 +65,28 @@ unset($templates);
 switch ($modx->event->name) {
     /* @var $nf Notify */
     case 'OnWebPagePrerender':
-        $nf = new Notify($modx, $sp);
+
 
         /* Get TV values */
         $sendTweet = $modx->resource->getTVValue('nf_twitter') == 'Yes';
         $preview = $modx->resource->getTVValue('nf_preview_email') == 'Yes';
         $emailit = $modx->resource->getTVValue('nf_notify_subscribers') == 'Yes';
-        $inlineCss = $modx->resource->getTVValue('InlineCss') == 'Yes';
         $sendTestEmail = $modx->resource->getTVValue('nf_send_test_email') == 'Yes';
 
-
-        $testEmailAddress = $modx->resource->getTVValue('nf_email_address_for_test');
-        if ($sendTweet) {
-            $nf->tweet();
-        }
-
-        if ($emailit || $preview || $sendTestEmail) {
-            /* @var $resource modResource */
-            /* @var $id int */
-
-            $nf->init();
-            $url = $modx->makeUrl($modx->resource->get('id'), "", "", "full");
-            $fields = $modx->resource->toArray();
-            $fields['url'] = $url;
-
-            /* Get email text from TV */
-            $txt = $modx->resource->getTVValue('nf_subscriber_email');
-            /* replace any placeholders in email */
-            $replace = $modx->resource->toArray();
-            foreach ($replace as $k=>$v) {
-                $replace['[[+' . $k . ']]'] = $v;
-                unset ($replace[$k]);
-            }
-            $replace['[[+url]]'] = $modx->makeUrl($modx->resource->get('id'), "", "", "full");
-            $replace['[[++site_name]]'] = $modx->getOption('site_name',null, '');
-            $txt = $nf->strReplaceAssoc($replace,$txt);
-
-            $nf->setHtml($txt);
-
-            if ($inlineCss) {
-                $nf->inlineCss();
-            }
-
-            $output = $nf->getHtml();
-
-        } else {
-            /* just return without modifying output */
+        /* bail out if no action requested */
+        if (! ($sendTweet || $preview || $emailit || $sendTestEmail)) {
             return '';
         }
 
-        /* turn the TVs off to prevent accidental resending */
-        /* @var $tv modTemplateVar */
-        $tv = $modx->getObject('modTemplateVar', array('name' => 'nf_send_test_email'));
-        $tv->setValue($modx->resource->get('id'), 'No');
-        $tv->save();
-        $tv = $modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
-        $tv->setValue($modx->resource->get('id'), 'No');
-        $tv->save();
-        /* Need to change the TV values in memory too */
+        $nf = new Notify($modx, $sp);
+        $nf->init();
 
-        $fields = array(
-            'SendTestEmail',
-            'No',
-            'default',
-            '',
-            'option',
-        );
-        $modx->resource->set('nf_send_test_email', $fields);
-        $fields[0] = 'nf_notify_subscrbers';
-        $modx->resource->set('nf_notify_subscribers', $fields);
-
+        $nf->resetTVs();
         /* Work starts here */
 
         if ($emailit || $sendTestEmail) {
             $preview = true;
-
+            $nf->initEmail();
             $nf->initializeMailer();
 
             if ($emailit) {
@@ -152,76 +96,66 @@ switch ($modx->event->name) {
 
             if ($sendTestEmail) {
                 /* send test email */
+                $testEmailAddress = $modx->resource->getTVValue('nf_email_address_for_test');
                 $username = $modx->user->get('username');
                 $nf->sendTestEmail($testEmailAddress, $username);
             }
         }
-
-
-        $errors = $nf->getErrors();
-        if (!empty($errors)) {
-            $header = $nf->showErrorStrings();
-        } else {
-            if ($sendTestEmail) {
-                $header = '<h3>Test email sent successfully</h3>';
-            }
-            if ($emailit) {
-                $header .= '<h3>Bulk Email sent successfully</h3>';
-            }
-            if ($sendTweet) {
-                $header .= '<h3>Tweet sent successfully</h3>';
-            }
-            if ($preview && !($sendTestEmail || $emailit)) {
-                $header .= '<h3>Preview of Email:</h3>';
-            }
+        if ($sendTweet) {
+            $nf->tweet();
         }
-        $output = $nf->getHtml();
-        /* make unprocessed tags visible */
-        $output = str_replace('[[', '[ [', $output);
+        /* Show results and/or preview */
 
-        /* inject header if there is a body tag */
-        if (strstr($output, '<body>')) {
+        /* don't show email text unless one of these is set */
+        $emailText = $emailit || $preview || $sendTestEmail? $nf->getEmailText() : '';
+
+        /* inject headers if there is a body tag */
+        if (strstr($emailText, '<body>')) {
             $pattern = '~(<body[^>]*>)~';
-            $replacement = '$1' . $header . "<br /><br />";
-            $output =  preg_replace($pattern,$replacement, $output );
+            $replacement = '$1' . $nf->getSuccessHeader() . "<br /><br />" . $nf->getErrorHeader();
+            $output =  preg_replace($pattern,$replacement, $emailText );
         } else {
-            $output = $header . $output;
+            /* no injection */
+            $output = $nf->getSuccessHeader() ."<br /><br />" . $nf->getErrorHeader() .  $emailText;
         }
 
         $modx->resource->_output = $output;
         break;
     case 'OnDocFormPrerender':
-        $url = $modx->makeUrl($id, "", "", "full");
+
+        $url = $modx->makeUrl($resource->get('id'), "", "", "full");
         $fields = $resource->toArray();
         $fields['url'] = $url;
-        /* Turn these off so notices are not sent on every save */
+        /* Turn these off so notices are not sent accidentally */
         $resource->setTVValue('nf_notify_subscribers', 'No');
         $resource->setTVValue('nf_twitter', 'No');
         $resource->setTVValue('nf_send_test_email', 'No');
+        $resource->setTVValue('nf_preview_email', 'No');
 
+        /* get Tpl names */
+        $emailTpl = $modx->getOption('nfEmailTpl', $sp, 'NfSubscriberEmailTpl');
+        $emailSubjectTpl = $modx->getOption('nfEmailSubjectTpl', $sp, 'NfEmailSubjectTpl');
+        $tweetTpl = $modx->getOption('nfTweetTpl', $sp, 'NfTweetTpl');
 
-
+        /* pre-fill TVs */
         $txt = $resource->getTVValue('nf_email_address_for_test');
         if (empty($txt)) {
             $txt = $modx->getOption('emailsender');
             $resource->setTVValue('nf_email_address_for_test', $txt);
-
         }
-
         $txt = $resource->getTVValue('nf_subscriber_email');
         if (empty($txt)) {
-            $txt = $modx->getChunk('NfSubScriberEmail', $fields);
+            $txt = $modx->getChunk($emailTpl, $fields);
             $resource->setTVValue('nf_subscriber_email', $txt);
         }
         $txt = $resource->getTVValue('nf_email_subject');
         if (empty($txt)) {
-            $txt = $modx->getChunk('NfEmailSubject', $fields);
+            $txt = $modx->getChunk($emailSubjectTpl, $fields);
             $resource->setTVValue('nf_email_subject', $txt);
         }
-
         $txt = $resource->getTVValue('nf_tweet');
         if (empty($txt)) {
-            $txt = $modx->GetChunk('NfTweet', $fields);
+            $txt = $modx->GetChunk($tweetTpl, $fields);
             $resource->setTVValue('nf_tweet', $txt);
         }
         break;

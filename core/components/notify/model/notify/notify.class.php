@@ -51,12 +51,8 @@
 class Notify
 {
 
-    protected $html;
     protected $modx;
     protected $props;
-    protected $cssMode;
-    protected $cssFiles;
-    protected $cssBasePath;
     protected $mail_from;
     protected $mail_from_name;
     protected $mail_sender;
@@ -66,7 +62,6 @@ class Notify
     protected $batchSize;
     protected $batchDelay;
     protected $itemDelay;
-    protected $errors;
     protected $logFile;
     protected $userClass;
     protected $profileAlias;
@@ -75,6 +70,11 @@ class Notify
     protected $sortByAlias;
     protected $tags;
     protected $recipients;
+    protected $emailText;
+    protected $tweetText;
+    protected $replace;
+    protected $successHeader;
+    protected $errorHeader;
 
 
     public function __construct(&$modx, &$props)
@@ -85,65 +85,67 @@ class Notify
         /* @var $modx modX */
         /* nf paths; Set the nf. System Settings only for development */
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
-        $this->assetsPath = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH . 'components/notify/');
-        $this->assetsUrl = $this->modx->getOption('nf.assets_url', null, MODX_ASSETS_URL . 'components/notify/');
+        /*$this->assetsPath = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH . 'components/notify/');
+        $this->assetsUrl = $this->modx->getOption('nf.assets_url', null, MODX_ASSETS_URL . 'components/notify/');*/
 
     }
 
     public function init()
     {
+        /* set replace placeholders */
+        $this->errorHeader = '';
+        $this->successHeader = '';
+        $this->replace = $this->modx->resource->toArray();
+        foreach ($this->replace as $k=>$v) {
+            $this->replace['[[+' . $k . ']]'] = $v;
+            unset ($this->replace[$k]);
+        }
+        $this->replace['[[+url]]'] = $this->modx->makeUrl($this->modx->resource->get('id'), "", "", "full");
+        $this->replace['[[++site_name]]'] = $this->modx->getOption('site_name',null, '');
+
+        $this->emailText = $this->modx->resource->getTVValue('nf_subscriber_email');
+        if (! empty($this->emailText)) {
+            $this->emailText = $this->strReplaceAssoc($this->replace,$this->emailText);
+        }
+        $this->tweetText = $this->modx->resource->getTVValue('nf_tweet');
+        if (!empty($this->tweetText)) {
+            $this->tweetText = $this->strReplaceAssoc($this->replace,$this->tweetText);
+        }
+    }
+    public function getTweetText() {
+        return $this->tweetText;
+    }
+    public function getEmailText() {
+        return $this->emailText;
+    }
+    public function initEmail() {
         $this->sortBy = $this->modx->getOption('sortBy',$this->props,'username');
         $this->sortByAlias = $this->modx->getOption('sortByAlias',$this->props,'modUser');
         $this->userClass = $this->modx->getOption('userClass',$this->props,'modUser');
         $this->profileAlias = $this->modx->getOption('profileAlias',$this->props,'Profile');
         $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
         $this->logFile = $this->corePath . 'notify-logs/' . $this->modx->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
-        $this->errors = array();
-        $cssBasePath = $this->modx->resource->getTVValue('CssBasePath');
         $this->tags = $this->modx->resource->getTVValue('Tags');
 
-        if (empty ($cssBasePath)) {
-            $cssBasePath = MODX_BASE_PATH . 'assets/components/notify/css/';
-        } else {
-            if (strstr($cssBasePath, '{modx_base_path}')) {
-                $cssBasePath = str_replace('{modx_base_path}', MODX_BASE_PATH, $cssBasePath);
-            }
-        }
-        $this->cssBasePath = $cssBasePath;
-        $cssTv = $this->modx->resource->getTVValue('CssFile');
-        $cssTv = empty($cssTv)? 'notify.css': $cssTv;
-        $this->cssFiles = explode(',', $cssTv);
-
-        $cssMode = $this->modx->resource->getTVValue('CssMode');
-
-        if (empty ($cssMode)) {
-            $this->cssMode = 'FILE';
-        } else {
-            $this->cssMode = strtoupper($cssMode);
-        }
-
-        /* Bulk email settings */
         $this->groups = $this->modx->resource->getTVValue('nf_groups');
         $this->tags = $this->modx->resource->getTVValue('nf_tags');
-
+    
         $batchSize = $this->modx->resource->getTVValue('BatchSize');
         $this->batchSize = empty($batchSize)? 50 : $batchSize;
         $batchDelay = $this->modx->resource->getTVValue('BatchDelay');
         $this->batchDelay = empty($batchDelay)? 1 : $batchDelay;
         $itemDelay = $this->modx->resource->getTVValue('itemDelay');
         $this->itemDelay = empty($itemDelay)? .51 : $itemDelay;
-
     }
-
-    public function fullUrls($base)
-    {
+    /* not used -- for later development */
+    public function fullUrls($base) {
         /* extract domain name from $base */
         $splitBase = explode('//', $base);
         $domain = $splitBase[1];
         $domain = rtrim($domain,'/ ');
 
         /* remove space around = sign */
-        //$html = preg_replace('@(href|src)\s*=\s*@', '\1=', $html);
+
         $html =& preg_replace('@(?<=href|src)\s*=\s*@', '=', $this->html);
 
         /* fix google link weirdness */
@@ -167,6 +169,7 @@ class Notify
         return $html;
     }
 
+    /* not used -- for later development */
     public function imgAttributes() {
         $html =& $this->html;
         $replace = array (
@@ -183,52 +186,13 @@ class Notify
 
     }
 
-    public function inlineCss()
-    {
-        $root = MODX_BASE_PATH;
-        //$assets_path = $root . 'assets/components/notify/';
-        $core_path = $root . 'core/components/notify/';
-        require $core_path . 'model/notify/css_to_inline_styles.class.php';
 
-        $css = '';
-        if (empty($this->cssFiles)) {
-            $this->setError('cssFiles is empty');
-        }
-        foreach ($this->cssFiles as $cssFile) {
-            switch ($this->cssMode) {
+    public function strReplaceAssoc($replace, $subject) {
+           $msg =  str_replace(array_keys($replace), array_values($replace), $subject);
+            /* make any unprocessed tags visible */
+           $msg = str_replace('[[', '[ [', $msg);
+           return $msg;
 
-                case 'RESOURCE':
-                    /* @var $res modResource */
-                    $res = $this->modx->getObject('modResource', array('pagetitle' => $cssFile));
-                    $tempCss = $res->getContent();
-                    unset($res);
-                    if (empty($tempCss)) {
-                        $this->setError('Could not get resource content: ' . $cssFile);
-                    }
-                    break;
-                case 'CHUNK':
-                    $tempCss = $this->modx->getChunk($cssFile);
-                    if (empty($tempCss)) {
-                        $this->setError('Could not get chunk content: ' . $cssFile);
-                    }
-                default:
-                case 'FILE':
-                    $tempCss = file_get_contents($this->cssBasePath . $cssFile);
-                    if (empty($tempCss)) {
-                        $this->setError('Could not get CSS file: ' . $this->cssBasePath . $cssFile);
-                    }
-                    break;
-
-            }
-            $css .= $tempCss . "\n";
-        }
-
-        $ctis = new CSSToInlineStyles($this->html, $css);
-        $this->html = $ctis->convert();
-    }
-
-    public function strReplaceAssoc(array $replace, $subject) {
-           return str_replace(array_keys($replace), array_values($replace), $subject);
     }
 
 
@@ -251,11 +215,11 @@ class Notify
         $chunk->setContent($content);
         $chunk->save();
     }
-    public function setHtml($html) {
-        $this->html = $html;
+    public function getErrorHeader() {
+        return $this->errorHeader;
     }
-    public function getHtml() {
-        return $this->html;
+    public function getSuccessHeader() {
+        return $this->successHeader;
     }
 
     public function initializeMailer() {
@@ -276,7 +240,7 @@ class Notify
                 $mail_subject = $this->modx->resource->getTVValue('nf_email_subject');
                 $this->mail_subject = empty($mail_subject) ? 'Update from ' . $this->modx->getOption('site_name') : $mail_subject;
 
-        $this->modx->mail->set(modMail::MAIL_BODY, $this->html);
+        $this->modx->mail->set(modMail::MAIL_BODY, $this->emailText);
         $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
         $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
         $this->modx->mail->set(modMail::MAIL_SENDER, $this->mail_sender);
@@ -293,10 +257,9 @@ class Notify
         $this->modx->mail->address('to', $address, $name);
         $success = $this->modx->mail->send();
         if (! $success) {
-            $this->setError($this->modx->mail->mailer->ErrorInfo);
+            $this->errorHeader .= '<h3>' . $this->modx->mail->mailer->ErrorInfo . '</h3>';
         }
         $this->modx->mail->mailer->ClearAddresses();
-        /* $this->modx->mail->mailer->ClearBCCs(); */
         return $success;
 
     }
@@ -333,7 +296,7 @@ class Notify
                 $group = $this->modx->getObject('modUserGroup',$g);
 
                 if (empty($group)) {
-                    $this->setError('Could not find User Group: ' . $userGroupName);
+                    $this->errorHeader = '<h3>' . 'Could not find User Group: ' . $userGroupName . '</h3>';
                 } else {
                     /* get users */
                     $c = $this->modx->newQuery($this->userClass);
@@ -361,20 +324,20 @@ class Notify
 
 
         if (empty($this->recipients)) {
-            $this->setError('No Recipients to send to');
+            $this->errorHeader = '<h3>' . 'No Recipients to send to' . '</h3>';
         }
         /* skip mail send if any errors are set */
-        if (!empty($this->errors)) {
-            $this->setError('Bulk Emails not sent');
+        if (!empty($this->errorHeader)) {
+            $this->errorHeader = '<h3>' . 'Bulk Emails not sent' . '</h3>';
             return false;
         }
         /* $this->recipients array now complete and no errors - send bulk emails */
         $i = 1;
         $fp = fopen($this->logFile, 'w');
         if (!$fp) {
-            $this->setError('Could not open log file (make sure /logs directory exists): ' . $this->logFile);
+            $this->errorHeader = '<h3>' . 'Could not open log file (make sure /logs directory exists): ' . $this->logFile . '</h3>';
         } else {
-            fwrite($fp, "MESSAGE\n*****************************\n" . $this->html . "\n*****************************\n\n");
+            fwrite($fp, "MESSAGE\n*****************************\n" . $this->emailText . "\n*****************************\n\n");
             //fwrite($fp,print_r($this->recipients, true));
         }
         foreach ($this->recipients as $recipient) {
@@ -384,8 +347,7 @@ class Notify
                 }
             } else {
                 if ($fp) {
-                    $e = array_pop($this->errors);
-                    fwrite($fp, 'Error sending to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') ' . $e . "\n");
+                    fwrite($fp, 'Error sending to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') ' . "\n");
                 }
 
 
@@ -401,6 +363,7 @@ class Notify
         if ($fp) {
             fclose($fp);
         }
+        $this->successHeader .= '<h3>' . 'Email to Subscribers sent successfully' . '</h3>';
         return true;
 
 
@@ -414,12 +377,12 @@ class Notify
             $profile = $user->getOne($this->profileAlias);
             $userTags = null;
             if (! $profile) {
-                $this->setError('No Profile for: ' . $username);
+                $this->errorHeader = '<h3>' . 'No Profile for: ' . $username . '</h3>';
             } else {
                 if ( $this->modx->getOption('sbs_use_comment_field', null, null) == 'No') {
                     $field = $this->modx->getOption('sbs_extended_field');
                     if (empty($field)) {
-                        $this->setError('sbs_extended_field is not set');
+                        $this->errorHeader = '<h3>' . 'sbs_extended_field is not set' . '</h3>';
                     } else {
                         $extended = $profile->get('extended');
                         $userTags = $extended[$field];
@@ -464,17 +427,19 @@ class Notify
                     'userTags' => $userTags,
                 );
             } else {
-                $this->setError('User: ' . $username . ' has no email address');
+                $this->errorHeader = '<h3>' . 'User: ' . $username . ' has no email address' . '</h3>';
             }
         }
     }
     public function sendTestEmail($address, $name){
         if (empty($address)) {
-            $this->setError('TestEmailAddress is empty; test email not sent');
+            $this->errorHeader = '<h3>' . 'TestEmailAddress is empty; test email not sent' . '</h3>';
             return;
         }
         if (! $this->sendMail($address, $name)) {
-            $this->setError('Test email not sent');
+            $this->errorHeader = '<h3>' . 'Mail error sending test email' . '</h3>';
+        } else {
+            $this->successHeader = '<h3>' . 'Test Email Sent successfully' . '</h3>';
         }
         return;
     }
@@ -482,26 +447,25 @@ class Notify
     public function tweet() {
 
         require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
-        $consumer_key = $this->modx->getOption('twitter_consumer_key',null,null);
+        $consumer_key = $this->modx->getOption('twitter_consumer_key',$this->props, null);
         if (! $consumer_key) {
-            $this->setError('twitter_consumer_key is not set');
+            $this->errorHeader = '<h3>' . 'Twitter Consumer Key is not set' . '</h3>';
         }
-        $consumer_secret = $this->modx->getOption('twitter_consumer_secret',null,null);
+        $consumer_secret = $this->modx->getOption('twitter_consumer_secret',$this->props, null);
         if (! $consumer_secret) {
-            $this->setError('twitter_consumer_secret is not set');
+            $this->errorHeader = '<h3>' . 'Twitter Consumer Secret is not set' . '</h3>';
         }
-        $oauth_token = $this->modx->getOption('twitter_oauth_token',null,null);
+        $oauth_token = $this->modx->getOption('twitter_oauth_token',$this->props, null);
         if (! $oauth_token) {
-            $this->setError('twitter_oauth_token is not set');
+            $this->errorHeader = '<h3>' . 'Twitter Access Token is not set' . '</h3>';
         }        
-        $oauth_secret = $this->modx->getOption('twitter_oauth_secret',null,null);
+        $oauth_secret = $this->modx->getOption('twitter_oauth_secret',$this->props, null);
         if (! $oauth_secret) {
-            $this->setError('twitter_oauth_secret is not set');
+            $this->errorHeader = '<h3>' . 'Twitter Access Token Secret is not set' . '</h3>';
         }        
-        $msg = $this->modx->resource->getTVValue('nf_tweet');
-
+        $msg = $this->tweetText;
         if (empty($msg)) {
-            $this->setError('Tweet TV is empty');
+            $this->errorHeader = '<h3>' . 'Tweet TV is empty' . '</h3>';
         } else {
             //$text = 'Tweeted from PHP - just testing some code';
             $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
@@ -510,36 +474,51 @@ class Notify
             //$response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay'));
 
             if (!$response) {
-                $this->setError("<h3>Unknown error using the Twitter API</h3>\n");
+                $this->errorHeader = '<h3>' . 'Unknown error using the Twitter API' . '</h3>';
             } elseif ($response->error) {
-                $this->setError("<h3>Twitter said, there was an error</h3>\n
+                $this->errorHeader = '<h3>' . 'Twitter said, there was an error' . "</h3>
                 <p>$response->error</code</p>\n
                 <p>Full response:</p>\n
-                <pre>" . var_dump($response) . "</pre><br />");
+                <pre>" . print_r($response,true) . "</pre><br />";
             } else {
-                 /* debugging stuff */
-                /*echo "<_pre>" . var_dump($response) . "</pre_>"; */
-
-               /* foreach ($response as $x) {
-                    echo ($x->text). "\n";
-
-                }*/
+                $this->successHeader .= '<h3>' . 'Tweet sent successfully' . '</h3>';
+                $this->successHeader .= '<p>' . $this->tweetText . '</p>';
             }
         }
     }
-    public function showErrorStrings() {
-           $retVal = '';
-           foreach ($this->errors as $error) {
-               $retVal .= '<h3>' . $error . "</h3>\n";
-           }
-           return $retVal;
-    }
 
-    public function setError($error){
-        $this->errors[] = $error;
-    }
-    public function getErrors() {
-        return count($this->errors);
-    }
+    public function resetTVs() {
+                /* turn the TVs off to prevent accidental resending */
+        /* @var $tv modTemplateVar */
 
+        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_send_test_email'));
+        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->save();
+        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
+        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->save();
+        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_twitter'));
+        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->save();
+        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_preview_email'));
+        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->save();
+        /* Need to change the TV values in memory too */
+
+        $fields = array(
+            'nf_send_test_email',
+            'No',
+            'default',
+            '',
+            'option',
+        );
+        $this->modx->resource->set('nf_send_test_email', $fields);
+        $fields[0] = 'nf_notify_subscribers';
+        $this->modx->resource->set('nf_notify_subscribers', $fields);
+        $fields[0] = 'nf_twitter';
+        $this->modx->resource->set('nf_twitter', $fields);
+        $fields[0] = 'nf_preview_email';
+        $this->modx->resource->set('nf_preview_email', $fields);
+        
+    }
 } /* end class */
