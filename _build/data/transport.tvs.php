@@ -79,7 +79,7 @@ $templatevars[4] ->fromArray(array(
     'type' => 'textarea',
     'name' => 'nf_subscriber_email',
     'caption' => 'Subscriber Email',
-    'description' => 'Notify users of updates',
+    'description' => 'Text of message for email',
     'elements' => '',
     'rank' => '6',
     'display' => 'default',
