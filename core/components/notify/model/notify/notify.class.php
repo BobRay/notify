@@ -481,7 +481,7 @@ class Notify
 
     public function tweet() {
 
-        require_once(MODX_CORE_PATH . 'components/notify/model/twitteroauth.php');
+        require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
         $consumer_key = $this->modx->getOption('twitter_consumer_key',null,null);
         if (! $consumer_key) {
             $this->setError('twitter_consumer_key is not set');

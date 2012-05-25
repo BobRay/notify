@@ -79,7 +79,9 @@ switch ($modx->event->name) {
 
 
         $testEmailAddress = $modx->resource->getTVValue('nf_email_address_for_test');
-
+        if ($sendTweet) {
+            $nf->tweet();
+        }
 
         if ($emailit || $preview || $sendTestEmail) {
             /* @var $resource modResource */
@@ -154,9 +156,7 @@ switch ($modx->event->name) {
                 $nf->sendTestEmail($testEmailAddress, $username);
             }
         }
-        if ($sendTweet) {
-            $nf->tweet();
-        }
+
 
         $errors = $nf->getErrors();
         if (!empty($errors)) {
