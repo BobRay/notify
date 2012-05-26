@@ -55,37 +55,71 @@ $category = 'Notify';
 
 
 /* @var $options array */
+/* @var $propertySet modPropertySet */
+/* @var $intersect modPluginEvent */
+/* @var $pluginObj modPlugin */
+/* @var $categoryObj modCategory */
+/* @var $elementPropertySet modElementPropertySet */
+/* @var $tvt modTemplateVarTemplate */
+/* @var $tv modTemplateVar */
+
 $success = true;
 
 $modx->log(xPDO::LOG_LEVEL_INFO,'Running PHP Resolver.');
 switch($options[xPDOTransport::PACKAGE_ACTION]) {
 
     case xPDOTransport::ACTION_INSTALL:
-    case xPDOTransport::ACTION_UPGRADE:
+
         /* Assign plugins to System events */
+        /* @var $pluginEvent modPluginEvent */
+        /* @var $plugin modPlugin */
 
-        foreach($plugins as $k => $plugin) {
-            $pluginObj = $modx->getObject('modPlugin',array('name'=>$plugin));
-            if (! $pluginObj) $modx->log(xPDO::LOG_LEVEL_INFO,'cannot get object: ' . $plugin);
-            if (empty($pluginEvents)) $modx->log(xPDO::LOG_LEVEL_INFO,'Cannot get System Events');
-            if (!empty ($pluginEvents) && $pluginObj) {
-
-                $modx->log(xPDO::LOG_LEVEL_INFO,'Assigning Events to Plugin ' . $plugin);
-                /* @var $intersect modPluginEvent */
-                /* @var $pluginObj modPlugin */
-                foreach($pluginEvents as $k => $event) {
-                    $intersect = $modx->newObject('modPluginEvent');
-                    $intersect->set('event',$event);
-                    $intersect->set('pluginid',$pluginObj->get('id'));
-                    $intersect->save();
-                }
-            }
+        $plugin = $modx->getObject('modPlugin', array('name' => 'Notify'));
+        if ($plugin) {
+            $pluginId = $plugin->get('id');
+        } else {
+            $pluginId = 0;
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Plugin');
         }
 
-        /* Connect TVs to default template
-         */
+        $propertySet = $modx->getObject('modPropertySet', array('name'=>'NotifyProperties'));
+        if (empty ($propertySet)) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Property set');
+        }
+
+        if ( (!empty ($propertySet))) {
+            $propertySet->set('name','NotifyProperties');
+            $propertySet->set('description', 'Properties for Notify Extra');
+            $propertySet->save();
+            $intersect = $modx->newObject('modElementPropertySet');
+            $intersect->set('element',$plugin->get('id'));
+            $intersect->set('element_class','modPlugin');
+            $intersect->set('property_set',$propertySet->get('id'));
+            if (! $intersect->save()) {
+                $modx->log(xPDO::LOG_LEVEL_ERROR,'Coult not create modElementPropertySet');
+            }
+            $properties = $propertySet->getProperties();
+            $plugin->setProperties($properties);
+            $plugin->save();
+        }
+
+        $pluginEvents = $modx->getCollection('modPluginEvent', array('pluginId' => $plugin->get('id')));
+        if (empty ($pluginEvents)) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not get Plugin Events');
+        } else {
+            /* @var $event modPluginEvent */
+            foreach ($pluginEvents as $event) {
+                $event->set('propertyset', $propertySet->get('id'));
+                if (!$event->save()) {
+                    $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not Set Plugin Event');
+                }
+
+            }
+
+        }
+
         $ok = true;
-        /* @var $categoryObj modCategory */
+
         $categoryId = null;
         $categoryObj = $modx->getObject('modCategory', array('category' => $category));
         if (!$categoryObj) {
@@ -102,8 +136,7 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
             $modx->log(xPDO::LOG_LEVEL_INFO, 'Attempting to attach TVs to Default Template');
 
             $tvs = $modx->getCollection('modTemplateVar', array('category' => $categoryId));
-            /* @var $tvt modTemplateVarTemplate */
-            /* @var $tv modTemplateVar */
+
             if (!empty($tvs)) {
                 foreach ($tvs as $tv) {
                     $tvt = $modx->newObject('modTemplateVarTemplate');
@@ -114,11 +147,11 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
                             $tvt->save();
                         } else {
                             $ok = false;
-                            $modx->log(xPDO::LOG_LEVEL_INFO, 'Could not set TemplateVarTemplate fields');
+                            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not set TemplateVarTemplate fields');
                         }
                     } else {
                         $ok = false;
-                        $modx->log(xPDO::LOG_LEVEL_INFO, 'Could not create TemplateVarTemplate');
+                        $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not create TemplateVarTemplate');
                     }
                 }
 
@@ -134,10 +167,20 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         } else {
             $modx->log(xPDO::LOG_LEVEL_INFO, 'Failed to attach TVs to Templates');
         }
+
         break;
+    case xPDOTransport::ACTION_UPGRADE:
+        break;
+
+
     /* This code will execute during an uninstall */
     case xPDOTransport::ACTION_UNINSTALL:
+        /* @var $category modCategory */
         $modx->log(xPDO::LOG_LEVEL_INFO,'Uninstalling . . .');
+        $category = $modx->getObject('modCategory', array ('category' => 'Notify'));
+        if ($category) {
+            $category->remove();
+        }
         $success = true;
         break;
 

@@ -106,10 +106,12 @@ class Notify
         $this->emailText = $this->modx->resource->getTVValue('nf_subscriber_email');
         if (! empty($this->emailText)) {
             $this->emailText = $this->strReplaceAssoc($this->replace,$this->emailText);
+            $this->emailText = str_replace('[[', '[ [', $this->emailText);
         }
         $this->tweetText = $this->modx->resource->getTVValue('nf_tweet');
         if (!empty($this->tweetText)) {
             $this->tweetText = $this->strReplaceAssoc($this->replace,$this->tweetText);
+            $this->tweetText = str_replace('[[', '[ [', $this->tweetText);
         }
     }
     public function getTweetText() {
@@ -189,8 +191,6 @@ class Notify
 
     public function strReplaceAssoc($replace, $subject) {
            $msg =  str_replace(array_keys($replace), array_values($replace), $subject);
-            /* make any unprocessed tags visible */
-           $msg = str_replace('[[', '[ [', $msg);
            return $msg;
 
     }

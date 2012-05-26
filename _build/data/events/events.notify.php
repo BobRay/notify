@@ -19,19 +19,23 @@
  *
  * @package notify
  */
-/**
- * @var modX $modx
- */
-$propertysets = array();
 
-$propertysets[1] = $modx->newObject('modPropertySet');
-$propertysets[1] ->fromArray(array(
-    'id' => 1,
-    'name' => 'NotifyProperties',
-    'description' => 'Properties for Notify Extra',
+/* @var $modx modX */
+/* @var $event modPluginEvent */
+$events = array();
+
+$events['OnWebPagePrerender']= $modx->newObject('modPluginEvent');
+$events['OnWebPagePrerender']->fromArray(array(
+    'event' => 'OnWebPagePrerender',
+    'priority' => 0,
+    'propertyset' => 0,
 ),'',true,true);
 
-$properties = include $sources['data'].'properties/properties.notifyproperties.php';
-$propertysets[1]->setProperties($properties);
-unset($properties);
-return $propertysets;
+$events['OnDocFormPrerender']= $modx->newObject('modPluginEvent');
+$events['OnDocFormPrerender']->fromArray(array(
+    'event' => 'OnDocFormPrerender',
+    'priority' => 0,
+    'propertyset' => 0,
+),'',true,true);
+
+return $events;

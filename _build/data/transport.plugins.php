@@ -25,7 +25,7 @@
  * @package notify
  * @subpackage build
  */
-
+ /* @var $modx modX */
 if (! function_exists('getPluginContent')) {
     function getpluginContent($filename) {
         $o = file_get_contents($filename);
@@ -37,16 +37,21 @@ if (! function_exists('getPluginContent')) {
 }
 $plugins = array();
 
-$plugins[1]= $modx->newObject('modPlugin');
-$plugins[1]->fromArray(array(
-    'id' => 1,
-    'name' => 'Notify',
-    'description' => 'Plugin for Notify extra.',
-    'plugincode' => getPluginContent($sources['source_core'].'/elements/plugins/notify.plugin.php'),
-),'',true,true);
-/*
-$properties = include $sources['data'].'properties/properties.myplugin1.php';
-$plugins[1]->setProperties($properties);
-unset($properties);*/
+$plugins[0]= $modx->newObject('modPlugin');
+
+$plugins[0]->set('id',1);
+$plugins[0]->set('name', 'Notify');
+$plugins[0]->set('description', 'Plugin for Notify extra.');
+    $plugins[0]->set('plugincode', getPluginContent($sources['source_core'].'/elements/plugins/notify.plugin.php'));
+$plugins[0]->set('category',0);
+
+$events = include $sources['events'].'events.notify.php';
+if (is_array($events) && !empty($events)) {
+    $plugins[0]->addMany($events);
+    $modx->log(xPDO::LOG_LEVEL_INFO,'Packaged in '.count($events).' Plugin Events for Notify Plugin.'); flush();
+} else {
+    $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not find plugin events for Notify Plugin!');
+}
+unset($events);
 
 return $plugins;

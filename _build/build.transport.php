@@ -45,9 +45,9 @@ define('MODX_CONNECTORS_URL','http://localhost/addons/connectors/');
 /* Set package options - you can turn these on one-by-one
  * as you create the transport package
  * */
-$hasAssets = true; /* Transfer the files in the assets dir. */
+$hasAssets = false; /* Transfer the files in the assets dir. */
 $hasCore = true;   /* Transfer the files in the core dir. */
-$hasSnippets = false;
+$hasSnippets = true;
 $hasChunks = true;
 $hasTemplates = false;
 $hasResources = false;
@@ -68,7 +68,7 @@ $hasTemplates = false;
 $hasPlugins = true;
 $hasPluginEvents = false;
 
-$hasPropertySets = false;
+$hasPropertySets = true;
 /* Note: property sets are connected to elements in the script
  * resolver (see _build/data/resolvers/install.script.php)
  */
@@ -98,6 +98,7 @@ $sources= array (
     'docs' => $root . 'core/components/' . PKG_NAME_LOWER . '/docs/',
     'install_options' => $root . '_build/install.options/',
     'packages'=> $root . 'core/packages',
+    'events' => $root . '_build/data/events/',
 );
 unset($root);
 
@@ -126,6 +127,35 @@ $category= $modx->newObject('modCategory');
 $category->set('id',1);
 $category->set('category',PKG_CATEGORY);
 
+if ($hasPlugins) {
+    $modx->log(modX::LOG_LEVEL_INFO,'Adding in Plugins.');
+    $plugins = include $sources['data'] . 'transport.plugins.php';
+    if (!is_array($plugins)) { $modx->log(modX::LOG_LEVEL_FATAL,'Adding plugins failed.'); }
+    $attributes= array(
+     xPDOTransport::UNIQUE_KEY => 'name',
+     xPDOTransport::PRESERVE_KEYS => false,
+     xPDOTransport::UPDATE_OBJECT => true,
+     xPDOTransport::RELATED_OBJECTS => true,
+     xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array (
+         'PluginEvents' => array(
+             xPDOTransport::PRESERVE_KEYS => true,
+             xPDOTransport::UPDATE_OBJECT => false,
+             xPDOTransport::UNIQUE_KEY => array('pluginid','event'),
+         ),
+     ),
+    );
+    foreach ($plugins as $plugin) {
+     $vehicle = $builder->createVehicle($plugin, $attributes);
+     $builder->putVehicle($vehicle);
+    }
+    $modx->log(modX::LOG_LEVEL_INFO,'Packaged in '.count($plugins).' plugins.'); flush();
+    unset($plugins,$plugin,$attributes);
+
+
+}
+
+
+
 /* add snippets */
 if ($hasSnippets) {
     $modx->log(modX::LOG_LEVEL_INFO,'Adding in snippets.');
@@ -140,9 +170,9 @@ if ($hasPropertySets) { /* add property sets */
     $modx->log(modX::LOG_LEVEL_INFO,'Adding in property sets.');
     $propertysets = include $sources['data'].'transport.propertysets.php';
     /* note: property set' properties are set in transport.propertysets.php */
-    if (is_array($snippets)) {
-        $category->addMany($propertysets, 'PropertySets');
-    } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding property sets failed.'); }
+    if ( $category->addMany($propertysets, 'PropertySets')) {
+        $modx->log(modX::LOG_LEVEL_INFO,'Added property set(s).');
+    } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding property set(s) failed.'); }
 }
 if ($hasChunks) { /* add chunks  */
     $modx->log(modX::LOG_LEVEL_INFO,'Adding in chunks.');
@@ -174,15 +204,6 @@ if ($hasTemplateVariables) { /* add templatevariables  */
     } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding templatevariables failed.'); }
 }
 
-
-if ($hasPlugins) {
-    $modx->log(modX::LOG_LEVEL_INFO,'Adding in Plugins.');
-    $plugins = include $sources['data'] . 'transport.plugins.php';
-     if (is_array($plugins)) {
-        $category->addMany($plugins);
-     }
-}
-
 /* Create Category attributes array dynamically
  * based on which elements are present
  */
@@ -208,7 +229,7 @@ if ($hasSnippets) {
 if ($hasPropertySets) {
     $attr[xPDOTransport::RELATED_OBJECT_ATTRIBUTES]['PropertySets'] = array(
             xPDOTransport::PRESERVE_KEYS => false,
-            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UPDATE_OBJECT => false,
             xPDOTransport::UNIQUE_KEY => 'name',
         );
 }
@@ -219,14 +240,6 @@ if ($hasChunks) {
             xPDOTransport::UPDATE_OBJECT => true,
             xPDOTransport::UNIQUE_KEY => 'name',
         );
-}
-
-if ($hasPlugins) {
-    $attr[xPDOTransport::RELATED_OBJECT_ATTRIBUTES]['Plugins'] = array(
-        xPDOTransport::PRESERVE_KEYS => false,
-        xPDOTransport::UPDATE_OBJECT => true,
-        xPDOTransport::UNIQUE_KEY => 'name',
-    );
 }
 
 if ($hasTemplates) {
