@@ -39,10 +39,7 @@ class TwitterOAuth {
   public $last_api_call;
   public $http_header;
 
-
   //public $retry = TRUE;
-
-
 
 
   /**
