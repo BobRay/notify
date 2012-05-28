@@ -24,18 +24,7 @@
  *
  * @package notify
  */
-/**
- * MODx Notify Class
- *
- * @version Version 1.1.0-beta1
- *
- * @package  notify
- *
- * The Notify plugin for emailing resources to users
- *
- * The Notify class contains all functions relating to Notify's
- * operation.
- */
+
 
 /**
  * MODx Notify class
@@ -45,7 +34,6 @@
  * @package notify
  *
  */
-
 
 
 class Notify
@@ -85,9 +73,6 @@ class Notify
         /* @var $modx modX */
         /* nf paths; Set the nf. System Settings only for development */
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
-        /*$this->assetsPath = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH . 'components/notify/');
-        $this->assetsUrl = $this->modx->getOption('nf.assets_url', null, MODX_ASSETS_URL . 'components/notify/');*/
-
     }
 
     public function init()
@@ -470,7 +455,7 @@ class Notify
             //$text = 'Tweeted from PHP - just testing some code';
             $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
             $response = $tweet->post('statuses/update', array('status' => $msg));
-
+            /* This will get recent tweets */
             //$response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay'));
 
             if (!$response) {
