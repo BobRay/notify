@@ -81,10 +81,13 @@ switch ($modx->event->name) {
         $nf = new Notify($modx, $sp);
         $nf->init();
 
+        /* reset TVs to prevent accidental re-sending */
         $nf->resetTVs();
+
         /* Work starts here */
 
         if ($emailit || $sendTestEmail) {
+            /* Set preview in case user forgot */
             $preview = true;
             $nf->initEmail();
             $nf->initializeMailer();
@@ -109,7 +112,7 @@ switch ($modx->event->name) {
         /* don't show email text unless one of these is set */
         $emailText = $emailit || $preview || $sendTestEmail? $nf->getEmailText() : '';
 
-        /* inject headers if there is a body tag */
+        /* inject headers if there is a body tag in the Tpl chunk*/
         if (strstr($emailText, '<body>')) {
             $pattern = '~(<body[^>]*>)~';
             $replacement = '$1' . $nf->getSuccessHeader() . "<br /><br />" . $nf->getErrorHeader();
@@ -121,6 +124,7 @@ switch ($modx->event->name) {
 
         $modx->resource->_output = $output;
         break;
+
     case 'OnDocFormPrerender':
 
         $url = $modx->makeUrl($resource->get('id'), "", "", "full");

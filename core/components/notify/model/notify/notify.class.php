@@ -124,54 +124,6 @@ class Notify
         $itemDelay = $this->modx->resource->getTVValue('itemDelay');
         $this->itemDelay = empty($itemDelay)? .51 : $itemDelay;
     }
-    /* not used -- for later development */
-    public function fullUrls($base) {
-        /* extract domain name from $base */
-        $splitBase = explode('//', $base);
-        $domain = $splitBase[1];
-        $domain = rtrim($domain,'/ ');
-
-        /* remove space around = sign */
-
-        $html =& preg_replace('@(?<=href|src)\s*=\s*@', '=', $this->html);
-
-        /* fix google link weirdness */
-        $html = str_ireplace('google.com/undefined', 'google.com',$html);
-
-        /* add http to naked domain links so they'll be ignored later */
-        $html = str_ireplace('a href="' . $domain, 'a href="http://'. $domain, $html);
-
-        /* standardize orthography of domain name */
-        $html = str_ireplace($domain, $domain, $html);
-
-        /* Correct base URL, if necessary */
-        $server = preg_replace('@^([^\:]*)://([^/*]*)(/|$).*@', '\1://\2/', $base);
-
-        /* handle root-relative URLs */
-        $html = preg_replace('@\<([^>]*) (href|src)="/([^"]*)"@i', '<\1 \2="' . $server . '\3"', $html);
-
-        /* handle base-relative URLs */
-        $html = preg_replace('@\<([^>]*) (href|src)="(?!http|mailto|sip|tel|callto|sms|ftp|sftp|gtalk|skype)(([^\:"])*|([^"]*:[^/"].*))"@i', '<\1 \2="' . $base . '\3"', $html);
-
-        return $html;
-    }
-
-    /* not used -- for later development */
-    public function imgAttributes() {
-        $html =& $this->html;
-        $replace = array (
-            '<img style="vertical-align: baseline;' =>'<img align="bottom" hspace="4" vspace="4" style="vertical-align: baseline;',
-            '<img style="vertical-align: middle;' => '<img align="middle" hspace="4" vspace="4" style="vertical-align: middle;',
-            '<img style="vertical-align: top;' => '<img align="top" hspace="4" vspace="4" style="vertical-align: top;',
-            '<img style="vertical-align: bottom;' => '<img align="bottom" hspace="4" vspace="4" style="vertical-align: bottom;',
-            '<img style="vertical-align: text-top;' =>'<img align="top" hspace="4" vspace="4" style="vertical-align: text-top;',
-            '<img style="vertical-align: text-bottom;' => '<img align="bottom" hspace="4" vspace="4" style="vertical-align: text-bottom;',
-            '<img style="float: left;' => '<img align="left" hspace="4" vspace="4" style="float: left;',
-            '<img style="float: right;' => '<img align="right" hspace="4" vspace="4" style="float: right;',
-        );
-        $html = $this->strReplaceAssoc($replace, $html);
-
-    }
 
 
     public function strReplaceAssoc($replace, $subject) {
@@ -180,26 +132,6 @@ class Notify
 
     }
 
-
-    public function my_debug($message, $clear = false)
-    {
-        /* @var $chunk modChunk */
-        $chunk = $this->modx->getObject('modChunk', array('name' => 'debug'));
-
-        if (!$chunk) {
-            $chunk = $this->modx->newObject('modChunk', array('name' => 'debug'));
-            $chunk->save();
-            $chunk = $this->modx->getObject('modChunk', array('name' => 'debug'));
-        }
-        if ($clear) {
-            $content = '';
-        } else {
-            $content = $chunk->getContent();
-        }
-        $content .= $message;
-        $chunk->setContent($content);
-        $chunk->save();
-    }
     public function getErrorHeader() {
         return $this->errorHeader;
     }
@@ -213,17 +145,17 @@ class Notify
         $mail_from = $this->modx->getOption('mail_from', $this->props);
         $this->mail_from = empty($mail_from) ? $this->modx->getOption('emailsender', null) : $mail_from;
 
-                $mail_from_name = $this->modx->getOption('mail_from_name', $this->props);
-                $this->mail_from_name = empty($mail_from_name) ? $this->modx->getOption('site_name', null) : $mail_from_name;
+        $mail_from_name = $this->modx->getOption('mail_from_name', $this->props);
+        $this->mail_from_name = empty($mail_from_name) ? $this->modx->getOption('site_name', null) : $mail_from_name;
 
-                $mail_sender = $this->modx->getOption('mail_sender', $this->props);
-                $this->mail_sender = empty($mail_sender) ? $this->modx->getOption('emailsender', null) : $mail_sender;
+        $mail_sender = $this->modx->getOption('mail_sender', $this->props);
+        $this->mail_sender = empty($mail_sender) ? $this->modx->getOption('emailsender', null) : $mail_sender;
 
-                $mail_reply_to = $this->modx->getOption('mail_reply_to', $this->props);
-                $this->mail_reply_to = empty($mail_reply_to) ? $this->modx->getOption('emailsender', null) : $mail_reply_to;
+        $mail_reply_to = $this->modx->getOption('mail_reply_to', $this->props);
+        $this->mail_reply_to = empty($mail_reply_to) ? $this->modx->getOption('emailsender', null) : $mail_reply_to;
 
-                $mail_subject = $this->modx->resource->getTVValue('nf_email_subject');
-                $this->mail_subject = empty($mail_subject) ? 'Update from ' . $this->modx->getOption('site_name') : $mail_subject;
+        $mail_subject = $this->modx->resource->getTVValue('nf_email_subject');
+        $this->mail_subject = empty($mail_subject) ? 'Update from ' . $this->modx->getOption('site_name') : $mail_subject;
 
         $this->modx->mail->set(modMail::MAIL_BODY, $this->emailText);
         $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
@@ -473,7 +405,7 @@ class Notify
     }
 
     public function resetTVs() {
-                /* turn the TVs off to prevent accidental resending */
+        /* turn the TVs off to prevent accidental resending */
         /* @var $tv modTemplateVar */
 
         $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_send_test_email'));
@@ -506,4 +438,74 @@ class Notify
         $this->modx->resource->set('nf_preview_email', $fields);
         
     }
+
+    public function my_debug($message, $clear = false)
+    {
+        /* @var $chunk modChunk */
+        $chunk = $this->modx->getObject('modChunk', array('name' => 'debug'));
+
+        if (!$chunk) {
+            $chunk = $this->modx->newObject('modChunk', array('name' => 'debug'));
+            $chunk->save();
+            $chunk = $this->modx->getObject('modChunk', array('name' => 'debug'));
+        }
+        if ($clear) {
+            $content = '';
+        } else {
+            $content = $chunk->getContent();
+        }
+        $content .= $message;
+        $chunk->setContent($content);
+        $chunk->save();
+    }
+
+    /* not used -- for later development */
+    public function fullUrls($base) {
+        /* extract domain name from $base */
+        $splitBase = explode('//', $base);
+        $domain = $splitBase[1];
+        $domain = rtrim($domain,'/ ');
+
+        /* remove space around = sign */
+
+        $html =& preg_replace('@(?<=href|src)\s*=\s*@', '=', $this->html);
+
+        /* fix google link weirdness */
+        $html = str_ireplace('google.com/undefined', 'google.com',$html);
+
+        /* add http to naked domain links so they'll be ignored later */
+        $html = str_ireplace('a href="' . $domain, 'a href="http://'. $domain, $html);
+
+        /* standardize orthography of domain name */
+        $html = str_ireplace($domain, $domain, $html);
+
+        /* Correct base URL, if necessary */
+        $server = preg_replace('@^([^\:]*)://([^/*]*)(/|$).*@', '\1://\2/', $base);
+
+        /* handle root-relative URLs */
+        $html = preg_replace('@\<([^>]*) (href|src)="/([^"]*)"@i', '<\1 \2="' . $server . '\3"', $html);
+
+        /* handle base-relative URLs */
+        $html = preg_replace('@\<([^>]*) (href|src)="(?!http|mailto|sip|tel|callto|sms|ftp|sftp|gtalk|skype)(([^\:"])*|([^"]*:[^/"].*))"@i', '<\1 \2="' . $base . '\3"', $html);
+
+        return $html;
+    }
+
+    /* not used -- for later development */
+    public function imgAttributes() {
+        $html =& $this->html;
+        $replace = array (
+            '<img style="vertical-align: baseline;' =>'<img align="bottom" hspace="4" vspace="4" style="vertical-align: baseline;',
+            '<img style="vertical-align: middle;' => '<img align="middle" hspace="4" vspace="4" style="vertical-align: middle;',
+            '<img style="vertical-align: top;' => '<img align="top" hspace="4" vspace="4" style="vertical-align: top;',
+            '<img style="vertical-align: bottom;' => '<img align="bottom" hspace="4" vspace="4" style="vertical-align: bottom;',
+            '<img style="vertical-align: text-top;' =>'<img align="top" hspace="4" vspace="4" style="vertical-align: text-top;',
+            '<img style="vertical-align: text-bottom;' => '<img align="bottom" hspace="4" vspace="4" style="vertical-align: text-bottom;',
+            '<img style="float: left;' => '<img align="left" hspace="4" vspace="4" style="float: left;',
+            '<img style="float: right;' => '<img align="right" hspace="4" vspace="4" style="float: right;',
+        );
+        $html = $this->strReplaceAssoc($replace, $html);
+
+    }
+
 } /* end class */
