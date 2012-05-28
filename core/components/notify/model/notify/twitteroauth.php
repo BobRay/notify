@@ -34,6 +34,12 @@ class TwitterOAuth {
   /* Set the useragnet. */
   public $useragent = 'TwitterOAuth v0.2.0-beta2';
   /* Immediately retry the API call if the response was not successful. */
+
+  public $http_status;
+  public $last_api_call;
+  public $http_header;
+
+
   //public $retry = TRUE;
 
 
