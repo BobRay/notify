@@ -59,29 +59,26 @@ $nf = new Notify($modx, $sp);
 
 
 if (isset($_POST['submitVar']) && ($_POST['submitVar'] == 'submitVar')) {
-
     $output .= "Post Submitted<br /><br />";
+    $output .= $nf->init('handleSubmission');
+    $output = $nf->displayErrors() . $nf->displaySuccessMessage() . $output;
+} else {
 
+    /* Display form */
+    /* @var $res modResource */
 
+    $nf->init('displayForm');
+    if ($nf->hasErrors()) {
+        $output = $nf->displayErrors();
+    } else {
+    $output = $nf->displayForm();
+    }
 }
 
+return $output;
 
 
-/* Display form */
-/* @var $res modResource */
-$pageId = $_SESSION['nf_page_id'];
-
-
-if (empty($pageId)) {
-    return "<h3>Session Variable not set</h3>";
-}
-    
-$res = $modx->getObject('modResource',$pageId);
-if (!$res) {
-    return "Could not get resource";
-}
-
-$subscriberEmail = $modx->getOption('nf_test_email_address', $sp, $modx->getOption('emailsender'));
+/*$subscriberEmail = $modx->getOption('nf_test_email_address', $sp, $modx->getOption('emailsender'));
 
 $modx->setPlaceholder('nf_test_email_address', $subscriberEmail);
 
@@ -105,7 +102,6 @@ unset($fields['content']);
 $modx->setPlaceholders($fields);
 
 
-/* @var $tempPage modResource */
 $emailText = $modx->getChunk('NfSubscriberEmail');
 $tempPage = $modx->getObject('modResource', array('alias'=> 'notify-preview'));
 $tempPage->setContent($emailText);
@@ -124,4 +120,4 @@ $output .= $modx->getChunk('nfNotifyForm');
 
 
 
-return $output;
+return $output; */

@@ -39,8 +39,9 @@
 
 class Notify
 {
-    /* @var $resource modResource */
+
     /* @var $modx modX */
+    /* @var $resource modResource */
     protected $resource;
     protected $resourceId;
     protected $modx;
@@ -61,12 +62,23 @@ class Notify
     protected $sortBy;
     protected $sortByAlias;
     protected $tags;
+    /* @var $recipients array */
     protected $recipients;
     protected $emailText;
+    protected $emailTpl;
     protected $tweetText;
     protected $replace;
     protected $successHeader;
     protected $errorHeader;
+    /* @var $errors array */
+    protected $errors;
+    protected $pageId;
+    protected $sendBulkEmail;
+    protected $sendTestEmail;
+    protected $sendTweet;
+    /* @var $previewPage modResource */
+    protected $previewPage;
+
 
 
     public function __construct(&$modx, &$props, &$resource = null)
@@ -80,35 +92,124 @@ class Notify
         /* set $this->resource to argument for OnDocFormPrerender
            and $this->modx->resource for OnWebPagePrerender
         */
-        if ($resource) {
-            $this->resource =& $resource;
-        } else {
-            $this->resource =& $this->modx->resource;
-        }
-        $this->resourceId = $this->resource->get('id');
+        
         /* Create $replace array from resource fields + url and site_name */
-        $this->replace = $this->resource->toArray();
-        $this->replace['url'] = $this->modx->makeUrl($this->resource->get('id'), "", "", "full");
-        $this->replace['site_name'] = $this->modx->getOption('site_name', null, '');
-
 
         /* nf paths; Set the nf. System Settings only for development */
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
     }
 
     public function init($action) {
+        $this->errors = array();
+        $this->errorHeader = '';
+        $this->successHeader= '';
+        
+        $this->previewPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
+        if (! $this->previewPage) {
+            $this->setError($this->modx->lexicon('could_not_find_preview_page'));
+        }
+        
+        
+        switch($action) {
 
+            /* *********************************************** */
+            case 'displayForm':
+                /* @var $res modResource */
+                $pageId = $_SESSION['nf_page_id'];
+                if (empty($pageId)) {
+                    $this->setError($this->modx->lexicon('Session Variable not set'));
+                    return '';
+                }
+                    
+                $res = $this->modx->getObject('modResource',$pageId);
+                if (!$res) {
+                    $this->setError($this->modx->lexicon('Could not get resource'));
+                    return '';
+                }
+                $this->resource =& $res;
+                $this->pageId = $res->get('id');
+                $fields = $this->resource->toArray();
+                $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
+                $this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
+                $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
+                //echo '<pre><fixedpre>' . $this->emailText . '</fixedpre></pre>';
+                if (empty($this->emailText)) {
+                    $this->setError($this->modx->lexicon('could_not_find_email_tpl_chunk'));
+                }
+                $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
+                $this->tweetText = $this->modx->getChunk($tweetTpl, $fields);
+                if (empty($this->tweetText)) {
+                    $this->setError($this->modx->lexicon('could_not_find_tweet_tpl_chunk'));
+                }
+
+                break;
+            /* *********************************************** */
+            case 'handleSubmission':
+                $this->sendTestEmail = isset($_POST['nf_send_test_email']);
+                $this->sendBulkEmail = isset($_POST['nf_notify']);
+                $this->sendTweet = isset($_POST['nf_send_tweet']);
+
+                $this->emailText = isset($_POST['nf_email_text'])? $_POST['nf_email_text'] : '';
+                $this->tweetText = isset($_POST['nf_tweet_text'])? $_POST['nf_tweet_text'] : '';
+                if ($this->sendTestEmail) {
+                    $this->modx->setPlaceholder('nf_send_test_email_checked','checked="checked"');
+                }
+                if ($this->sendBulkEmail) {
+                    $this->modx->setPlaceholder('nf_notify_checked','checked="checked"');
+                }
+                if ($this->sendTweet) {
+                    $this->modx->setPlaceholder('nf_send_tweet_checked','checked="checked"');
+                }
+                $postFields= array(
+                    'nf_test_email_address',
+                    'nf_email_subject',
+                    'nf_groups',
+                    'nf_tags',
+                    'nf_email_text',
+                    'nf_tweet_text',
+                );
+                foreach ($postFields as $field) {
+                    if (isset($_POST[$field])) {
+                        $this->modx->setPlaceholder($field, $_POST[$field]);
+                    }
+                }
+                $this->emailText = $_POST['nf_email_text'];
+                $this->updatePreviewPage();
+                $tmpUrl = $this->modx->makeUrl($this->previewPage->get('id'), "", "", "full");
+                /*$this->modx->setPlaceholder('nf_temp_url', $this->modx->makeUrl($this->previewPage->get('id'), "", "", "full"));*/
+                if ($this->sendBulkEmail || $this->sendTestEmail) {
+                            /* Set preview in case user forgot */
+                            $this->initEmail();
+                            $this->initializeMailer();
+
+                            if ($this->sendBulkEmail) {
+                                /* send bulk email */
+                                $this->sendBulkEmail();
+                            }
+
+                            if ($this->sendTestEmail) {
+                                /* send test email */
+                                $testEmailAddress = '';
+                                $username = $this->modx->user->get('username');
+                                $this->sendTestEmail($testEmailAddress, $username);
+                            }
+                        }
+                        if ($this->sendTweet) {
+                            $this->tweet();
+                        }
+
+                return $this->modx->getChunk('nfNotifyForm');
+
+                break;
+
+        }
+
+        return "";
         switch ($action) {
             case 'OnWebPagePrerender':
                 /* initialize success and error headers */
                 $this->errorHeader = '';
                 $this->successHeader = '';
-
-                /* set replace url and site_name placeholders */
-                /* No chunks involved here, all fields come from the TVs */
-
-                /* set placeholders and make unresolved placeholders visible */
-
 
                 $this->emailText = $this->resource->getTVValue('nf_subscriber_email');
                 if (!empty($this->emailText)) {
@@ -139,6 +240,7 @@ class Notify
                 $fields['url'] = $url;*/
 
                 $emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
+
                 $emailSubjectTpl = $this->modx->getOption('nfEmailSubjectTpl', $this->props, 'NfEmailSubjectTpl');
                 $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
                 /* pre-fill TVs */
@@ -188,6 +290,48 @@ class Notify
         }
     }
 
+    public function displayForm() {
+        $testEmailAddress = $this->modx->getOption('nf_test_email_address', $this->props, $this->modx->getOption('emailsender'));
+
+        $this->modx->setPlaceholder('nf_test_email_address', $testEmailAddress);
+
+        $groups = $this->modx->getOption('groups', $this->props, 'Subscribers');
+        if (empty($groups)) {
+            $groups = 'Subscribers';
+        }
+        $this->modx->setPlaceholder('nf_groups', $groups);
+
+
+        $tags = $this->modx->getOption('tags', $this->props, '');
+        $this->modx->setPlaceholder('nf_tags', $tags);
+
+        /*$fields = $this->resource->toArray();
+        $fields['url'] = $this->modx->makeUrl($this->pageId,"","","full");
+        unset($fields['content']);
+        $this->modx->setPlaceholders($fields);*/
+
+
+        /* @var $tempPage modResource */
+        $this->updatePreviewPage();
+/*
+        $tempPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
+        $tmpUrl = $this->modx->makeUrl($tempPage->get('id'), "", "", "full");*/
+
+        $this->modx->setPlaceholder('nf_email_text', $this->emailText);
+        $this->modx->setPlaceholder('nf_email_subject',$this->modx->getChunk('NfEmailSubjectTpl'));
+        $this->modx->setPlaceholder('nf_tweet_text', $this->tweetText);
+
+
+        return $this->modx->getChunk('nfNotifyForm');
+
+    }
+    protected function updatePreviewPage() {
+        $this->previewPage->setContent($this->emailText);
+        $this->previewPage->save();
+        $this->modx->setPlaceholder('nf_temp_url', $this->modx->makeUrl($this->previewPage->get('id'), "", "", "full"));
+
+    }
+
     public function displayResults($preview, $emailit, $sendTestEmail) {
         /* don't show email text unless one of these is set */
          $emailText = $sendTestEmail || $preview || $emailit? $this->emailText : '';
@@ -203,6 +347,25 @@ class Notify
         }
 
         $this->resource->_output = $output;
+    }
+    protected function setError($msg) {
+        $this->errors[] = $msg;
+    }
+    public function hasErrors() {
+        return ! empty($this->errors);
+    }
+    public function getErrors() {
+        return $this->errors;
+    }
+    public function displayErrors() {
+        $msg = '';
+        foreach ($this->errors as $error) {
+            $msg .= '<h3>' . $error . '</h3>';
+        }
+        return $msg;
+    }
+    public function displaySuccessMessage() {
+        return $this->successHeader;
     }
 
     public function getTweetText() {
