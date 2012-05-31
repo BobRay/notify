@@ -45,7 +45,7 @@ define('MODX_CONNECTORS_URL','http://localhost/addons/connectors/');
 /* Set package options - you can turn these on one-by-one
  * as you create the transport package
  * */
-$hasAssets = false; /* Transfer the files in the assets dir. */
+$hasAssets = true; /* Transfer the files in the assets dir. */
 $hasCore = true;   /* Transfer the files in the core dir. */
 $hasSnippets = true;
 $hasChunks = true;
