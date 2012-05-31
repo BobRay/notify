@@ -86,21 +86,26 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         if (empty ($propertySet)) {
             $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Property set');
         }
+        /* @var $snippet modSnippet */
+        $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
+        if (!($snippet)) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Snippet');
+        }
 
-        if ( (!empty ($propertySet))) {
+        if ( $snippet && (!empty ($propertySet))) {
             $propertySet->set('name','NotifyProperties');
             $propertySet->set('description', 'Properties for Notify Extra');
             $propertySet->save();
             $intersect = $modx->newObject('modElementPropertySet');
-            $intersect->set('element',$plugin->get('id'));
-            $intersect->set('element_class','modPlugin');
+            $intersect->set('element',$snippet->get('id'));
+            $intersect->set('element_class','modSnippet');
             $intersect->set('property_set',$propertySet->get('id'));
             if (! $intersect->save()) {
-                $modx->log(xPDO::LOG_LEVEL_ERROR,'Coult not create modElementPropertySet');
+                $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not create modElementPropertySet');
             }
             $properties = $propertySet->getProperties();
-            $plugin->setProperties($properties);
-            $plugin->save();
+            $snippet->setProperties($properties);
+            $snippet->save();
         }
 
         $pluginEvents = $modx->getCollection('modPluginEvent', array('pluginId' => $plugin->get('id')));
