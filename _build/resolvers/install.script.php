@@ -48,7 +48,7 @@ $modx =& $object->xpdo;
  * in the arrays below.
  */
 
-$pluginEvents = array('OnWebPagePrerender','OnDocFormPrerender');
+$pluginEvents = array('OnWebPagePrerender');
 $plugins = array('Notify');
 
 $category = 'Notify';
@@ -123,7 +123,7 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         $categoryId = null;
         $categoryObj = $modx->getObject('modCategory', array('category' => $category));
         if (!$categoryObj) {
-            $modx->log(xPDO::LOG_LEVEL_INFO, 'Coult not retrieve category object: ' . $category);
+            $modx->log(xPDO::LOG_LEVEL_INFO, 'Could not retrieve category object: ' . $category);
         } else {
             $categoryId = $categoryObj->get('id');
         }

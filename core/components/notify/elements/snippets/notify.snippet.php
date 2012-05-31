@@ -44,8 +44,8 @@
 /* @var $elementPropertySet modElementPropertySet */
 
 
-/* abort if not previewing from 'mgr' */
 
+/* abort if not previewing from 'mgr' */
 if (! $modx->user->hasSessionContext('mgr') || ! $modx->user->isMember('Administrator')) {
     return $modx->lexicon('Unauthorized Access');
 }
@@ -55,15 +55,11 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 $sp =& $scriptProperties;
 $nf = new Notify($modx, $sp);
 
-/* Handle repost here */
-
-
 if (isset($_POST['submitVar']) && ($_POST['submitVar'] == 'submitVar')) {
-    $output .= "Post Submitted<br /><br />";
+    /* Handle repost */
     $output .= $nf->init('handleSubmission');
-    $output = $nf->displayErrors() . $nf->displaySuccessMessage() . $output;
+    $output = $nf->displayErrors() . $nf->displaySuccessMessages() . $output;
 } else {
-
     /* Display form */
     /* @var $res modResource */
 
@@ -71,53 +67,8 @@ if (isset($_POST['submitVar']) && ($_POST['submitVar'] == 'submitVar')) {
     if ($nf->hasErrors()) {
         $output = $nf->displayErrors();
     } else {
-    $output = $nf->displayForm();
+        $output = $nf->displayForm();
     }
 }
 
 return $output;
-
-
-/*$subscriberEmail = $modx->getOption('nf_test_email_address', $sp, $modx->getOption('emailsender'));
-
-$modx->setPlaceholder('nf_test_email_address', $subscriberEmail);
-
-
-$groups = $modx->getOption('groups', $sp, 'Subscribers');
-if (empty($groups)) {
-    $groups = 'Subscribers';
-}
-$modx->setPlaceholder('nf_groups', $groups);
-
-
-$tags = $modx->getOption('tags', $sp, '');
-$modx->setPlaceholder('nf_tags', $tags);
-
-
-
-
-$fields = $res->toArray();
-$fields['url'] = $modx->makeUrl($pageId,"","","full");
-unset($fields['content']);
-$modx->setPlaceholders($fields);
-
-
-$emailText = $modx->getChunk('NfSubscriberEmail');
-$tempPage = $modx->getObject('modResource', array('alias'=> 'notify-preview'));
-$tempPage->setContent($emailText);
-$tempPage->save();
-$tmpUrl = $modx->makeUrl($tempPage->get('id'), "", "", "full");
-$modx->setPlaceholder('nf_temp_url', $tmpUrl);
-
-
-//$fields['pagetitle'] = $resource->get('pagetitle');
-$modx->setPlaceholder('nf_email_text', $emailText);
-$modx->setPlaceholder('nf_email_subject',$modx->getChunk('NfEmailSubjectTpl'));
-$modx->setPlaceholder('nf_tweet_text', $modx->getChunk('NfTweetTpl'));
-
-
-$output .= $modx->getChunk('nfNotifyForm');
-
-
-
-return $output; */
