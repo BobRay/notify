@@ -36,9 +36,13 @@
  */
 
 
+
 class Notify
 {
-
+    /* @var $resource modResource */
+    /* @var $modx modX */
+    protected $resource;
+    protected $resourceId;
     protected $modx;
     protected $props;
     protected $mail_from;
@@ -65,40 +69,142 @@ class Notify
     protected $errorHeader;
 
 
-    public function __construct(&$modx, &$props)
+    public function __construct(&$modx, &$props, &$resource = null)
     {
+        /* @var $modx modX */
+        /* @var $resource modResource */
 
         $this->modx =& $modx;
-        $this->props =& $props;
-        /* @var $modx modX */
+        $this->props = $props;
+
+        /* set $this->resource to argument for OnDocFormPrerender
+           and $this->modx->resource for OnWebPagePrerender
+        */
+        if ($resource) {
+            $this->resource =& $resource;
+        } else {
+            $this->resource =& $this->modx->resource;
+        }
+        $this->resourceId = $this->resource->get('id');
+        /* Create $replace array from resource fields + url and site_name */
+        $this->replace = $this->resource->toArray();
+        $this->replace['url'] = $this->modx->makeUrl($this->resource->get('id'), "", "", "full");
+        $this->replace['site_name'] = $this->modx->getOption('site_name', null, '');
+
+
         /* nf paths; Set the nf. System Settings only for development */
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
     }
 
-    public function init()
-    {
-        /* set replace placeholders */
-        $this->errorHeader = '';
-        $this->successHeader = '';
-        $this->replace = $this->modx->resource->toArray();
-        foreach ($this->replace as $k=>$v) {
-            $this->replace['[[+' . $k . ']]'] = $v;
-            unset ($this->replace[$k]);
-        }
-        $this->replace['[[+url]]'] = $this->modx->makeUrl($this->modx->resource->get('id'), "", "", "full");
-        $this->replace['[[++site_name]]'] = $this->modx->getOption('site_name',null, '');
+    public function init($action) {
 
-        $this->emailText = $this->modx->resource->getTVValue('nf_subscriber_email');
-        if (! empty($this->emailText)) {
-            $this->emailText = $this->strReplaceAssoc($this->replace,$this->emailText);
-            $this->emailText = str_replace('[[', '[ [', $this->emailText);
-        }
-        $this->tweetText = $this->modx->resource->getTVValue('nf_tweet');
-        if (!empty($this->tweetText)) {
-            $this->tweetText = $this->strReplaceAssoc($this->replace,$this->tweetText);
-            $this->tweetText = str_replace('[[', '[ [', $this->tweetText);
+        switch ($action) {
+            case 'OnWebPagePrerender':
+                /* initialize success and error headers */
+                $this->errorHeader = '';
+                $this->successHeader = '';
+
+                /* set replace url and site_name placeholders */
+                /* No chunks involved here, all fields come from the TVs */
+
+                /* set placeholders and make unresolved placeholders visible */
+
+
+                $this->emailText = $this->resource->getTVValue('nf_subscriber_email');
+                if (!empty($this->emailText)) {
+                    if (strtr($this->emailText,'[[')  ) {
+                        $this->emailText = $this->strReplaceAssoc($this->replace, $this->emailText);
+                        $this->emailText = str_replace('[[', '[ [', $this->emailText);
+                    }
+                }
+
+                $this->tweetText = $this->resource->getTVValue('nf_tweet');
+                if (!empty($this->tweetText)) {
+                    if (strtr($this->emailText,'[[')  ) {
+                        $this->tweetText = $this->strReplaceAssoc($this->replace, $this->tweetText);
+                        $this->tweetText = str_replace('[[', '[ [', $this->tweetText);
+                    }
+                }
+
+                foreach ($this->replace as $k => $v) {
+                    $this->replace['[[+' . $k . ']]'] = $v;
+                    unset ($this->replace[$k]);
+                }
+
+                break;
+            /* end OnWebPagePrerender case */
+            case 'OnResourceTVFormPrerender':
+                //$url = $this->modx->makeUrl($this->resource->get('id'), "", "", "full");
+                /*$fields = $this->resource->toArray();
+                $fields['url'] = $url;*/
+
+                $emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
+                $emailSubjectTpl = $this->modx->getOption('nfEmailSubjectTpl', $this->props, 'NfEmailSubjectTpl');
+                $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
+                /* pre-fill TVs */
+
+                $emailAddressTv = $this->modx->getObject('modTemplateVar', array('name'=>'nf_email_address_for_test'));
+                $subscriberEmailTv = $this->modx->getObject('modTemplateVar', array('name'=>'nf_subscriber_email'));
+                $emailSubjectTv = $this->modx->getObject('modTemplateVar', array('name'=>'nf_email_subject'));
+                $emailTextTv = $this->modx->getObject('modTemplateVar', array('name'=>'nf_subscriber_email'));
+                $tweetTextTv = $this->modx->getObject('modTemplateVar', array('name'=>'nf_tweet'));
+
+                $txt = $this->resource->getTVValue('nf_email_address_for_test');
+                if (empty($txt)) {
+                    $txt = $this->modx->getOption('emailsender');
+                    $emailAddressTv->setValue($this->resourceId,$txt);
+                    $emailAddressTv->save();
+                }
+                    //$this->resource->setTVValue('nf_email_address_for_test', $txt);
+                 
+                $txt = $emailTextTv->getValue($this->resourceId);
+
+                if (empty($txt)) {
+                    $txt = $this->modx->getChunk($emailTpl, $this->replace);
+                    $emailTextTv->setValue($this->resourceId,$txt);
+                    $emailTextTv->save();
+                    //$this->resource->setTVValue('nf_subscriber_email', $txt);
+                }
+
+
+                //$txt = $this->resource->getTVValue('nf_email_subject');
+                $txt = $emailSubjectTv->getValue($this->resourceId);
+                if (empty($txt)) {
+                    $txt = $this->modx->getChunk($emailSubjectTpl, $this->replace);
+                    $emailSubjectTv->setValue($this->resourceId,$txt);
+                    $emailSubjectTv->save();
+                    //$this->resource->setTVValue('nf_email_subject', $txt);
+                }
+                //$txt = $this->resource->getTVValue('nf_tweet');
+                $txt = $tweetTextTv->getValue($this->resourceId);
+                if (empty($txt)) {
+                    $txt = $this->modx->GetChunk($tweetTpl, $this->replace);
+                    //$this->resource->setTVValue('nf_tweet', $txt);
+                    $tweetTextTv->setValue($this->resourceId, $txt);
+                    $tweetTextTv->save();
+                }
+                break;
+            /* end OnDocFormPrerender case */
         }
     }
+
+    public function displayResults($preview, $emailit, $sendTestEmail) {
+        /* don't show email text unless one of these is set */
+         $emailText = $sendTestEmail || $preview || $emailit? $this->emailText : '';
+
+        /* inject headers if there is a body tag in the Tpl chunk*/
+        if (strstr($emailText, '<body>')) {
+            $pattern = '~(<body[^>]*>)~';
+            $replacement = '$1' . $this->successHeader . "<br /><br />" . $this->errorHeader;
+            $output =  preg_replace($pattern,$replacement, $emailText );
+        } else {
+            /* no injection */
+            $output = $this->successHeader ."<br /><br />" . $this->errorHeader .  $emailText;
+        }
+
+        $this->resource->_output = $output;
+    }
+
     public function getTweetText() {
         return $this->tweetText;
     }
@@ -111,17 +217,17 @@ class Notify
         $this->userClass = $this->modx->getOption('userClass',$this->props,'modUser');
         $this->profileAlias = $this->modx->getOption('profileAlias',$this->props,'Profile');
         $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
-        $this->logFile = $this->corePath . 'notify-logs/' . $this->modx->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
-        $this->tags = $this->modx->resource->getTVValue('Tags');
+        $this->logFile = $this->corePath . 'notify-logs/' . $this->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
+        $this->tags = $this->resource->getTVValue('Tags');
 
-        $this->groups = $this->modx->resource->getTVValue('nf_groups');
-        $this->tags = $this->modx->resource->getTVValue('nf_tags');
+        $this->groups = $this->resource->getTVValue('nf_groups');
+        $this->tags = $this->resource->getTVValue('nf_tags');
     
-        $batchSize = $this->modx->resource->getTVValue('BatchSize');
+        $batchSize = $this->resource->getTVValue('BatchSize');
         $this->batchSize = empty($batchSize)? 50 : $batchSize;
-        $batchDelay = $this->modx->resource->getTVValue('BatchDelay');
+        $batchDelay = $this->resource->getTVValue('BatchDelay');
         $this->batchDelay = empty($batchDelay)? 1 : $batchDelay;
-        $itemDelay = $this->modx->resource->getTVValue('itemDelay');
+        $itemDelay = $this->resource->getTVValue('itemDelay');
         $this->itemDelay = empty($itemDelay)? .51 : $itemDelay;
     }
 
@@ -130,13 +236,6 @@ class Notify
            $msg =  str_replace(array_keys($replace), array_values($replace), $subject);
            return $msg;
 
-    }
-
-    public function getErrorHeader() {
-        return $this->errorHeader;
-    }
-    public function getSuccessHeader() {
-        return $this->successHeader;
     }
 
     public function initializeMailer() {
@@ -154,7 +253,7 @@ class Notify
         $mail_reply_to = $this->modx->getOption('mail_reply_to', $this->props);
         $this->mail_reply_to = empty($mail_reply_to) ? $this->modx->getOption('emailsender', null) : $mail_reply_to;
 
-        $mail_subject = $this->modx->resource->getTVValue('nf_email_subject');
+        $mail_subject = $this->resource->getTVValue('nf_email_subject');
         $this->mail_subject = empty($mail_subject) ? 'Update from ' . $this->modx->getOption('site_name') : $mail_subject;
 
         $this->modx->mail->set(modMail::MAIL_BODY, $this->emailText);
@@ -409,16 +508,16 @@ class Notify
         /* @var $tv modTemplateVar */
 
         $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_send_test_email'));
-        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->setValue($this->resource->get('id'), 'No');
         $tv->save();
         $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
-        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->setValue($this->resource->get('id'), 'No');
         $tv->save();
         $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_twitter'));
-        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->setValue($this->resource->get('id'), 'No');
         $tv->save();
         $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_preview_email'));
-        $tv->setValue($this->modx->resource->get('id'), 'No');
+        $tv->setValue($this->resource->get('id'), 'No');
         $tv->save();
         /* Need to change the TV values in memory too */
 
@@ -429,13 +528,13 @@ class Notify
             '',
             'option',
         );
-        $this->modx->resource->set('nf_send_test_email', $fields);
+        $this->resource->set('nf_send_test_email', $fields);
         $fields[0] = 'nf_notify_subscribers';
-        $this->modx->resource->set('nf_notify_subscribers', $fields);
+        $this->resource->set('nf_notify_subscribers', $fields);
         $fields[0] = 'nf_twitter';
-        $this->modx->resource->set('nf_twitter', $fields);
+        $this->resource->set('nf_twitter', $fields);
         $fields[0] = 'nf_preview_email';
-        $this->modx->resource->set('nf_preview_email', $fields);
+        $this->resource->set('nf_preview_email', $fields);
         
     }
 

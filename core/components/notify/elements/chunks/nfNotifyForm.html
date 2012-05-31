@@ -1,0 +1,60 @@
+<form id="nf_form" action="[[~[[*id]]]]" method="post">
+    <input type="hidden" name="submitVar" id="submitVar" value="submitVar"/>
+
+    <fieldset>
+        <label for="nf_preview">
+            <input type="checkbox" id="nf_preview" name="nf_preview" [[+nf_preview_checked]]"/> Preview Email
+        </label> <br/><br/>
+        <label for="nf_notify">
+            <input type="checkbox" id="nf_notify" name="nf_notify" [[+nf_notify_checked]]/> Notify Subscribers
+        </label> <br/><br/>
+        <label for="nf_send_test_email">
+            <input type="checkbox" id="nf_send_test_email" name="nf_send_test_email" [[+nf_sent_text_email_checked]] />Send Test Email</label><br/><br/>
+
+        <label for="nf_test_email_address">Email address for Test<br/>
+            <input type="text" size="50" id="nf_test_email_address" name="nf_test_email_address" value="[[+nf_test_email_address]]"/>
+        </label> <br/><br/>
+
+        <label for="nf_email_subject">Email Subject<br/>
+            <input type="text" size="50" id="nf_email_subject" name="nf_email_subject" value="[[+nf_email_subject]]"/>
+        </label><br/><br/>
+
+        <label for="nf_groups">Groups (comma-separated list of groups to send to)<br/>
+            <input type="text" size="50" id="nf_groups" name="nf_groups" value="[[+nf_groups]]"/>
+        </label> <br/><br/>
+
+        <label for="nf_tags">Tags (comma-separated list of tags)<br/>
+            <input type="text" size="50" id="nf_tags" name="nf_tags" value="[[+nf_tags]]"/>
+        </label> <br/><br/>
+
+        <label for="nf_email_text">Text for Email<br/>
+            <textarea id="nf_email_text" rows="20" cols="70" name="nf_email_text">[[+nf_email_text]]</textarea>
+        </label>
+        <br/>
+        <p>Email Preview</p>
+        <iframe src="[[+nf_temp_url]]"></iframe>
+
+    </fieldset>
+
+    <fieldset>
+
+        <label for="nf_send_tweet">Notify Twitter<br/><br/>
+            <input type="checkbox" id="nf_send_tweet" name="nf_send_tweet" [[+nf_send_tweet_checked]]/> Send Tweet
+        </label><br/><br/>
+
+
+        <label for="nf_tweet_text">Text for Tweet<br/>
+            <input type="text" size="110" maxlength="140" id="nf_tweet_text" name="nf_tweet_text" value="[[+nf_tweet_text]]"/>
+        </label>
+    </fieldset>
+
+
+    <br/><br/>
+    <input type="submit" value="Submit"/>
+
+
+    <br/><br/>
+
+
+</form>
+

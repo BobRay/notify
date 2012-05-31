@@ -1,0 +1,31 @@
+/* edit for your css */
+
+body {
+    padding:30px;
+    background-color: #f3f3f3;
+    font-family:Arial, sans-serif;
+    font-size:18px;
+}
+fieldset {
+    padding:40px;
+    width:900px;
+    background-color: #f0f0f0;
+}
+textarea {
+    padding:15px;
+}
+label {
+    width:150px;
+}
+form#nf_form {
+    background-color: #e0e0e0;
+    border: 1px solid black;
+    margin:0px;
+    padding:40px;
+    width:990px;
+}
+
+iframe {
+    width:600px;
+    height:400px;
+}

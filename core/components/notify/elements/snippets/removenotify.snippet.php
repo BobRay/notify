@@ -23,6 +23,7 @@
  * @package notify
  */
 
+/* ToDo: rewrite or remove this */
 /**
  * MODx RemoveNotify plugin
  *
