@@ -36,5 +36,13 @@ $chunks[4] ->fromArray(array(
     'properties' => '',
 ),'',true,true);
 
+$chunks[5] = $modx->newObject('modChunk');
+$chunks[5] ->fromArray(array(
+    'id' => 5,
+    'name' => 'NfNotifyFormTpl',
+    'description' => 'Form Tpl for Notify Extra',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/nfnotifyformtpl.chunk.html'),
+    'properties' => '',
+),'',true,true);
 
 return $chunks;
