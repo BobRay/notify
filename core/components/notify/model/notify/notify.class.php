@@ -78,6 +78,7 @@ class Notify
     protected $sendTweet;
     /* @var $previewPage modResource */
     protected $previewPage;
+    protected $formTpl;
 
 
 
@@ -118,6 +119,7 @@ class Notify
             $this->setError($this->modx->lexicon('Could not get resource'));
             return '';
         }
+        $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
 
         switch($action) {
 
@@ -126,7 +128,9 @@ class Notify
                 $fields = $this->resource->toArray();
                 $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
                 $this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
+
                 $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
+
                 if (empty($this->emailText)) {
                     $this->setError($this->modx->lexicon('could_not_find_email_tpl_chunk'));
                 }
@@ -196,7 +200,7 @@ class Notify
                     $this->tweet();
                 }
 
-                return $this->modx->getChunk('nfNotifyForm');
+                return $this->modx->getChunk($this->formTpl);
 
                 break;
 
@@ -228,7 +232,7 @@ class Notify
         $this->modx->setPlaceholder('nf_tweet_text', $this->tweetText);
 
 
-        return $this->modx->getChunk('nfNotifyForm');
+        return $this->modx->getChunk($this->formTpl);
 
     }
     protected function updatePreviewPage() {
