@@ -130,10 +130,14 @@ class Notify
                 $this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
 
                 $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
-
                 if (empty($this->emailText)) {
                     $this->setError($this->modx->lexicon('could_not_find_email_tpl_chunk'));
+                } else {
+                    /* convert any relative URLS in email text */
+                    $this->fullUrls();
+                    $this->imgAttributes();
                 }
+
                 $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
                 $this->tweetText = $this->modx->getChunk($tweetTpl, $fields);
                 if (empty($this->tweetText)) {
@@ -174,6 +178,8 @@ class Notify
                     }
                 }
                 $this->emailText = $_POST['nf_email_text'];
+                $this->fullUrls();
+                $this->imgAttributes();
                 $this->updatePreviewPage();
 
                 /* **************************** */
@@ -617,16 +623,18 @@ class Notify
         $chunk->save();
     }
 
-    /* not used -- for later development */
-    public function fullUrls($base) {
+    /* correct any non-full urls in email text */
+    public function fullUrls() {
         /* extract domain name from $base */
+        $base = $this->modx->getOption('site_url');
         $splitBase = explode('//', $base);
         $domain = $splitBase[1];
         $domain = rtrim($domain,'/ ');
+        $html = $this->emailText;
 
         /* remove space around = sign */
 
-        $html =& preg_replace('@(?<=href|src)\s*=\s*@', '=', $this->emailText);
+        $html = preg_replace('@(?<=href|src)\s*=\s*@', '=', $html);
 
         /* fix google link weirdness */
         $html = str_ireplace('google.com/undefined', 'google.com',$html);
@@ -646,10 +654,10 @@ class Notify
         /* handle base-relative URLs */
         $html = preg_replace('@\<([^>]*) (href|src)="(?!http|mailto|sip|tel|callto|sms|ftp|sftp|gtalk|skype)(([^\:"])*|([^"]*:[^/"].*))"@i', '<\1 \2="' . $base . '\3"', $html);
 
-        return $html;
+        $this->emailText = $html;
     }
 
-    /* not used -- for later development */
+    /* Correct image tags for email use */
     public function imgAttributes() {
         $html =& $this->emailText;
         $replace = array (
