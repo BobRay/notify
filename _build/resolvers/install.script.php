@@ -82,6 +82,20 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
             $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Plugin');
         }
 
+        $res = $modx->getObject('modResource', array ('alias' => 'notify'));
+        if (! $res) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Resource');
+        }
+
+        if ($res && $plugin) {
+            $c = $plugin->getContent();
+            $c = str_replace('999',$res->get('id'), $c);
+            $plugin->setContent($c);
+            if ($plugin->save()) {
+                $modx->log(xPDO::LOG_LEVEL_INFO,'Set resource Id in plugin code');
+            }
+        }
+
         $propertySet = $modx->getObject('modPropertySet', array('name'=>'NotifyProperties'));
         if (empty ($propertySet)) {
             $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Property set');

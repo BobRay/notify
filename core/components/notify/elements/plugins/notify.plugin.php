@@ -65,7 +65,7 @@ if ($nfDoNotify ) {
     $modx->resource->setTVValue('nf_notify_subscribers', 'No');
     unset($emailit);
     $_SESSION['nf_page_id'] = $modx->resource->get('id');
-    $nfUrl = $modx->makeUrl(403,"","","full");
+    $nfUrl = $modx->makeUrl(999,"","","full");
     $modx->sendRedirect($nfUrl);
 } else {
     return '';
