@@ -118,10 +118,38 @@ $builder = new modPackageBuilder($modx);
 $builder->createPackage(PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE);
 $builder->registerNamespace(PKG_NAME_LOWER,false,true,'{core_path}components/'.PKG_NAME_LOWER.'/');
 
+if ($hasResources) {
+    $resources = include $sources['data'] . 'transport.resources.php';
+    if (!is_array($resources)) {
+        $modx->log(modX::LOG_LEVEL_ERROR, 'Could not package in resources.');
+    } else {
+        $attributes = array(
+            xPDOTransport::PRESERVE_KEYS => false,
+            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UNIQUE_KEY => 'pagetitle',
+            xPDOTransport::RELATED_OBJECTS => true,
+            xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array(
+                'ContentType' => array(
+                    xPDOTransport::PRESERVE_KEYS => false,
+                    xPDOTransport::UPDATE_OBJECT => true,
+                    xPDOTransport::UNIQUE_KEY => 'name',
+                ),
+            ),
+        );
+        foreach ($resources as $resource) {
+            $vehicle = $builder->createVehicle($resource, $attributes);
+            $builder->putVehicle($vehicle);
+        }
+        $modx->log(modX::LOG_LEVEL_INFO, 'Packaged in ' . count($resources) . ' resources.');
+    }
+    unset($resources, $resource, $attributes);
+}
+
 
 /* create category  The category is required and will automatically
- * have the name of your package
- */
+* have the name of your package
+*/
+
 /* @var $category modCategory */
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
@@ -332,32 +360,6 @@ $builder->putVehicle($vehicle);
 
 /* Transport Resources */
 
-if ($hasResources) {
-    $resources = include $sources['data'].'transport.resources.php';
-    if (!is_array($resources)) {
-        $modx->log(modX::LOG_LEVEL_ERROR,'Could not package in resources.');
-    } else {
-        $attributes= array(
-    xPDOTransport::PRESERVE_KEYS => false,
-    xPDOTransport::UPDATE_OBJECT => true,
-    xPDOTransport::UNIQUE_KEY => 'pagetitle',
-    xPDOTransport::RELATED_OBJECTS => true,
-    xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array (
-        'ContentType' => array(
-            xPDOTransport::PRESERVE_KEYS => false,
-            xPDOTransport::UPDATE_OBJECT => true,
-            xPDOTransport::UNIQUE_KEY => 'name',
-        ),
-    ),
-);
-foreach ($resources as $resource) {
-    $vehicle = $builder->createVehicle($resource,$attributes);
-    $builder->putVehicle($vehicle);
-}
-        $modx->log(modX::LOG_LEVEL_INFO,'Packaged in '.count($resources).' resources.');
-    }
-    unset($resources,$resource,$attributes);
-}
 
 /* Transport Menus */
 if ($hasMenu) {
