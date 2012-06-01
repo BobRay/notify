@@ -42,6 +42,16 @@ $snippets = array();
 $snippets[1]= $modx->newObject('modSnippet');
 $snippets[1]->fromArray(array(
     'id' => 1,
+    'name' => 'Notify',
+    'description' => 'Send site updates to Subscribers and Twitter',
+    'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/notify.snippet.php'),
+),'',true,true);
+
+
+
+$snippets[2]= $modx->newObject('modSnippet');
+$snippets[2]->fromArray(array(
+    'id' => 2,
     'name' => 'RemoveNotify',
     'description' => 'Removes all parts of Notify package except the files in core/components/notify/  and this snippet',
     'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/removenotify.snippet.php'),
