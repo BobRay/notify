@@ -61,7 +61,7 @@ $hasSettings = false; /* Add new MODx System Settings */
  * (see _build/data/resolvers/install.script.php)
  */
 $hasTemplateVariables = true;
-$hasTemplates = false;
+
 /* Note: plugin events are connected to their plugins in the script
  * resolver (see _build/data/resolvers/install.script.php)
  */
@@ -162,7 +162,7 @@ if ($hasSnippets) {
     $snippets = include $sources['data'].'transport.snippets.php';
     /* note: Snippets' default properties are set in transport.snippets.php */
     if (is_array($snippets)) {
-        $category->addMany($snippets, 'Snippets');
+        $category->addMany($snippets);
     } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding snippets failed.'); }
 }
 
@@ -170,7 +170,7 @@ if ($hasPropertySets) { /* add property sets */
     $modx->log(modX::LOG_LEVEL_INFO,'Adding in property sets.');
     $propertysets = include $sources['data'].'transport.propertysets.php';
     /* note: property set' properties are set in transport.propertysets.php */
-    if ( $category->addMany($propertysets, 'PropertySets')) {
+    if ( $category->addMany($propertysets)) {
         $modx->log(modX::LOG_LEVEL_INFO,'Added property set(s).');
     } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding property set(s) failed.'); }
 }
@@ -179,7 +179,7 @@ if ($hasChunks) { /* add chunks  */
     /* note: Chunks' default properties are set in transport.chunks.php */    
     $chunks = include $sources['data'].'transport.chunks.php';
     if (is_array($chunks)) {
-        $category->addMany($chunks, 'Chunks');
+        $category->addMany($chunks);
     } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding chunks failed.'); }
 }
 
@@ -189,9 +189,11 @@ if ($hasTemplates) { /* add templates  */
     /* note: Templates' default properties are set in transport.templates.php */
     $templates = include $sources['data'].'transport.templates.php';
     if (is_array($templates)) {
-        if (! $category->addMany($templates,'Templates')) {
-            $modx->log(modX::LOG_LEVEL_INFO,'addMany failed with templates.');
-        };
+        if (! $category->addMany($templates)) {
+            $modx->log(modX::LOG_LEVEL_ERROR,'addMany failed with templates.');
+        } else {
+            $modx->log(modX::LOG_LEVEL_INFO,'Added ' . count($templates) . ' templates');
+        }
     } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding templates failed.'); }
 }
 
@@ -200,7 +202,9 @@ if ($hasTemplateVariables) { /* add templatevariables  */
     /* note: Template Variables' default properties are set in transport.tvs.php */
     $templatevariables = include $sources['data'].'transport.tvs.php';
     if (is_array($templatevariables)) {
-        $category->addMany($templatevariables, 'TemplateVars');
+        if ($category->addMany($templatevariables)) {
+            $modx->log(modX::LOG_LEVEL_INFO,'Added ' . count($templatevariables) . ' templateVariables');
+        }
     } else { $modx->log(modX::LOG_LEVEL_FATAL,'Adding templatevariables failed.'); }
 }
 
