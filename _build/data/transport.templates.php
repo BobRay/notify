@@ -28,11 +28,11 @@ $templates[1] = $modx->newObject('modTemplate');
 $templates[1] ->fromArray(array(
     'id' => 1,
     'property_preprocess' => '0',
-    'templatename' => 'Notify Template',
-    'description' => '',
+    'templatename' => 'NotifyTemplate',
+    'description' => 'Template for Notify Resource',
     'icon' => '',
     'template_type' => '0',
     'properties' => '',
-    'content' => file_get_contents($sources['source_core'].'/elements/templates/notify_template.template.html'),
+    'content' => file_get_contents($sources['source_core'].'/elements/templates/notifytemplate.template.html'),
 ),'',true,true);
 return $templates;

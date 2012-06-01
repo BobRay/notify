@@ -81,18 +81,44 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
             $pluginId = 0;
             $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Plugin');
         }
-
-        $res = $modx->getObject('modResource', array ('alias' => 'notify'));
-        if (! $res) {
+        /* @var $notifyResource modResource */
+        $notifyResource = $modx->getObject('modResource', array ('alias' => 'notify'));
+        if (! $notifyResource) {
             $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Resource');
         }
 
-        if ($res && $plugin) {
+        if ($notifyResource && $plugin) {
             $c = $plugin->getContent();
-            $c = str_replace('999',$res->get('id'), $c);
+            $c = str_replace('999',$notifyResource->get('id'), $c);
             $plugin->setContent($c);
             if ($plugin->save()) {
                 $modx->log(xPDO::LOG_LEVEL_INFO,'Set resource Id in plugin code');
+            }
+        }
+        /* @var $notifyTemplate modTemplate */
+        $notifyTemplateId = 0;
+        $notifyTemplate = $modx->getObject('modTemplate', array ('templatename' => 'NotifyTemplate'));
+        if (! $notifyTemplate) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Template');
+        } else {
+            $notifyTemplateId = $notifyTemplate->get('id');
+        }
+
+        if ($notifyTemplateId && $notifyResource) {
+            $notifyResource->set('template', $notifyTemplateId);
+            if ($notifyResource->save()) {
+                $modx->log(xPDO::LOG_LEVEL_INFO,'Set template for Notify Resource');
+            }
+        }
+        /* @var $notifyPreviewResource modResource */
+        $notifyPreviewResource = $modx->getObject('modResource', array('alias' => 'notify-preview'));
+        if (! $notifyPreviewResource) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Preview Resource');
+        }
+        if ($notifyTemplateId && $notifyPreviewResource) {
+            $notifyPreviewResource->set('template', $notifyTemplateId);
+            if ($notifyPreviewResource->save()) {
+                $modx->log(xPDO::LOG_LEVEL_INFO,'Set template for Notify Preview Resource');
             }
         }
 
