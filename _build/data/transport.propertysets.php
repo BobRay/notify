@@ -24,14 +24,14 @@
  */
 $propertysets = array();
 
-$propertysets[1] = $modx->newObject('modPropertySet');
-$propertysets[1] ->fromArray(array(
-    'id' => 1,
+$propertysets[0] = $modx->newObject('modPropertySet');
+$propertysets[0] ->fromArray(array(
+    'id' => 0,
     'name' => 'NotifyProperties',
     'description' => 'Properties for Notify Extra',
 ),'',true,true);
 
 $properties = include $sources['data'].'properties/properties.notifyproperties.php';
-$propertysets[1]->setProperties($properties);
+$propertysets[0]->setProperties($properties);
 unset($properties);
 return $propertysets;

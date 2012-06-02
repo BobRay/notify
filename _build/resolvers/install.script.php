@@ -153,8 +153,8 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
             if (! $intersect->save()) {
                 $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not create modElementPropertySet');
             }
-            $properties = $propertySet->getProperties();
-            $snippet->setProperties($properties);
+            //$properties = $propertySet->getProperties();
+            //$snippet->setProperties($properties);
             $snippet->save();
         }
 
