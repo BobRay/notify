@@ -105,16 +105,16 @@ class Notify
         
         $this->previewPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
         if (! $this->previewPage) {
-            $this->setError($this->modx->lexicon('could_not_find_preview_page'));
+            $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
         }
         $this->pageId = $_SESSION['nf_page_id'];
         if (empty($this->pageId)) {
-            $this->setError($this->modx->lexicon('Session Variable not set'));
+            $this->setError($this->modx->lexicon('nf.session_variable_not_set'));
             return '';
         }
         $this->resource = $this->modx->getObject('modResource',$this->pageId);
         if (!$this->resource) {
-            $this->setError($this->modx->lexicon('Could not get resource'));
+            $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
             return '';
         }
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
@@ -137,7 +137,7 @@ class Notify
 
                 $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
                 if (empty($this->emailText)) {
-                    $this->setError($this->modx->lexicon('could_not_find_email_tpl_chunk'));
+                    $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
                 } else {
                     /* convert any relative URLS in email text */
                     $this->fullUrls();
@@ -150,7 +150,7 @@ class Notify
                 $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
                 $this->tweetText = $this->modx->getChunk($tweetTpl, $fields);
                 if (empty($this->tweetText)) {
-                    $this->setError($this->modx->lexicon('could_not_find_tweet_tpl_chunk'));
+                    $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
                 } else {
                     if ($this->shortenUrls) {
                         $this->shortenUrls($this->tweetText);
@@ -400,7 +400,7 @@ class Notify
                 $group = $this->modx->getObject('modUserGroup',$g);
 
                 if (empty($group)) {
-                    $this->setError ('Could not find User Group: ' . $userGroupName);
+                    $this->setError ($this->modx->lexicon('nf.could_not_find_user_group') . ': ' . $userGroupName);
                 } else {
                     /* get users */
                     $c = $this->modx->newQuery($this->userClass);
@@ -428,18 +428,18 @@ class Notify
 
 
         if (empty($this->recipients)) {
-            $this->setError('No Recipients to send to');
+            $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
         }
         /* skip mail send if any errors are set */
         if (!empty($this->errors) ) {
-            $this->setError('Bulk Emails not sent');
+            $this->setError($this->modx->lexicon('nf.bulk_emails_not_sent'));
             return false;
         }
         /* $this->recipients array now complete and no errors - send bulk emails */
         $i = 1;
         $fp = fopen($this->logFile, 'w');
         if (!$fp) {
-            $this->setError('Could not open log file (make sure /logs directory exists): ' . $this->logFile);
+            $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
         } else {
             fwrite($fp, "MESSAGE\n*****************************\n" . $this->emailText . "\n*****************************\n\n");
             //fwrite($fp,print_r($this->recipients, true));
@@ -481,12 +481,12 @@ class Notify
             $profile = $user->getOne($this->profileAlias);
             $userTags = null;
             if (! $profile) {
-                $this->setError('No Profile for: ' . $username);
+                $this->setError($this->modx->lexicon('nf.no_profile_for') . ': ' . $username);
             } else {
                 if ( $this->modx->getOption('sbs_use_comment_field', null, null) == 'No') {
                     $field = $this->modx->getOption('sbs_extended_field');
                     if (empty($field)) {
-                        $this->setError('sbs_extended_field is not set');
+                        $this->setError($this->modx->lexicon('nf.sbs_extended_field_not_set'));
                     } else {
                         $extended = $profile->get('extended');
                         $userTags = $extended[$field];
@@ -531,20 +531,20 @@ class Notify
                     'userTags' => $userTags,
                 );
             } else {
-                $this->setError('User: ' . $username . ' has no email address');
+                $this->setError($username . ' ' .  $this->modx->lexicon('nf.has_no_email_address'));
             }
         }
     }
     public function sendTestEmail($address, $name){
 
         if (empty($address)) {
-            $this->setError ('<h3>' . 'TestEmailAddress is empty; test email not sent' . '</h3>');
+            $this->setError ($this->modx->lexicon('nf.test_email_address_empty') . $this->modx->lexicon('nf.test_email_not_sent'));
             return;
         }
         if (! $this->sendMail($address, $name)) {
-            $this->setError('<h3>' . 'Mail error sending test email' . '</h3>');
+            $this->setError($this->modx->lexicon('nf.mail_error_sending_test_email'));
         } else {
-            $this->setSuccess('Test Email Sent successfully');
+            $this->setSuccess($this->modx->lexicon('nf.test_email_sent_successfully'));
         }
         return;
     }
@@ -554,23 +554,23 @@ class Notify
         require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
         $consumer_key = $this->modx->getOption('twitter_consumer_key',$this->props, null);
         if (! $consumer_key) {
-            $this->setError('Twitter Consumer Key is not set');
+            $this->setError($this->modx->lexicon('nf.twitter_consumer_key_not_set'));
         }
         $consumer_secret = $this->modx->getOption('twitter_consumer_secret',$this->props, null);
         if (! $consumer_secret) {
-            $this->setError('Twitter Consumer Secret is not set');
+            $this->setError($this->modx->lexicon('nf.twitter_consumer_secret_not_set'));
         }
         $oauth_token = $this->modx->getOption('twitter_oauth_token',$this->props, null);
         if (! $oauth_token) {
-            $this->setError('Twitter Access Token is not set');
+            $this->setError($this->modx->lexicon('nf.twitter_access_token_not_set'));
         }        
         $oauth_secret = $this->modx->getOption('twitter_oauth_secret',$this->props, null);
         if (! $oauth_secret) {
-            $this->setError('Twitter Access Token Secret is not set');
+            $this->setError($this->modx->lexicon('nf.twitter_access_token_secret_not_set'));
         }        
         $msg = $this->tweetText;
         if (empty($msg)) {
-            $this->setError('Tweet TV is empty');
+            $this->setError($this->modx->lexicon('nf.tweet_tv_is_empty'));
         } else {
             //$text = 'Tweeted from PHP - just testing some code';
             $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
@@ -579,14 +579,14 @@ class Notify
             //$response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay'));
 
             if (!$response) {
-                $this->setError('Unknown error using the Twitter API');
+                $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
             } elseif ($response->error) {
                 $this->setError('Twitter said, there was an error
                 <p>$response->error</code</p>\n
                 <p>Full response:</p>\n
                 <pre>" . print_r($response,true) . "</pre><br />"');
             } else {
-                $this->setSuccess('Tweet sent successfully');
+                $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
             }
         }
     }

@@ -33,7 +33,5 @@
 $_lang['notify'] = 'Notify';
 $_lang['notify.menu_desc'] = 'Notify description';
 
-$_lang['er_not_in_group'] = 'You are not in any of the authorized user groups.';
-$_lang['er_not_logged_in'] = 'You must be logged in to post.';
-$_lang['er_no_permissions'] = 'You do not have the necessary permissions.';
+
 
