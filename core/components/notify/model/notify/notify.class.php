@@ -467,7 +467,7 @@ class Notify
         if ($fp) {
             fclose($fp);
         }
-        $this->setSuccess('Email to Subscribers sent successfully');
+        $this->setSuccess($this->modx->lexicon('nf.email_to_subscribers_sent_successfully'));
         return true;
 
 
@@ -570,7 +570,7 @@ class Notify
         }        
         $msg = $this->tweetText;
         if (empty($msg)) {
-            $this->setError($this->modx->lexicon('nf.tweet_tv_is_empty'));
+            $this->setError($this->modx->lexicon('nf.tweet_field_is_empty'));
         } else {
             //$text = 'Tweeted from PHP - just testing some code';
             $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
