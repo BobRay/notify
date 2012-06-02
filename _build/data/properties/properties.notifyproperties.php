@@ -75,7 +75,7 @@ $properties = array(
         ),
     array(
         'name' => 'notify_facebook',
-        'desc' => 'Notify Facebook via Twitter with #fb in tweet -- must be set up at Twitter.com.',
+        'desc' => 'Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App.',
         'type' => 'combo-boolean',
         'options' => '',
         'value' => false,

@@ -123,6 +123,7 @@ class Notify
 
             /* *********************************************** */
             case 'displayForm':
+                $notifyFacebook = $this->modx->getOption('notify_facebook', $this->props, null);
                 $this->urlShorteningService = $this->modx->getOption('url_shortening_service', $this->props, 'none');
                 $this->shortenUrls = $this->urlShorteningService != 'none';
 
@@ -153,6 +154,9 @@ class Notify
                 } else {
                     if ($this->shortenUrls) {
                         $this->shortenUrls($this->tweetText);
+                    }
+                    if ($notifyFacebook) {
+                        $this->tweetText = rtrim($this->tweetText,' ') . ' #fb';
                     }
                 }
                     break;
