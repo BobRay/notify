@@ -79,6 +79,10 @@ class Notify
     /* @var $previewPage modResource */
     protected $previewPage;
     protected $formTpl;
+    protected $urlShorteningService;
+    protected $shortenUrls;
+    /* @var $shortener UrlShortener */
+    public $shortener;
 
 
 
@@ -89,12 +93,6 @@ class Notify
 
         $this->modx =& $modx;
         $this->props = $props;
-
-        /* set $this->resource to argument for OnDocFormPrerender
-           and $this->modx->resource for OnWebPagePrerender
-        */
-        
-        /* Create $replace array from resource fields + url and site_name */
 
         /* nf paths; Set the nf. System Settings only for development */
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
@@ -125,6 +123,13 @@ class Notify
 
             /* *********************************************** */
             case 'displayForm':
+                $this->urlShorteningService = $this->modx->getOption('url_shortening_service', $this->props, 'none');
+                $this->shortenUrls = $this->urlShorteningService != 'none';
+
+                if ($this->shortenUrls) {
+                    require_once $this->corePath . 'model/notify/urlshortener.class.php';
+                    $this->shortener = new UrlShortener($this->props);
+                }
                 $fields = $this->resource->toArray();
                 $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
                 $this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
@@ -136,15 +141,21 @@ class Notify
                     /* convert any relative URLS in email text */
                     $this->fullUrls();
                     $this->imgAttributes();
+                    if ($this->shortenUrls) {
+                        $this->shortenUrls($this->emailText);
+                    }
                 }
 
                 $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
                 $this->tweetText = $this->modx->getChunk($tweetTpl, $fields);
                 if (empty($this->tweetText)) {
                     $this->setError($this->modx->lexicon('could_not_find_tweet_tpl_chunk'));
+                } else {
+                    if ($this->shortenUrls) {
+                        $this->shortenUrls($this->tweetText);
+                    }
                 }
-
-                break;
+                    break;
             /* *********************************************** */
             case 'handleSubmission':
                 $this->sendTestEmail = isset($_POST['nf_send_test_email']);
@@ -213,6 +224,13 @@ class Notify
         }
 
         return "";
+    }
+
+    public function shortenUrls(&$text) {
+        $this->shortener->init_curl();
+        $this->shortener->process($text, $this->urlShorteningService);
+        $this->shortener->close_curl();
+
     }
 
     public function displayForm() {
@@ -371,6 +389,7 @@ class Notify
                 /* @var $group modUserGroup */
                 $userGroupName = trim($userGroupName);
                 echo '<h3>GROUP: ' . $userGroupName . '</h3>';
+                flush();
                 /* allow UserGroup name or ID */
                 $g = intval($userGroupName);
                 $g = is_int($g) && !empty($g) ? $userGroupName : array('name' => $userGroupName);
