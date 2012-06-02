@@ -74,6 +74,14 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         /* @var $pluginEvent modPluginEvent */
         /* @var $plugin modPlugin */
 
+        $categoryId = null;
+        $categoryObj = $modx->getObject('modCategory', array('category' => $category));
+        if (!$categoryObj) {
+            $modx->log(xPDO::LOG_LEVEL_INFO, 'Could not retrieve category object: ' . $category);
+        } else {
+            $categoryId = $categoryObj->get('id');
+        }
+
         $plugin = $modx->getObject('modPlugin', array('name' => 'Notify'));
         if ($plugin) {
             $pluginId = $plugin->get('id');
@@ -133,6 +141,8 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         }
 
         if ( $snippet && (!empty ($propertySet))) {
+            /* set category in case user has uninstalled and reinstalled */
+            $propertySet->set('category', $categoryId);
             $propertySet->set('name','NotifyProperties');
             $propertySet->set('description', 'Properties for Notify Extra');
             $propertySet->save();
@@ -165,13 +175,7 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
 
         $ok = true;
 
-        $categoryId = null;
-        $categoryObj = $modx->getObject('modCategory', array('category' => $category));
-        if (!$categoryObj) {
-            $modx->log(xPDO::LOG_LEVEL_INFO, 'Could not retrieve category object: ' . $category);
-        } else {
-            $categoryId = $categoryObj->get('id');
-        }
+
         $defaultTemplateId = $modx->getOption('default_template', null, null);
 
         if ($defaultTemplateId === null) {
