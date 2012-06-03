@@ -32,7 +32,7 @@
 
 $properties = array(
     array(
-        'name' => 'url_shortening_service',
+        'name' => 'urlShorteningService',
         'desc' => 'nf.url_shortening_service_desc~~Service used to shorten all URLs in text and Tweet.',
         'type' => 'list',
         'options' => array(
@@ -88,7 +88,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'notify_facebook',
+        'name' => 'notifyFacebook',
         'desc' => 'nf.notify_facebook_desc~~Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App.',
         'type' => 'combo-boolean',
         'options' => '',
@@ -98,7 +98,7 @@ $properties = array(
         ),
 
     array(
-           'name' => 'twitter_consumer_key',
+           'name' => 'twitterConsumerKey',
            'desc' => 'nf.twitter_consumer_key_desc~~Twitter Consumer Key',
            'type' => 'textfield',
            'options' => '',
@@ -107,7 +107,7 @@ $properties = array(
            'area' => '',
            ),
     array(
-           'name' => 'twitter_consumer_secret',
+           'name' => 'twitterConsumerSecret',
            'desc' => 'nf.twitter_consumer_secret_desc~~Twitter Consumer Secret',
            'type' => 'textfield',
            'options' => '',
@@ -116,7 +116,7 @@ $properties = array(
            'area' => '',
            ),
     array(
-           'name' => 'twitter_oauth_token',
+           'name' => 'twitterOauthToken',
            'desc' => 'nf.twitter_access_token_desc~~Twitter Access Token',
            'type' => 'textfield',
            'options' => '',
@@ -125,8 +125,8 @@ $properties = array(
            'area' => '',
            ),
     array(
-           'name' => 'twitter_oauth_secret',
-           'desc' => 'nf.twitter_access_token_secret_desc~~Twitter Access Token Secret',
+           'name' => 'twitterOauthSecret',
+           'desc' => 'nf.twitter_oauth_token_secret_desc~~Twitter Access Token Secret',
            'type' => 'textfield',
            'options' => '',
            'value' => '',
@@ -135,7 +135,7 @@ $properties = array(
            ),
 
     array(
-        'name' => 'bitly_api_key',
+        'name' => 'bitlyApiKey',
         'desc' => 'nf.bitly_api_key_desc~~bit.ly API key (required)',
         'type' => 'textfield',
         'options' => '',
@@ -144,7 +144,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'bitly_username',
+        'name' => 'bitlyUsername',
         'desc' => 'nf.bitly_username_desc~~bit.ly username (required)',
         'type' => 'textfield',
         'options' => '',
@@ -153,7 +153,7 @@ $properties = array(
         'area' => '',
     ),
     array(
-        'name' => 'google_api_key',
+        'name' => 'googleApiKey',
         'desc' => 'nf.google_api_key_desc~~Google API key',
         'type' => 'textfield',
         'options' => '',
@@ -162,7 +162,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'supr_api_key',
+        'name' => 'suprApiKey',
         'desc' => 'nf.supr_api_key_desc~~StumbleUpon API key (optional)',
         'type' => 'textfield',
         'options' => '',
@@ -171,7 +171,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'supr_username',
+        'name' => 'suprUsername',
         'desc' => 'nf.supr_username_desc~~Stumble Upon Username (optional)',
         'type' => 'textfield',
         'options' => '',
@@ -180,7 +180,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'tiny_url_api_key',
+        'name' => 'tinyurlApiKey',
         'desc' => 'nf.tinyurl_api_key_desc~~TinyUrl API key (optional)',
         'type' => 'textfield',
         'options' => '',
@@ -189,7 +189,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'tiny_url_username',
+        'name' => 'tinyurlUsername',
         'desc' => 'nf.tinyurl_username_desc~~TinyUrl username (optional)',
         'type' => 'textfield',
         'options' => '',
@@ -199,7 +199,7 @@ $properties = array(
         ),
 
     array(
-        'name' => 'mail_from',
+        'name' => 'mailFrom',
         'desc' => 'nf.mail_from_desc~~(optional) MAIL_FROM setting for email. Defaults to emailsender System Setting',
         'type' => 'textfield',
         'options' => '',
@@ -208,7 +208,7 @@ $properties = array(
         'area' => '',
     ),
     array(
-            'name' => 'mail_from_name',
+            'name' => 'mailFromName',
             'desc' => 'nf.mail_from_name_desc~~(optional) MAIL_FROM_NAME setting for email. Defaults to site_name System Setting.',
             'type' => 'textfield',
             'options' => '',
@@ -217,7 +217,7 @@ $properties = array(
             'area' => '',
         ),
     array(
-            'name' => 'mail_sender',
+            'name' => 'mailSender',
             'desc' => 'nf.mail_sender_desc~~(optional) EMAIL_SENDER setting for email. Defaults to emailsender System Setting',
             'type' => 'textfield',
             'options' => '',
@@ -226,7 +226,7 @@ $properties = array(
             'area' => '',
         ),
     array(
-        'name' => 'mail_reply_to',
+        'name' => 'mailReplyTo',
         'desc' => 'nf.mail_reply_to_desc~~(optional) REPLY_TO setting for email. Defaults to emailsender System Setting',
         'type' => 'textfield',
         'options' => '',
@@ -271,7 +271,7 @@ $properties = array(
         'area' => '',
         ),
     array(
-        'name' => 'nf_test_email_address',
+        'name' => 'nfTestEmailAddress',
         'desc' => 'nf.test_email_address_desc~~ (optional) Email address for test email. Defaults to emailsender System Setting',
         'type' => 'textfield',
         'options' => '',
@@ -328,7 +328,7 @@ $properties = array(
         'lexicon' => 'notify:properties',
         'area' => '',
         ),
-/* batchSize 50, batchDelay 1, itemDelay .51*/
+
     array(
         'name' => 'batchSize',
         'desc' => 'nf.batch_size_desc~~ (optional) Batch size for bulk email to subscribers. Default: 50',

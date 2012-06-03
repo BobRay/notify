@@ -124,8 +124,8 @@ class Notify
 
             /* *********************************************** */
             case 'displayForm':
-                $notifyFacebook = $this->modx->getOption('notify_facebook', $this->props, null);
-                $this->urlShorteningService = $this->modx->getOption('url_shortening_service', $this->props, 'none');
+                $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
+                $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
                 $this->shortenUrls = $this->urlShorteningService != 'none';
 
                 if ($this->shortenUrls) {
@@ -241,7 +241,7 @@ class Notify
     }
 
     public function displayForm() {
-        $testEmailAddress = $this->modx->getOption('nf_test_email_address', $this->props, '');
+        $testEmailAddress = $this->modx->getOption('nfTestEmailAddress', $this->props, '');
         $testEmailAddress = empty($testEmailAddress)? $this->modx->getOption('emailsender'): $testEmailAddress;
 
         $this->modx->setPlaceholder('nf_test_email_address', $testEmailAddress);
@@ -341,13 +341,13 @@ class Notify
     public function initializeMailer() {
         set_time_limit(0);
         $this->modx->getService('mail', 'mail.modPHPMailer');
-        $this->mail_from = $this->modx->getOption('mail_from', $this->props, $this->modx->getOption('emailsender'));
+        $this->mail_from = $this->modx->getOption('mailFrom', $this->props, $this->modx->getOption('emailsender'));
 
-        $this->mail_from_name = $this->modx->getOption('mail_from_name', $this->props, $this->modx->getOption('site_name', null));
+        $this->mail_from_name = $this->modx->getOption('mailFromName', $this->props, $this->modx->getOption('site_name', null));
 
-        $this->mail_sender = $this->modx->getOption('mail_sender', $this->props, $this->mail_from);
+        $this->mail_sender = $this->modx->getOption('mailSender', $this->props, $this->mail_from);
 
-        $this->mail_reply_to = $this->modx->getOption('mail_reply_to', $this->props, $this->mail_from);
+        $this->mail_reply_to = $this->modx->getOption('mailReplyTo', $this->props, $this->mail_from);
 
         $this->mail_subject = isset($_POST['nf_email_subject'])? $_POST['nf_email_subject'] :
          'Update from ' . $this->modx->getOption('site_name');
@@ -560,19 +560,19 @@ class Notify
     public function tweet() {
 
         require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
-        $consumer_key = $this->modx->getOption('twitter_consumer_key',$this->props, null);
+        $consumer_key = $this->modx->getOption('twitterConsumerKey',$this->props, null);
         if (! $consumer_key) {
             $this->setError($this->modx->lexicon('nf.twitter_consumer_key_not_set'));
         }
-        $consumer_secret = $this->modx->getOption('twitter_consumer_secret',$this->props, null);
+        $consumer_secret = $this->modx->getOption('twitterConsumerSecret',$this->props, null);
         if (! $consumer_secret) {
             $this->setError($this->modx->lexicon('nf.twitter_consumer_secret_not_set'));
         }
-        $oauth_token = $this->modx->getOption('twitter_oauth_token',$this->props, null);
+        $oauth_token = $this->modx->getOption('twitterOauthToken',$this->props, null);
         if (! $oauth_token) {
             $this->setError($this->modx->lexicon('nf.twitter_access_token_not_set'));
         }        
-        $oauth_secret = $this->modx->getOption('twitter_oauth_secret',$this->props, null);
+        $oauth_secret = $this->modx->getOption('twitterOauthSecret',$this->props, null);
         if (! $oauth_secret) {
             $this->setError($this->modx->lexicon('nf.twitter_access_token_secret_not_set'));
         }        

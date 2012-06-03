@@ -106,8 +106,8 @@ class UrlShortener
     protected function tinyurl($longUrl) {
         /* No API key required */
 
-        if (!empty ($this->props['tiny_url_api_key']) && !empty($this->props['tiny_url_username'])) {
-            curl_setopt($this->curl, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $longUrl . '&login=' . $this->props['tiny_url_username'] . '&apiKey='. $this->props['tiny_url_api_key'] . '&version=2.0,3');
+        if (!empty ($this->props['tinyurlApiKey']) && !empty($this->props['tinyurlUsername'])) {
+            curl_setopt($this->curl, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $longUrl . '&login=' . $this->props['tinyurlUsername'] . '&apiKey='. $this->props['tinyurlApiKey'] . '&version=2.0,3');
         } else {
             curl_setopt($this->curl, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $longUrl . '&customUrl='. 'zzz');
         }
@@ -121,8 +121,8 @@ class UrlShortener
          * (while logged in to Google) */
 
         $postData = array('longUrl' => $longUrl);
-        if (!empty($this->props['google_api_key'])) {
-            $postData['key'] = $this->props['google_api_key'];
+        if (!empty($this->props['googleApiKey'])) {
+            $postData['key'] = $this->props['googleApiKey'];
         }
         $jsonData = json_encode($postData);
         $options = array(
@@ -145,13 +145,13 @@ class UrlShortener
     protected function supr($longUrl) {
         /* api key and username are optional */
         $supr_api = "http://su.pr/api/simpleshorten";
-        if (empty ($this->props['supr_username']) || empty($this->props['supr_api_key'])) {
+        if (empty ($this->props['suprUsername']) || empty($this->props['suprApiKey'])) {
             $supr_args = array('url' => $longUrl);
         } else {
             $supr_args = array(
                 'url' => $longUrl,
-                'login' => $this->props['supr_username'],
-                'apiKey' => $this->props['supr_api_key']
+                'login' => $this->props['suprUsername'],
+                'apiKey' => $this->props['suprApiKey']
             );
         }
 
@@ -168,8 +168,8 @@ class UrlShortener
          */
 
         $bitly_args = array (
-            'login' => $this->props['bitly_username'],
-            'apiKey' => $this->props['bitly_api_key'],
+            'login' => $this->props['bitlyUsername'],
+            'apiKey' => $this->props['bitlyApiKey'],
             'uri' => $longUrl,
             'format' => 'txt',
         );

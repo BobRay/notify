@@ -42,7 +42,7 @@ sbs_extended_field   (name of the extended field you want to use)
 <p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
         
 <h3>Posting Updates to Twitter</h3>
-<p>In order for Notify to post updates to Twitter, you'll neeed to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify System Settings.</p>
+<p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify System Settings.</p>
         
 <p>To set the System Settings, go to System | System Settings in the MODX Manager and select the &quot;notify&quot; Namespace in the drop-down list at the top of the grid (it will show the &quot;core&quot; Namespace to begin with). Double-click in the &quot;Value&quot; field for each key and paste in value from the Twitter App page.</p>
         
@@ -51,7 +51,7 @@ sbs_extended_field   (name of the extended field you want to use)
 <h3>Posting Updates to Facebook</h3>
         
 <p>Notify does not, at present, post directly to Facebook, but you can set
-up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selective Twitter</a> in about 30 seconds. Once you've done that, simply adding the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter.</p>
+up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selective Twitter</a> in about 30 seconds. Once you've done that, simply adding the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. The Facebook App will remove that hashtag in the Tweet.</p>
 
 <p>You can also use the <a href="http://apps.facebook.com/twitter/">Twitter App</a> if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>        
 
