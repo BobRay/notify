@@ -47,7 +47,7 @@ $snippets[1]->fromArray(array(
     'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/notify.snippet.php'),
 ),'',true,true);
 
-$properties = include $sources['data'].'properties/properties.notifyproperties.php';
+$properties = include $sources['data'].'properties/properties.notify.php';
 $snippets[1]->setProperties($properties);
 unset($properties);
 

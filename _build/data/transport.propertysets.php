@@ -31,7 +31,7 @@ $propertysets[0] ->fromArray(array(
     'description' => 'Properties for Notify Extra',
 ),'',true,true);
 
-$properties = include $sources['data'].'properties/properties.notifyproperties.php';
+$properties = include $sources['data'].'properties/properties.notify.php';
 $propertysets[0]->setProperties($properties);
 unset($properties);
 return $propertysets;

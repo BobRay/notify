@@ -32,6 +32,8 @@
  *
  */
 
+/* [[+properties]] */
+
 /* @var $modx modX */
 /* @var $scriptProperties array */
 /* @var $category modCategory */

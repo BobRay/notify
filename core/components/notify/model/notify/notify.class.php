@@ -118,6 +118,7 @@ class Notify
             return '';
         }
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
+        $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
 
         switch($action) {
 
@@ -134,6 +135,7 @@ class Notify
                 $fields = $this->resource->toArray();
                 $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
                 $this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
+                $this->emailTpl = empty($this->emailTpl)? 'NfSubscriberEmailTpl' : $this->emailTpl;
 
                 $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
                 if (empty($this->emailText)) {
@@ -148,6 +150,7 @@ class Notify
                 }
 
                 $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
+                $tweetTpl = empty($tweetTpl)? 'nfTweetTpl' : $tweetTpl;
                 $this->tweetText = $this->modx->getChunk($tweetTpl, $fields);
                 if (empty($this->tweetText)) {
                     $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
@@ -238,7 +241,8 @@ class Notify
     }
 
     public function displayForm() {
-        $testEmailAddress = $this->modx->getOption('nf_test_email_address', $this->props, $this->modx->getOption('emailsender'));
+        $testEmailAddress = $this->modx->getOption('nf_test_email_address', $this->props, '');
+        $testEmailAddress = empty($testEmailAddress)? $this->modx->getOption('emailsender'): $testEmailAddress;
 
         $this->modx->setPlaceholder('nf_test_email_address', $testEmailAddress);
 
@@ -256,9 +260,10 @@ class Notify
         $this->updatePreviewPage();
 
         $this->modx->setPlaceholder('nf_email_text', $this->emailText);
-        $this->modx->setPlaceholder('nf_email_subject',$this->modx->getChunk('NfEmailSubjectTpl'));
+        $subjectTpl = $this->modx->getOption('nfSubjectTpl', $this->props);
+        $subjectTpl = empty($subjectTpl)? 'NfEmailSubjectTpl' : $subjectTpl;
+        $this->modx->setPlaceholder('nf_email_subject',$this->modx->getChunk($subjectTpl));
         $this->modx->setPlaceholder('nf_tweet_text', $this->tweetText);
-
 
         return $this->modx->getChunk($this->formTpl);
 
@@ -304,20 +309,25 @@ class Notify
         return $this->emailText;
     }
     public function initEmail() {
-        $this->sortBy = $this->modx->getOption('sortBy',$this->props,'username');
-        $this->sortByAlias = $this->modx->getOption('sortByAlias',$this->props,'modUser');
-        $this->userClass = $this->modx->getOption('userClass',$this->props,'modUser');
+        $this->sortBy = $this->modx->getOption('sortBy',$this->props);
+        $this->sortBy = empty($this->sortBy)? 'username' : $this->sortBy;
+        $this->sortByAlias = $this->modx->getOption('sortByAlias',$this->props);
+        $this->sortByAlias = empty ($this->sortByAlias)? 'modUser' : $this->sortByAlias;
+        $this->userClass = $this->modx->getOption('userClass',$this->props);
+        $this->userClass = empty($this->userClass)? 'modUser' : $this->userClass;
         $this->profileAlias = $this->modx->getOption('profileAlias',$this->props,'Profile');
+        $this->profileAlias = empty($this->profileAlias)? 'modUserProfile' : $this->profileAlias;
         $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
+        $this->profileClass = empty($this->profileClass)? 'modUserProfile' : $this->profileClass;
         $this->logFile = $this->corePath . 'notify-logs/' . $this->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
 
         $this->tags = isset($_POST['nf_tags'])? $_POST['nf_tags']: '';
 
         $this->groups = isset($_POST['nf_groups'])? $_POST['nf_groups']: '';
 
-        $this->batchSize = $this->modx->getOption('batchSize', $this->props, 50);
-        $this->batchDelay = $this->modx->getOption('batchDelay', $this->props, 1);
-        $this->itemDelay = $this->modx->getOption('itemDelay', $this->props, .51);
+        $this->batchSize = (integer) $this->modx->getOption('batchSize', $this->props, 50);
+        $this->batchDelay = (integer) $this->modx->getOption('batchDelay', $this->props, 1);
+        $this->itemDelay = (float) $this->modx->getOption('itemDelay', $this->props, .51);
 
     }
 
@@ -369,8 +379,6 @@ class Notify
     public function sendBulkEmail()
     {
         /* @var $user modUser */
-
-
 
         $this->recipients = array();
 
