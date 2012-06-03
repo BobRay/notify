@@ -6,11 +6,7 @@ Notify Extra for MODx Revolution
 
 Documentation is available at [Bob's Guides](http://bobsguides.com/notify-tutorial.html)
 
-Notify is a generic build script for MODx Revolution components.
-Much of the code in this component was written by Shaun McCormick or patterned
-after his code.
+Notify sends updates to users on your site, Twitter, and Facebook. The users can be selected by User Group, and/or by tags specifying user interests. The updates are manual, rather than automatic, so Notify only sends them when you tell it to.
 
-Because Notify is itself a build script, it can't be installed directly
-through package Manager. You can download the files using the download link
-on this page, but a better method is to install the GetNotify package,
-which will install the files for you.
+Notify pre-fills an update form based on Tpl chunks you can modify. During the pre-fill process, Notify will (optionally) shorten any URLs using any one of a number of URL-shortening services. For services like Google, bit.ly, StumbleUpon, and TinyURL, Notify will use your API key during the shortening process.
+
