@@ -76,6 +76,174 @@ sbs_extended_field   (name of the extended field you want to use)
 <p>Notify does not post directly to Facebook, but you can set
 up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selective Twitter</a> in about 30 seconds. Once you've done that, simply adding the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. The Facebook App will remove that hashtag in the Tweet.</p>
 
-<p>You can also use the <a href="http://apps.facebook.com/twitter/">Twitter App</a> if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>        
+<p>You can also use the <a href="http://apps.facebook.com/twitter/">Twitter App</a> if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>
+
+<h3>Notify Properties</h3>
+
+<Table class="properties">
+    <tr><th>Property</th><th>Description</th><th>Default</th></tr>
+
+    <tr>
+        <td>urlShorteningService</td>
+        <td>Service used to shorten all URLs in text and Tweet</td>
+        <td>none</td>
+    </tr>
+    <tr>
+        <td>groups</td>
+        <td>Comma-separated list of User Groups to send to (no spaces). The Subscribers group will be set in the form, but if you delete it and submit with the Groups field empty, email will be sent to all users on the site</td>
+        <td>Subscribers</td>
+    </tr>
+    <tr>
+        <td>tags</td>
+        <td>(optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive the email</td>
+        <td>Subscribers</td>
+    </tr>
+    <tr>
+        <td>notifyFacebook</td>
+        <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>twitterConsumerKey</td>
+        <td>Twitter Consumer Key</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>twitterConsumerSecret</td>
+        <td>Twitter Consumer Secret</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>twitterOauthToken</td>
+        <td>Twitter Access Token</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>twitterOauthSecret</td>
+        <td>Twitter Access Token Secret</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>bitlyApiKey</td>
+        <td>bit.ly API key (required)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>bitlyUsername</td>
+        <td>bit.ly username (required)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>googleApiKey</td>
+        <td>Google API key</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>suprApiKey</td>
+        <td>StumbleUpon API key (optional)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>suprUsername</td>
+        <td>Stumble Upon Username (optional)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>tinyurlApiKey</td>
+        <td>TinyUrl API key (optional)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>tinyurlUsername</td>
+        <td>TinyUrl username (optional)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>mailFrom</td>
+        <td>(optional) MAIL_FROM setting for email</td>
+        <td>emailsender System Setting</td>
+    </tr>
+    <tr>
+        <td>mailFromName</td>
+        <td>(optional) MAIL_FROM_NAME setting for email</td>
+        <td>site_name System Setting</td>
+    </tr>
+    <tr>
+        <td>mailSender</td>
+        <td>(optional) EMAIL_SENDER setting for email</td>
+        <td>emailsender System Setting</td>
+    </tr>
+    <tr>
+        <td>mailReplyTo</td>
+        <td>(optional) REPLY_TO setting for email</td>
+        <td>emailsender System Setting</td>
+    </tr>
+    <tr>
+        <td>nfFormTpl</td>
+        <td>Name of chunk to use for the Notify form</td>
+        <td>NfNotifyFormTpl</td>
+    </tr>
+    <tr>
+        <td>nfEmailTpl</td>
+        <td>Name of chunk to use for the Email to send to subscribers</td>
+        <td>NfSubscriberEmailTpl</td>
+    </tr>
+    <tr>
+        <td>nfTweetTpl</td>
+        <td>Name of chunk to use for the Tweet text</td>
+        <td>nfTweetTpl</td>
+    </tr>
+    <tr>
+        <td>nfSubjectTpl</td>
+        <td>Name of chunk to use for the Email subject</td>
+        <td>NfEmailSubjectTpl</td>
+    </tr>
+    <tr>
+        <td>nfTestEmailAddress</td>
+        <td>(optional) Email address for test email</td>
+        <td>emailsender System Setting</td>
+    </tr>
+    <tr>
+        <td>sortBy</td>
+        <td>(optional) Field to sort by when selecting users</td>
+        <td>username</td>
+    </tr>
+    <tr>
+        <td>userClass</td>
+        <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
+        <td>modUser</td>
+    </tr>
+    <tr>
+        <td>sortByAlias</td>
+        <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
+        <td>modUser</td>
+    </tr>
+    <tr>
+        <td>profileAlias</td>
+        <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
+        <td>modUserProfile</td>
+    </tr>
+    <tr>
+        <td>profileClass</td>
+        <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
+        <td>modUserProfile</td>
+    </tr>
+    <tr>
+        <td>batchSize</td>
+        <td>(optional) Batch size for bulk email to subscribers</td>
+        <td>50</td>
+    </tr>
+    <tr>
+        <td>batchDelay</td>
+        <td>(optional) Delay between batches in seconds</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>itemDelay</td>
+        <td>(optional) Delay between individual emails in seconds</td>
+        <td>.51</td>
+    </tr>
+</table>
+
 
 
