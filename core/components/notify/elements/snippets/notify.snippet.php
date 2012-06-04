@@ -23,9 +23,9 @@
  */
 
 /**
- * MODx Notify plugin
+ * MODx Notify snippet
  *
- * Description: Removes all vestiges of Notify package except the files
+ * Description: Sends updates to Subscribers, Twitter, and Facebook
  *
  *
  * @package notify
@@ -109,16 +109,6 @@
 
 /* @var $modx modX */
 /* @var $scriptProperties array */
-/* @var $category modCategory */
-/* @var $tv modTemplateVar */
-/* @var $chunk modChunk */
-/* @var $plugin modPlugin */
-/* @var $pluginEvent modPluginEvent */
-/* @var $propertySet modPropertySet */
-/* @var $nameSpace modNameSpace */
-/* @var $elementPropertySet modElementPropertySet */
-
-
 
 /* abort if not previewing from 'mgr' */
 if (! $modx->user->hasSessionContext('mgr') || ! $modx->user->isMember('Administrator')) {
