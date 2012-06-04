@@ -33,7 +33,7 @@
 $properties = array(
     array(
         'name' => 'urlShorteningService',
-        'desc' => 'nf.url_shortening_service_desc~~Service used to shorten all URLs in text and Tweet.',
+        'desc' => 'nf.url_shortening_service_desc~~Service used to shorten all URLs in text and Tweet. Default: none',
         'type' => 'list',
         'options' => array(
             array(
@@ -200,7 +200,7 @@ $properties = array(
 
     array(
         'name' => 'mailFrom',
-        'desc' => 'nf.mail_from_desc~~(optional) MAIL_FROM setting for email. Defaults to emailsender System Setting',
+        'desc' => 'nf.mail_from_desc~~(optional) MAIL_FROM setting for email. Default: emailsender System Setting',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -209,7 +209,7 @@ $properties = array(
     ),
     array(
             'name' => 'mailFromName',
-            'desc' => 'nf.mail_from_name_desc~~(optional) MAIL_FROM_NAME setting for email. Defaults to site_name System Setting.',
+            'desc' => 'nf.mail_from_name_desc~~(optional) MAIL_FROM_NAME setting for email. Default: site_name System Setting.',
             'type' => 'textfield',
             'options' => '',
             'value' => '',
@@ -218,7 +218,7 @@ $properties = array(
         ),
     array(
             'name' => 'mailSender',
-            'desc' => 'nf.mail_sender_desc~~(optional) EMAIL_SENDER setting for email. Defaults to emailsender System Setting',
+            'desc' => 'nf.mail_sender_desc~~(optional) EMAIL_SENDER setting for email. Default: emailsender System Setting',
             'type' => 'textfield',
             'options' => '',
             'value' => '',
@@ -227,7 +227,7 @@ $properties = array(
         ),
     array(
         'name' => 'mailReplyTo',
-        'desc' => 'nf.mail_reply_to_desc~~(optional) REPLY_TO setting for email. Defaults to emailsender System Setting',
+        'desc' => 'nf.mail_reply_to_desc~~(optional) REPLY_TO setting for email. Default: emailsender System Setting',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -272,7 +272,7 @@ $properties = array(
         ),
     array(
         'name' => 'nfTestEmailAddress',
-        'desc' => 'nf.test_email_address_desc~~ (optional) Email address for test email. Defaults to emailsender System Setting',
+        'desc' => 'nf.test_email_address_desc~~ (optional) Email address for test email. Default: emailsender System Setting',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -359,7 +359,6 @@ $properties = array(
         ),
 
 );
-
 
 return $properties;
 
