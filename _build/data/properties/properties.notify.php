@@ -83,7 +83,7 @@ $properties = array(
         'desc' => 'nf.tags_desc',
         'type' => 'textfield',
         'options' => '',
-        'value' => 'Subscribers',
+        'value' => '',
         'lexicon' => 'notify:properties',
         'area' => '',
         ),
