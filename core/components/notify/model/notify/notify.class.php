@@ -100,9 +100,14 @@ class Notify
 
     public function init($action) {
         $this->errors = array();
-
         $this->successMessages = array();
-        
+
+        $language = !empty($this->props['language'])
+            ? $this->props['language']
+            : $this->modx->getOption('cultureKey',null,$this->modx->getOption('manager_language',null,'en'));
+
+        $this->modx->lexicon->load($language . ':notify:default');
+
         $this->previewPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
         if (! $this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
@@ -342,9 +347,10 @@ class Notify
         set_time_limit(0);
         $this->modx->getService('mail', 'mail.modPHPMailer');
         $this->mail_from = $this->modx->getOption('mailFrom', $this->props, $this->modx->getOption('emailsender'));
+        if (empty($this->mail_from)) $this->mail_from = $this->modx->getOption('emailsender');
 
         $this->mail_from_name = $this->modx->getOption('mailFromName', $this->props, $this->modx->getOption('site_name', null));
-
+        if (empty($this->mail_from_name)) $this->mail_from_name = $this->modx->getOption('site_name', null);
         $this->mail_sender = $this->modx->getOption('mailSender', $this->props, $this->mail_from);
 
         $this->mail_reply_to = $this->modx->getOption('mailReplyTo', $this->props, $this->mail_from);
