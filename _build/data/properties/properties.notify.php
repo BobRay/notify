@@ -22,7 +22,7 @@
 /**
  * @var modX $modx
  *//**
-* Default properties for the properties.notifyproperties.phpsnippet
+* Default properties for the properties.notifyproperties.php snippet
 * @author Bob Ray <http://bobsguides.com>
 *
 * @package notify
@@ -33,7 +33,7 @@
 $properties = array(
     array(
         'name' => 'urlShorteningService',
-        'desc' => 'nf.url_shortening_service_desc~~Service used to shorten all URLs in text and Tweet. Default: none',
+        'desc' => 'nf.url_shortening_service_desc',
         'type' => 'list',
         'options' => array(
             array(
@@ -71,7 +71,7 @@ $properties = array(
         ),
     array(
         'name' => 'groups',
-        'desc' => 'nf.groups_desc~~Comma-separated list of User Groups to send to (no spaces). The Subscribers group will be set in the form, but if you delete it and submit with the Groups field empty, email will be sent to all users on the site',
+        'desc' => 'nf.groups_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'Subscribers',
@@ -80,7 +80,7 @@ $properties = array(
         ),
     array(
         'name' => 'tags',
-        'desc' => 'nf.tags_desc~~ (optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive the email.',
+        'desc' => 'nf.tags_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'Subscribers',
@@ -89,7 +89,7 @@ $properties = array(
         ),
     array(
         'name' => 'notifyFacebook',
-        'desc' => 'nf.notify_facebook_desc~~Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App.',
+        'desc' => 'nf.notify_facebook_desc',
         'type' => 'combo-boolean',
         'options' => '',
         'value' => false,
@@ -99,7 +99,7 @@ $properties = array(
 
     array(
            'name' => 'twitterConsumerKey',
-           'desc' => 'nf.twitter_consumer_key_desc~~Twitter Consumer Key',
+           'desc' => 'nf.twitter_consumer_key_desc',
            'type' => 'textfield',
            'options' => '',
            'value' => '',
@@ -108,7 +108,7 @@ $properties = array(
            ),
     array(
            'name' => 'twitterConsumerSecret',
-           'desc' => 'nf.twitter_consumer_secret_desc~~Twitter Consumer Secret',
+           'desc' => 'nf.twitter_consumer_secret_desc',
            'type' => 'textfield',
            'options' => '',
            'value' => '',
@@ -117,7 +117,7 @@ $properties = array(
            ),
     array(
            'name' => 'twitterOauthToken',
-           'desc' => 'nf.twitter_access_token_desc~~Twitter Access Token',
+           'desc' => 'nf.twitter_access_token_desc',
            'type' => 'textfield',
            'options' => '',
            'value' => '',
@@ -126,7 +126,7 @@ $properties = array(
            ),
     array(
            'name' => 'twitterOauthSecret',
-           'desc' => 'nf.twitter_oauth_token_secret_desc~~Twitter Access Token Secret',
+           'desc' => 'nf.twitter_oauth_token_secret_desc Secret',
            'type' => 'textfield',
            'options' => '',
            'value' => '',
@@ -136,7 +136,7 @@ $properties = array(
 
     array(
         'name' => 'bitlyApiKey',
-        'desc' => 'nf.bitly_api_key_desc~~bit.ly API key (required)',
+        'desc' => 'nf.bitly_api_key_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -145,7 +145,7 @@ $properties = array(
         ),
     array(
         'name' => 'bitlyUsername',
-        'desc' => 'nf.bitly_username_desc~~bit.ly username (required)',
+        'desc' => 'nf.bitly_username_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -154,7 +154,7 @@ $properties = array(
     ),
     array(
         'name' => 'googleApiKey',
-        'desc' => 'nf.google_api_key_desc~~Google API key',
+        'desc' => 'nf.google_api_key_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -163,7 +163,7 @@ $properties = array(
         ),
     array(
         'name' => 'suprApiKey',
-        'desc' => 'nf.supr_api_key_desc~~StumbleUpon API key (optional)',
+        'desc' => 'nf.supr_api_key_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -172,7 +172,7 @@ $properties = array(
         ),
     array(
         'name' => 'suprUsername',
-        'desc' => 'nf.supr_username_desc~~Stumble Upon Username (optional)',
+        'desc' => 'nf.supr_username_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -181,7 +181,7 @@ $properties = array(
         ),
     array(
         'name' => 'tinyurlApiKey',
-        'desc' => 'nf.tinyurl_api_key_desc~~TinyUrl API key (optional)',
+        'desc' => 'nf.tinyurl_api_key_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -190,7 +190,7 @@ $properties = array(
         ),
     array(
         'name' => 'tinyurlUsername',
-        'desc' => 'nf.tinyurl_username_desc~~TinyUrl username (optional)',
+        'desc' => 'nf.tinyurl_username_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -200,7 +200,7 @@ $properties = array(
 
     array(
         'name' => 'mailFrom',
-        'desc' => 'nf.mail_from_desc~~(optional) MAIL_FROM setting for email. Default: emailsender System Setting',
+        'desc' => 'nf.mail_from_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -209,7 +209,7 @@ $properties = array(
     ),
     array(
             'name' => 'mailFromName',
-            'desc' => 'nf.mail_from_name_desc~~(optional) MAIL_FROM_NAME setting for email. Default: site_name System Setting.',
+            'desc' => 'nf.mail_from_name_desc',
             'type' => 'textfield',
             'options' => '',
             'value' => '',
@@ -218,7 +218,7 @@ $properties = array(
         ),
     array(
             'name' => 'mailSender',
-            'desc' => 'nf.mail_sender_desc~~(optional) EMAIL_SENDER setting for email. Default: emailsender System Setting',
+            'desc' => 'nf.mail_sender_desc',
             'type' => 'textfield',
             'options' => '',
             'value' => '',
@@ -227,7 +227,7 @@ $properties = array(
         ),
     array(
         'name' => 'mailReplyTo',
-        'desc' => 'nf.mail_reply_to_desc~~(optional) REPLY_TO setting for email. Default: emailsender System Setting',
+        'desc' => 'nf.mail_reply_to_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -236,7 +236,7 @@ $properties = array(
     ),
     array(
         'name' => 'nfFormTpl',
-        'desc' => 'nf.form_tpl_desc~~Name of chunk to use for the Notify form; default: NfNotifyFormTpl',
+        'desc' => 'nf.form_tpl_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'NfNotifyFormTpl',
@@ -245,7 +245,7 @@ $properties = array(
     ),
     array(
         'name' => 'nfEmailTpl',
-        'desc' => 'nf.email_tpl_desc~~Name of chunk to use for the Email to send to subscribers; default: NfSubscriberEmailTpl',
+        'desc' => 'nf.email_tpl_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'NfSubscriberEmailTpl',
@@ -254,7 +254,7 @@ $properties = array(
     ),
     array(
         'name' => 'nfTweetTpl',
-        'desc' => 'nf.tweet_tpl_desc~~Name of chunk to use for the Tweet text; default: nfTweetTpl',
+        'desc' => 'nf.tweet_tpl_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'nfTweetTpl',
@@ -263,7 +263,7 @@ $properties = array(
     ),
     array(
         'name' => 'nfSubjectTpl',
-        'desc' => 'nf.subject_tpl_desc~~Name of chunk to use for the Email subject; default: NfEmailSubjectTpl',
+        'desc' => 'nf.subject_tpl_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'NfEmailSubjectTpl',
@@ -272,7 +272,7 @@ $properties = array(
         ),
     array(
         'name' => 'nfTestEmailAddress',
-        'desc' => 'nf.test_email_address_desc~~ (optional) Email address for test email. Default: emailsender System Setting',
+        'desc' => 'nf.test_email_address_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -283,7 +283,7 @@ $properties = array(
 
     array(
         'name' => 'sortBy',
-        'desc' => 'nf.sortby_desc~~ (optional) Field to sort by when selecting users; default: username',
+        'desc' => 'nf.sortby_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'username',
@@ -293,7 +293,7 @@ $properties = array(
 
     array(
         'name' => 'userClass',
-        'desc' => 'nf.userClass_desc~~ (optional) class of the user object. Only necessary if you have subclassed the user object. Default: modUser',
+        'desc' => 'nf.userClass_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'modUser',
@@ -302,7 +302,7 @@ $properties = array(
         ),
     array(
         'name' => 'sortByAlias',
-        'desc' => 'nf.sortby_alias_desc~~ (optional) class of the user object. Only necessary if you have subclassed the user object. Default: modUser',
+        'desc' => 'nf.sortby_alias_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'modUser',
@@ -312,7 +312,7 @@ $properties = array(
 
     array(
         'name' => 'profileAlias',
-        'desc' => 'nf.profile_desc~~ (optional) class of the user profile object. Only necessary if you have subclassed the user profile object. Default: modUserProfile',
+        'desc' => 'nf.profile_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'modUserProfile',
@@ -321,7 +321,7 @@ $properties = array(
         ),
     array(
         'name' => 'profileClass',
-        'desc' => 'nf.profile_class_desc~~ (optional) class of the user profile object. Only necessary if you have subclassed the user profile object. Default: modUser',
+        'desc' => 'nf.profile_class_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'modUserProfile',
@@ -331,7 +331,7 @@ $properties = array(
 
     array(
         'name' => 'batchSize',
-        'desc' => 'nf.batch_size_desc~~ (optional) Batch size for bulk email to subscribers. Default: 50',
+        'desc' => 'nf.batch_size_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '50',
@@ -340,7 +340,7 @@ $properties = array(
         ),
     array(
         'name' => 'batchDelay',
-        'desc' => 'nf.batch_delay_desc~~ (optional) Delay between batches in seconds. Default: 1',
+        'desc' => 'nf.batch_delay_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '1',
@@ -350,7 +350,7 @@ $properties = array(
 
     array(
         'name' => 'itemDelay',
-        'desc' => 'nf.item_delay_desc~~ (optional) Delay between individual emails in seconds. Default: .51',
+        'desc' => 'nf.item_delay_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '.51',
