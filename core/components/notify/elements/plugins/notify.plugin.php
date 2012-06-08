@@ -131,7 +131,7 @@ my_debug('After class include', true);
     if (isset($resource)) {
         /* @var $tvObj modTemplateVar */
         /* @var $notifyObj modResource */
-        $tvObj = $modx->getObject('modTemplateVar', array('name' => 'Testing'));
+        $tvObj = $modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
         $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
         $notifyUrl = $modx->makeUrl($notifyObj->get('id'), "", "", "full");
         $tv = 'tv' . $tvObj->get('id');
