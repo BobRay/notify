@@ -83,6 +83,7 @@ class Notify
     protected $shortenUrls;
     /* @var $shortener UrlShortener */
     public $shortener;
+    protected $tplType; /* new, update, blank, custom */
 
 
 
@@ -112,23 +113,7 @@ class Notify
         if (! $this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
         }
-        /*$this->pageId = isset($_SESSION['nf_page_id'])? $_SESSION['nf_page_id'] : 0;
-        if (empty($this->pageId)) {
-            $this->setError($this->modx->lexicon('nf.session_variable_not_set'));
-            return '';
-        }*/
-        /*$this->pageId = isset($_POST['pageId'])? $_POST['pageId'] : '';
 
-        if (empty($this->pageId) ) {
-            $this->setError('nf_page_id_is_empty');
-            return '';
-        }
-
-        $this->resource = $this->modx->getObject('modResource',$this->pageId);
-        if (!$this->resource) {
-            $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
-            return '';
-        }*/
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
         $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
 
@@ -142,6 +127,9 @@ class Notify
                     $this->setError('nf_page_id_is_empty');
                     return '';
                 }
+
+                $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
+
 
                 $this->resource = $this->modx->getObject('modResource',$this->pageId);
                 if (!$this->resource) {
@@ -615,9 +603,7 @@ class Notify
             if (!$response) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
             } elseif ($response->error) {
-                $this->setError('Twitter said, there was an error
-                <p>$response->error</code</p>\n
-                <p>Full response:</p>\n
+                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .      '</p><p>$response->error</p><p>' . $this->modx->lexicon('nf.full_response') . '</p>
                 <pre>" . print_r($response,true) . "</pre><br />"');
             } else {
                 $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
