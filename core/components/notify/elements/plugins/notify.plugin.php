@@ -73,13 +73,8 @@ if (!$modx->user->hasSessionContext('mgr')) {
     return '';
 }
 
-my_debug('After auth check', true);
-
-
 require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path') . 'components/notify/') . 'model/notify/notify.class.php';
-my_debug('After class include', true);
 
-    my_debug("\nexecuting after event name");
     $src = "<script type='text/javascript'>
         Ext.onReady(function() {
         Ext.get('nf-b').setStyle('color', 'red');
@@ -132,10 +127,18 @@ my_debug('After class include', true);
         /* @var $tvObj modTemplateVar */
         /* @var $notifyObj modResource */
         $tvObj = $modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
+        if (! $tvObj) {
+            my_debug('No TV object');
+            return '';
+        }
         $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
+        if (! $notifyObj) {
+            my_debug('No resource');
+            return '';
+        }
         $notifyUrl = $modx->makeUrl($notifyObj->get('id'), "", "", "full");
         $tv = 'tv' . $tvObj->get('id');
-        $pageId = $modx->resource->get('id');
+        $pageId = $resource->get('id');
         $url = $modx->makeUrl($pageId, "", "", "full");
         if (empty($url)) {
             /* try again after refreshing documentMap */
@@ -150,7 +153,7 @@ my_debug('After class include', true);
         $src = str_replace('[[+pagetitle]]', $resource->get('pagetitle'), $src);
 
     }
-    my_debug("\nSRC: " . $src);
+
     $modx->regClientStartupScript($src);
     return '';
 
