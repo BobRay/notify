@@ -112,16 +112,23 @@ class Notify
         if (! $this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
         }
-        $this->pageId = isset($_SESSION['nf_page_id'])? $_SESSION['nf_page_id'] : 0;
+        /*$this->pageId = isset($_SESSION['nf_page_id'])? $_SESSION['nf_page_id'] : 0;
         if (empty($this->pageId)) {
             $this->setError($this->modx->lexicon('nf.session_variable_not_set'));
             return '';
+        }*/
+        /*$this->pageId = isset($_POST['pageId'])? $_POST['pageId'] : '';
+
+        if (empty($this->pageId) ) {
+            $this->setError('nf_page_id_is_empty');
+            return '';
         }
+
         $this->resource = $this->modx->getObject('modResource',$this->pageId);
         if (!$this->resource) {
             $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
             return '';
-        }
+        }*/
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
         $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
 
@@ -129,6 +136,19 @@ class Notify
 
             /* *********************************************** */
             case 'displayForm':
+                $this->pageId = isset($_POST['pageId'])? $_POST['pageId'] : '';
+
+                if (empty($this->pageId) ) {
+                    $this->setError('nf_page_id_is_empty');
+                    return '';
+                }
+
+                $this->resource = $this->modx->getObject('modResource',$this->pageId);
+                if (!$this->resource) {
+                    $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
+                    return '';
+                }
+
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
                 $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
                 $this->shortenUrls = $this->urlShorteningService != 'none';

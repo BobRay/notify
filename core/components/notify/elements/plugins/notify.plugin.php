@@ -42,38 +42,149 @@
 /* @var $nf Notify */
 
 
+function my_debug($message, $clear = false)
+    {
+        global $modx;
+        /* @var $chunk modChunk */
+        $chunk = $modx->getObject('modChunk', array('name' => 'debug'));
+
+        if (!$chunk) {
+            $chunk = $modx->newObject('modChunk', array('name' => 'debug'));
+            $chunk->save();
+            $chunk = $modx->getObject('modChunk', array('name' => 'debug'));
+        }
+        if ($clear) {
+            $content = '';
+        } else {
+            $content = $chunk->getContent();
+        }
+        $content .= $message;
+        $chunk->setContent($content);
+        $chunk->save();
+    }
+
+
+
 $sp =& $scriptProperties;
+
 
 /* Act only when previewing from the back end */
 if (!$modx->user->hasSessionContext('mgr')) {
     return '';
 }
 
+my_debug('After auth check', true);
+
+
 require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path') . 'components/notify/') . 'model/notify/notify.class.php';
+my_debug('After class include', true);
 
-unset($templates);
+    my_debug("\nexecuting after event name");
+    $src = "<script type='text/javascript'>
+        Ext.onReady(function() {
+        Ext.get('nf-b').setStyle('color', 'red');
+        Ext.get('nf-b').setStyle('margin-bottom', '15px');
+    });";
+    if (!isset($resource)) {
+        $src .= "
+      function nf() {
+         Ext.MessageBox.alert('Oops', 'You must save the page before launching Notify');
+       }
+      ";
+
+    } else {
+
+        $src .= "
+        function nf() {
+            var tv = '[[+tv]]';
+            var path = '[[+notifyUrl]]';
+            var url = '[[+url]]';
+            var pagetitle = '[[+pagetitle]]';
+            var form = document.createElement('form');
+            var pageId = '[[+pageId]]';
+            var checkedItem = Ext.getCmp(tv).getValue();
+            var pageType = checkedItem.getGroupValue();
+
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', path);  // Notify page URL !!!
+
+            var hiddenField = document.createElement('input');
+            hiddenField.setAttribute('type', 'hidden');
+            hiddenField.setAttribute('name', 'pageId');
+            hiddenField.setAttribute('value', pageId);
+            form.appendChild(hiddenField);
+
+            var hiddenField2 = document.createElement('input');
+            hiddenField2.setAttribute('type', 'hidden');
+            hiddenField2.setAttribute('name', 'pageType');
+            hiddenField2.setAttribute('value', pageType);
+            form.appendChild(hiddenField2);
+            document.body.appendChild(form);
+            form.submit();
+
+          }
+   ";
+    }
+    $src .= "\n</script>";
 
 
-$res = null;
+    if (isset($resource)) {
+        $tvObj = $modx->getObject('modTemplateVar', array('name' => 'Testing'));
+        $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
+        $notifyUrl = $modx->makeUrl($notifyObj->get('id'), "", "", "full");
+        $tv = 'tv' . $tvObj->get('id');
+        $pageId = $modx->resource->get('id');
+        $url = $modx->makeUrl($pageId, "", "", "full");
+        if (empty($url)) {
+            //$modx->cacheManager->refresh();
+            $modx->reloadContext('web');
+            $url = $modx->makeUrl($resource->get('id'), "", "", "full");
+        }
+        $src = str_replace('[[+pageId]]', $pageId, $src);
+        $src = str_replace('[[+notifyUrl]]', $notifyUrl, $src);
+        $src = str_replace('[[+tv]]', $tv, $src);
+        $src = str_replace('[[+url]]', $url, $src);
+        $src = str_replace('[[+pagetitle]]', $resource->get('pagetitle'), $src);
+
+    }
+    my_debug("\nSRC: " . $src);
+    $modx->regClientStartupScript($src);
+    return '';
+
+
+
+/*
+var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", path);  // URL !!!
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+*/
 
 
 /* Get TV values */
 
 $nfDoNotify = $modx->resource->getTVValue('nf_notify_subscribers') == 'Yes';
 
-if ($nfDoNotify ) {
+
+if ($nfDoNotify) {
     $modx->resource->setTVValue('nf_notify_subscribers', 'No');
     //unset($emailit);
     $_SESSION['nf_page_id'] = $modx->resource->get('id');
-    $nfUrl = $modx->makeUrl(999,"","","full");
+    $nfUrl = $modx->makeUrl(437, "", "", "full");
     $modx->sendRedirect($nfUrl);
 } else {
     return '';
 }
-
-
-
-
-
-
-
