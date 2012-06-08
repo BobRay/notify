@@ -129,6 +129,8 @@ my_debug('After class include', true);
 
 
     if (isset($resource)) {
+        /* @var $tvObj modTemplateVar */
+        /* @var $notifyObj modResource */
         $tvObj = $modx->getObject('modTemplateVar', array('name' => 'Testing'));
         $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
         $notifyUrl = $modx->makeUrl($notifyObj->get('id'), "", "", "full");
@@ -136,6 +138,7 @@ my_debug('After class include', true);
         $pageId = $modx->resource->get('id');
         $url = $modx->makeUrl($pageId, "", "", "full");
         if (empty($url)) {
+            /* try again after refreshing documentMap */
             //$modx->cacheManager->refresh();
             $modx->reloadContext('web');
             $url = $modx->makeUrl($resource->get('id'), "", "", "full");
