@@ -68,7 +68,7 @@ $hasTemplateVariables = true;
 $hasPlugins = true;
 $hasPluginEvents = false;
 
-$hasPropertySets = true;
+$hasPropertySets = false;
 /* Note: property sets are connected to elements in the script
  * resolver (see _build/data/resolvers/install.script.php)
  */
