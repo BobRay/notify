@@ -50,8 +50,16 @@ $_lang['nf.mail_from_name_desc'] = '(optional) MAIL_FROM_NAME setting for email.
 $_lang['nf.mail_sender_desc'] = '(optional) EMAIL_SENDER setting for email. Default: emailsender System Setting';
 $_lang['nf.mail_reply_to_desc'] = '(optional) REPLY_TO setting for email. Default: emailsender System Setting';
 $_lang['nf.form_tpl_desc'] = 'Name of chunk to use for the Notify form; default: NfNotifyFormTpl';
-$_lang['nf.email_tpl_desc'] = 'Name of chunk to use for the Email to send to subscribers; default: NfSubscriberEmailTpl';
-$_lang['nf.tweet_tpl_desc'] = 'Name of chunk to use for the Tweet text; default: nfTweetTpl';
+$_lang['nf.email_tpl_new_desc'] = 'Name of chunk to use for the new resource Notify email; default: NfSubscriberEmailTplNew';
+$_lang['nf.email_tpl_new_desc'] = 'Name of chunk to use for updated resource Notify email; default: NfSubscriberEmailTplExisting';
+$_lang['nf.email_tpl_new_desc'] = 'Name of chunk to use for custom Notify email Tpl; default: NfSubscriberEmailTplCustom';
+$_lang['nf.tweet_tpl_new_desc'] = 'Name of chunk to use for the new resource Tweet text; default: nfTweetTplNew';
+$_lang['nf.tweet_tpl_existing_desc'] = 'Name of chunk to use for the updated resource Tweet text; default: nfTweetTplExisting';
+$_lang['nf.tweet_tpl_custom_desc'] = 'Name of chunk to use for the custom Tweet text; default: nfTweetTplCustom';
+
+
+
+
 $_lang['nf.subject_tpl_desc'] = 'Name of chunk to use for the Email subject; default: NfEmailSubjectTpl';
 $_lang['nf.test_email_address_desc'] = ' (optional) Email address for test email. Default: emailsender System Setting';
 $_lang['nf.sortby_desc'] = ' (optional) Field to sort by when selecting users; default: username';
