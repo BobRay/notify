@@ -66,6 +66,7 @@ class Notify
     protected $recipients;
     protected $emailText;
     protected $emailTpl;
+    protected $tweetTpl;
     protected $tweetText;
     protected $replace;
     /* @var $successMessages array */
@@ -129,7 +130,9 @@ class Notify
                 }
 
                 $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
-
+                /* set Tpl name using $_POST data */
+                $this->emailTpl = 'NfSubscriberEmailTpl' . $this->tplType;
+                $this->tweetTpl = 'NfTweetTpl' . $this->tplType;
 
                 $this->resource = $this->modx->getObject('modResource',$this->pageId);
                 if (!$this->resource) {
@@ -147,39 +150,55 @@ class Notify
                 }
                 $fields = $this->resource->toArray();
                 $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
-                $this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
-                $this->emailTpl = empty($this->emailTpl)? 'NfSubscriberEmailTpl' : $this->emailTpl;
 
-                $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
-                if (empty($this->emailText)) {
-                    $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
-                } else {
-                    /* convert any relative URLS in email text */
-                    $this->fullUrls();
-                    $this->imgAttributes();
+                /*$this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
+                $this->emailTpl = empty($this->emailTpl)? 'NfSubscriberEmailTpl' : $this->emailTpl; */
 
+                if ($this->tplType != 'blank') {
+                    $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
+                    if (empty($this->emailText)) {
+                        $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
+                    } else {
+                        /* convert any relative URLS in email text */
+                        $this->fullUrls();
+                        $this->imgAttributes();
 
-                    /* shorten URLs if property is set */
-                    if ($this->shortenUrls) {
-                        echo 'ShortenUrls is true';
-                        $this->shortenUrls($this->emailText);
+                        /* shorten URLs if property is set */
+                        if ($this->shortenUrls) {
+                            echo 'ShortenUrls is true';
+                            $this->shortenUrls($this->emailText);
+                        }
                     }
+                    $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
+                    if (empty($this->tweetText)) {
+                        $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
+                    } else {
+                        if ($this->shortenUrls) {
+                            $this->shortenUrls($this->tweetText);
+                        }
+                        if ($notifyFacebook) {
+                            $this->tweetText = rtrim($this->tweetText,' ') . ' #fb';
+                        }
+                    }
+
+                } else {
+                    $this->emailText = '';
+                    $this->tweetText = '';
                 }
 
-                $tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
-                $tweetTpl = empty($tweetTpl)? 'nfTweetTpl' : $tweetTpl;
-                $this->tweetText = $this->modx->getChunk($tweetTpl, $fields);
+                /*$tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
+                $tweetTpl = empty($tweetTpl)? 'nfTweetTpl' : $tweetTpl;*/
+/*                $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
                 if (empty($this->tweetText)) {
                     $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
                 } else {
-                    /* shorten URLs if property is set */
                     if ($this->shortenUrls) {
                         $this->shortenUrls($this->tweetText);
                     }
                     if ($notifyFacebook) {
                         $this->tweetText = rtrim($this->tweetText,' ') . ' #fb';
                     }
-                }
+                }*/
                     break;
             /* *********************************************** */
             case 'handleSubmission':
