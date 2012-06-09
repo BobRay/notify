@@ -28,7 +28,7 @@
  * MODx Notify plugin
  *
  * Description: Creates and Sends an email to subscribers and notifies social media
- * Events: OnWebPagePrerender, OnDocFormPrerender
+ * Events: OnDocFormPrerender
  *
  *
  * @package notify

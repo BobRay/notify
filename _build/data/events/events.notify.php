@@ -24,9 +24,9 @@
 /* @var $event modPluginEvent */
 $events = array();
 
-$events['OnWebPagePrerender']= $modx->newObject('modPluginEvent');
-$events['OnWebPagePrerender']->fromArray(array(
-    'event' => 'OnWebPagePrerender',
+$events['OnDocFormPrerender']= $modx->newObject('modPluginEvent');
+$events['OnDocFormPrerender']->fromArray(array(
+    'event' => 'OnDocFormPrerender',
     'priority' => 0,
     'propertyset' => 0,
 ),'',true,true);

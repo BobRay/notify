@@ -48,7 +48,6 @@ $modx =& $object->xpdo;
  * in the arrays below.
  */
 
-$pluginEvents = array('OnWebPagePrerender');
 $plugins = array('Notify');
 
 $category = 'Notify';
