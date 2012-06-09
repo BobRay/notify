@@ -101,8 +101,8 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
             var pageType = checkedItem.getGroupValue();
 
             form.setAttribute('method', 'post');
-            form.setAttribute('action', path);  // Notify page URL !!!
-
+            form.setAttribute('action', path);
+            form.setAttribute('target', '_blank');
             var hiddenField = document.createElement('input');
             hiddenField.setAttribute('type', 'hidden');
             hiddenField.setAttribute('name', 'pageId');
@@ -126,11 +126,22 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
     if (isset($resource)) {
         /* @var $tvObj modTemplateVar */
         /* @var $notifyObj modResource */
+
         $tvObj = $modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
         if (! $tvObj) {
             my_debug('No TV object');
             return '';
         }
+        $tvId = $tvObj->get('id');
+        $templateId = $resource->get('template');
+
+        /* bail if the Notify TV is not attached to this template */
+
+        $tvt = $modx->getObject('modTemplateVarTemplate', array('templateid'=> $templateId, 'tmplvarid' => $tvId));
+        if (!$tvt) {
+            return '';
+        }
+
         $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
         if (! $notifyObj) {
             my_debug('No resource');
@@ -151,7 +162,6 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
         $src = str_replace('[[+tv]]', $tv, $src);
         $src = str_replace('[[+url]]', $url, $src);
         $src = str_replace('[[+pagetitle]]', $resource->get('pagetitle'), $src);
-
     }
 
     $modx->regClientStartupScript($src);
