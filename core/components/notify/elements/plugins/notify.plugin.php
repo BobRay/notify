@@ -77,8 +77,9 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
     $src = "<script type='text/javascript'>
         Ext.onReady(function() {
-        Ext.get('nf-b').setStyle('color', 'red');
-        Ext.get('nf-b').setStyle('margin-bottom', '15px');
+        var btn = Ext.get('nf-b');
+        btn.setStyle('color','red');
+        btn.setStyle('margin-bottom','15px');
     });";
     if (!isset($resource)) {
         $src .= "
