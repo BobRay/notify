@@ -74,6 +74,7 @@ class Notify
     /* @var $errors array */
     protected $errors;
     protected $pageId;
+    protected $pageAlias;
     protected $sendBulkEmail;
     protected $sendTestEmail;
     protected $sendTweet;
@@ -138,6 +139,8 @@ class Notify
                 if (!$this->resource) {
                     $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
                     return '';
+                } else {
+                    $this->modx->setPlaceholder('pageAlias',$this->resource->get('alias'));
                 }
 
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
@@ -202,6 +205,8 @@ class Notify
                     break;
             /* *********************************************** */
             case 'handleSubmission':
+                $this->pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
+
                 $this->sendTestEmail = isset($_POST['nf_send_test_email']);
                 $this->sendBulkEmail = isset($_POST['nf_notify']);
                 $this->sendTweet = isset($_POST['nf_send_tweet']);
@@ -359,7 +364,7 @@ class Notify
         $this->profileAlias = empty($this->profileAlias)? 'modUserProfile' : $this->profileAlias;
         $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
         $this->profileClass = empty($this->profileClass)? 'modUserProfile' : $this->profileClass;
-        $this->logFile = $this->corePath . 'notify-logs/' . $this->resource->get('alias') . '--'. date('Y-m-d-h.i.sa');
+        $this->logFile = $this->corePath . 'notify-logs/' . $this->pageAlias . '--'. date('Y-m-d-h.i.sa');
 
         $this->tags = isset($_POST['nf_tags'])? $_POST['nf_tags']: '';
 
