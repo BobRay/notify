@@ -98,12 +98,12 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         /* set resource ID in plugin */
         if ($notifyResource && $plugin) {
             $plugin->set('category', $categoryId);
-            $c = $plugin->getContent();
+            /*$c = $plugin->getContent();
             $c = str_replace('999',$notifyResource->get('id'), $c);
             $plugin->setContent($c);
             if ($plugin->save()) {
                 $modx->log(xPDO::LOG_LEVEL_INFO,'Set resource Id in plugin code');
-            }
+            }*/
         }
         /* set Template of Notify and Preview resources to NotifyTemplate */
         /* @var $notifyTemplate modTemplate */
