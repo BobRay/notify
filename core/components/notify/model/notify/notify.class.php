@@ -140,7 +140,7 @@ class Notify
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
                 $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
                 $this->shortenUrls = $this->urlShorteningService != 'none';
-
+                echo 'ShorteningService: ' . $this->urlShorteningService . "<br />";
                 if ($this->shortenUrls) {
                     require_once $this->corePath . 'model/notify/urlshortener.class.php';
                     $this->shortener = new UrlShortener($this->props);
@@ -157,7 +157,11 @@ class Notify
                     /* convert any relative URLS in email text */
                     $this->fullUrls();
                     $this->imgAttributes();
+
+
+                    /* shorten URLs if property is set */
                     if ($this->shortenUrls) {
+                        echo 'ShortenUrls is true';
                         $this->shortenUrls($this->emailText);
                     }
                 }
@@ -168,6 +172,7 @@ class Notify
                 if (empty($this->tweetText)) {
                     $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
                 } else {
+                    /* shorten URLs if property is set */
                     if ($this->shortenUrls) {
                         $this->shortenUrls($this->tweetText);
                     }
@@ -247,9 +252,12 @@ class Notify
     }
 
     public function shortenUrls(&$text) {
+        echo "Before: " . $text . "<br />";
         $this->shortener->init_curl();
+
         $this->shortener->process($text, $this->urlShorteningService);
         $this->shortener->close_curl();
+        echo "After: " . $text . "<br />";
 
     }
 
@@ -611,40 +619,6 @@ class Notify
         }
     }
 
-    public function resetTVs() {
-        /* turn the TVs off to prevent accidental resending */
-        /* @var $tv modTemplateVar */
-
-        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_send_test_email'));
-        $tv->setValue($this->resource->get('id'), 'No');
-        $tv->save();
-        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
-        $tv->setValue($this->resource->get('id'), 'No');
-        $tv->save();
-        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_twitter'));
-        $tv->setValue($this->resource->get('id'), 'No');
-        $tv->save();
-        $tv = $this->modx->getObject('modTemplateVar', array('name' => 'nf_preview_email'));
-        $tv->setValue($this->resource->get('id'), 'No');
-        $tv->save();
-        /* Need to change the TV values in memory too */
-
-        $fields = array(
-            'nf_send_test_email',
-            'No',
-            'default',
-            '',
-            'option',
-        );
-        $this->resource->set('nf_send_test_email', $fields);
-        $fields[0] = 'nf_notify_subscribers';
-        $this->resource->set('nf_notify_subscribers', $fields);
-        $fields[0] = 'nf_twitter';
-        $this->resource->set('nf_twitter', $fields);
-        $fields[0] = 'nf_preview_email';
-        $this->resource->set('nf_preview_email', $fields);
-        
-    }
 
     public function my_debug($message, $clear = false)
     {
