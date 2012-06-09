@@ -169,39 +169,3 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
     return '';
 
 
-
-/*
-var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", path);  // URL !!!
-
-    for(var key in params) {
-        if(params.hasOwnProperty(key)) {
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-
-            form.appendChild(hiddenField);
-         }
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-*/
-
-
-/* Get TV values */
-
-$nfDoNotify = $modx->resource->getTVValue('NotifySubscribers') == 'Yes';
-
-
-if ($nfDoNotify) {
-    $modx->resource->setTVValue('NotifySubscribers', 'No');
-    //unset($emailit);
-    $_SESSION['nf_page_id'] = $modx->resource->get('id');
-    $nfUrl = $modx->makeUrl(437, "", "", "full");
-    $modx->sendRedirect($nfUrl);
-} else {
-    return '';
-}
