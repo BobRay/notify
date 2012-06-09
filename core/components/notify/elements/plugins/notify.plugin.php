@@ -128,7 +128,7 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
         /* @var $tvObj modTemplateVar */
         /* @var $notifyObj modResource */
 
-        $tvObj = $modx->getObject('modTemplateVar', array('name' => 'nf_notify_subscribers'));
+        $tvObj = $modx->getObject('modTemplateVar', array('name' => 'NotifySubscribers'));
         if (! $tvObj) {
             my_debug('No TV object');
             return '';
@@ -193,11 +193,11 @@ var form = document.createElement("form");
 
 /* Get TV values */
 
-$nfDoNotify = $modx->resource->getTVValue('nf_notify_subscribers') == 'Yes';
+$nfDoNotify = $modx->resource->getTVValue('NotifySubscribers') == 'Yes';
 
 
 if ($nfDoNotify) {
-    $modx->resource->setTVValue('nf_notify_subscribers', 'No');
+    $modx->resource->setTVValue('NotifySubscribers', 'No');
     //unset($emailit);
     $_SESSION['nf_page_id'] = $modx->resource->get('id');
     $nfUrl = $modx->makeUrl(437, "", "", "full");

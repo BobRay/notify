@@ -29,7 +29,7 @@ $templatevars[1] ->fromArray(array(
     'id' => 1,
     'property_preprocess' => '0',
     'type' => 'option',
-    'name' => 'nf_notify_subscribers',
+    'name' => 'NotifySubscribers',
     'caption' => '<button id="nf-b" onClick="nf()"> Launch Notify </button>',
     'description' => 'Click to launch Notify',
     'elements' => 'Notify for new resource==new||Update to existing resource==existing||Use custom Tpl==custom||Use blank Tpl==blank',
