@@ -2,44 +2,44 @@
     <input type="hidden" name="submitVar" id="submitVar" value="submitVar"/>
     <input type="hidden" name="pageAlias" value="[[+pageAlias]]"/>
         <label for="nf_notify">
-            <input type="checkbox" id="nf_notify" name="nf_notify" [[+nf_notify_checked]]/> Notify Subscribers
+            <input type="checkbox" id="nf_notify" name="nf_notify" [[+nf_notify_checked]]/> [[%nf.notify_subscribers? &namespace=`notify` &topic=`form`]]
         </label> <br/><br/>
         <label for="nf_send_test_email">
-            <input type="checkbox" id="nf_send_test_email" name="nf_send_test_email" [[+nf_send_test_email_checked]] />Send Test Email</label><br/><br/>
+            <input type="checkbox" id="nf_send_test_email" name="nf_send_test_email" [[+nf_send_test_email_checked]] /> [[%nf.send_test_email? &namespace=`notify` &topic=`form`]] </label><br/><br/>
 
-        <label for="nf_test_email_address">Email address for Test<br/>
+        <label for="nf_test_email_address">[[%nf.email_address_for_test? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="50" id="nf_test_email_address" name="nf_test_email_address" value="[[+nf_test_email_address]]"/>
         </label> <br/><br/>
 
-        <label for="nf_email_subject">Email Subject<br/>
+        <label for="nf_email_subject">[[%nf.email_subject? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="50" id="nf_email_subject" name="nf_email_subject" value="[[+nf_email_subject]]"/>
         </label><br/><br/>
 
-        <label for="nf_groups">Groups (comma-separated list of groups to send to)<br/>
+        <label for="nf_groups">[[%nf.groups? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="50" id="nf_groups" name="nf_groups" value="[[+nf_groups]]"/>
         </label> <br/><br/>
 
-        <label for="nf_tags">Tags (comma-separated list of tags)<br/>
+        <label for="nf_tags">[[%nf.tags? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="50" id="nf_tags" name="nf_tags" value="[[+nf_tags]]"/>
         </label> <br/><br/>
 
-        <label for="nf_email_text">Text for Email<br/>
+        <label for="nf_email_text">[[%nf.text_for_email? &namespace=`notify` &topic=`form`]]<br/>
             <textarea id="nf_email_text" rows="20" cols="70" name="nf_email_text">[[+nf_email_text]]</textarea>
         </label>
         <br/>
-        <p>Email Preview</p>
+        <p>[[%nf.email_preview? &namespace=`notify` &topic=`form`]]</p>
         <iframe src="[[+nf_temp_url]]"></iframe>
 
     </fieldset>
 <br /><br />
     <fieldset>
 
-        <label for="nf_send_tweet">Notify Twitter<br/><br/>
-            <input type="checkbox" id="nf_send_tweet" name="nf_send_tweet" [[+nf_send_tweet_checked]]/> Send Tweet
+        <label for="nf_send_tweet">[[%nf.notify_twitter? &namespace=`notify` &topic=`form`]]<br/><br/>
+            <input type="checkbox" id="nf_send_tweet" name="nf_send_tweet" [[+nf_send_tweet_checked]]/> [[%nf.send_tweet? &namespace=`notify` &topic=`form`]]
         </label><br/><br/>
 
 
-        <label for="nf_tweet_text">Text for Tweet<br/>
+        <label for="nf_tweet_text">[[%nf.text_for_tweet? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="110" maxlength="140" id="nf_tweet_text" name="nf_tweet_text" value="[[+nf_tweet_text]]"/>
         </label>
     </fieldset>
