@@ -32,9 +32,10 @@
  *
  */
 
-/* Properties:
+/* Properties
+
  * @property &urlShorteningService list -- Service used to shorten all
- *    URLs in text and Tweet; Default: none.
+ *    URLs in text and Tweet; Default: 'none'.
  * @property &groups textfield -- Comma-separated list of User Groups
  *    to send to (no spaces). The Subscribers group will be set in the form,
  *    but if you delete it and submit with the Groups field empty, email
@@ -77,10 +78,18 @@
  *    email; Default: emailsender System Setting.
  * @property &nfFormTpl textfield -- Name of chunk to use for the
  *    Notify form; Default: NfNotifyFormTpl.
- * @property &nfEmailTpl textfield -- Name of chunk to use for the
- *    Email to send to subscribers; Default: NfSubscriberEmailTpl.
- * @property &nfTweetTpl textfield -- Name of chunk to use for the
- *    Tweet text; Default: nfTweetTpl.
+ * @property &nfEmailTplNew textfield -- Name of chunk to use for the
+ *    new resource Notify email; Default: NfSubscriberEmailTplNew.
+ * @property &nfEmailTplExisting textfield -- Name of chunk to use for
+ *    updated resource Notify email; Default: NfSubscriberEmailTplExisting.
+ * @property &nfEmailTplCustom textfield -- Name of chunk to use for
+ *    custom Notify email Tpl; Default: NfSubscriberEmailTplCustom.
+ * @property &nfTweetTplNew textfield -- Name of chunk to use for the
+ *    new resource Tweet text; Default: nfTweetTplNew.
+ * @property &nfTweetTplExisting textfield -- Name of chunk to use for
+ *    the updated resource Tweet text; Default: nfTweetTplExisting.
+ * @property &nfTweetTplCustom textfield -- Name of chunk to use for
+ *    the custom Tweet text; Default: nfTweetTplCustom.
  * @property &nfSubjectTpl textfield -- Name of chunk to use for the
  *    Email subject; Default: NfEmailSubjectTpl.
  * @property &nfTestEmailAddress textfield -- (optional) Email address
@@ -105,7 +114,9 @@
  *    in seconds; Default: 1.
  * @property &itemDelay textfield -- (optional) Delay between
  *    individual emails in seconds; Default: .51.
+
  */
+
 
 /* @var $modx modX */
 /* @var $scriptProperties array */
