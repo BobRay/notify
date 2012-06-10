@@ -32,7 +32,7 @@
  */
 $_lang['notify'] = 'Notify';
 $_lang['nf.could_not_find_preview_page'] = 'Could not find NotifyPreview page';
-$_lang['nf.session_variable_not_set'] = 'Session variable not set';
+$_lang['nf_page_id_is_empty'] = '$_POST pageId is empty';
 $_lang['nf.could_not_get_resource'] = 'Could not get resource';
 $_lang['nf.could_not_find_email_tpl_chunk'] = 'Could not find email Tpl chunk';
 $_lang['nf.could_not_find_tweet_tpl_chunk'] = 'Could not find tweet Tpl chunk';
@@ -48,12 +48,12 @@ $_lang['nf.test_email_not_sent'] = 'Test email not sent';
 $_lang['nf.mail_error_sending_test_email'] = 'Error sending test email';
 $_lang['nf.test_email_sent_successfully'] = 'Test email sent successfully';
 $_lang['nf.twitter_consumer_key_not_set'] = 'Twitter consumer key is not set';
-$_lang['nf.twitter_consumer_secret_not_set'] = 'Twitter consumeXr secret is not set';
+$_lang['nf.twitter_consumer_secret_not_set'] = 'Twitter consumer secret is not set';
 $_lang['nf.twitter_access_token_not_set'] = 'Twitter access token is not set';
 $_lang['nf.twitter_access_token_secret_not_set'] = 'Twitter access token secret is not set';
 $_lang['nf.tweet_field_is_empty'] = 'Tweet field is empty';
 $_lang['nf.unknown_error_using_twitter_api'] = 'Unknown error using Twitter API';
-$_lang['nf.twitter_said_there_was_an_error'] = 'Twitter said, there was an error';
+$_lang['nf.twitter_said_there_was_an_error'] = 'Twitter said there was an error';
 $_lang['nf.full_response'] = 'Full response: ';
 $_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully';
 $_lang['nf.tweet_sent_successfully'] = 'Tweet sent successfully';

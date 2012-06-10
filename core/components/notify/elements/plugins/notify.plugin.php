@@ -5,8 +5,6 @@
  * Copyright 2012 Bob Ray <http:bobsguides.com>
  *
  * @author Bob Ray <http:bobsguides.com>
- * @version Version 1.0.0 Beta-1
- * 8/20/11
  *
  * Notify is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -167,5 +165,3 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
     $modx->regClientStartupScript($src);
     return '';
-
-
