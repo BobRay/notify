@@ -28,8 +28,6 @@
  * @subpackage build
  */
 
-/* Example Resolver script */
-
 /* The $modx object is not available here. In its place we
  * use $object->xpdo
  */
@@ -39,14 +37,6 @@
 
 $modx =& $object->xpdo;
 
-/* Connecting plugins to the appropriate system events and
- * connecting TVs to their templates is done here.
- *
- * Be sure to set the name of the category in $category.
- *
- * You will have to hand-code the names of the elements and events
- * in the arrays below.
- */
 
 $plugins = array('Notify');
 
@@ -64,8 +54,8 @@ $category = 'Notify';
 
 $success = true;
 
-$modx->log(xPDO::LOG_LEVEL_INFO,'Running PHP Resolver.');
-switch($options[xPDOTransport::PACKAGE_ACTION]) {
+$modx->log(xPDO::LOG_LEVEL_INFO, 'Running PHP Resolver.');
+switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
@@ -87,30 +77,24 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
             $pluginId = $plugin->get('id');
         } else {
             $pluginId = 0;
-            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Plugin');
+            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not retrieve Notify Plugin');
         }
         /* @var $notifyResource modResource */
-        $notifyResource = $modx->getObject('modResource', array ('alias' => 'notify'));
-        if (! $notifyResource) {
-            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Resource');
+        $notifyResource = $modx->getObject('modResource', array('alias' => 'notify'));
+        if (!$notifyResource) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not retrieve Notify Resource');
         }
 
         /* set resource ID in plugin */
         if ($notifyResource && $plugin) {
             $plugin->set('category', $categoryId);
-            /*$c = $plugin->getContent();
-            $c = str_replace('999',$notifyResource->get('id'), $c);
-            $plugin->setContent($c);
-            if ($plugin->save()) {
-                $modx->log(xPDO::LOG_LEVEL_INFO,'Set resource Id in plugin code');
-            }*/
         }
         /* set Template of Notify and Preview resources to NotifyTemplate */
         /* @var $notifyTemplate modTemplate */
         $notifyTemplateId = 0;
-        $notifyTemplate = $modx->getObject('modTemplate', array ('templatename' => 'NotifyTemplate'));
-        if (! $notifyTemplate) {
-            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Template');
+        $notifyTemplate = $modx->getObject('modTemplate', array('templatename' => 'NotifyTemplate'));
+        if (!$notifyTemplate) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not retrieve Notify Template');
         } else {
             $notifyTemplateId = $notifyTemplate->get('id');
         }
@@ -118,57 +102,57 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         if ($notifyTemplateId && $notifyResource) {
             $notifyResource->set('template', $notifyTemplateId);
             if ($notifyResource->save()) {
-                $modx->log(xPDO::LOG_LEVEL_INFO,'Set template for Notify Resource');
+                $modx->log(xPDO::LOG_LEVEL_INFO, 'Set template for Notify Resource');
             } else {
-                $modx->log(xPDO::LOG_LEVEL_ERROR,'Failed to Set template for Notify Resource');
+                $modx->log(xPDO::LOG_LEVEL_ERROR, 'Failed to Set template for Notify Resource');
             }
         }
         /* @var $notifyPreviewResource modResource */
         $notifyPreviewResource = $modx->getObject('modResource', array('alias' => 'notify-preview'));
-        if (! $notifyPreviewResource) {
-            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Preview Resource');
+        if (!$notifyPreviewResource) {
+            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not retrieve Notify Preview Resource');
         }
         if ($notifyTemplateId && $notifyPreviewResource) {
             $notifyPreviewResource->set('template', $notifyTemplateId);
             if ($notifyPreviewResource->save()) {
-                $modx->log(xPDO::LOG_LEVEL_INFO,'Set template for Notify Preview Resource');
+                $modx->log(xPDO::LOG_LEVEL_INFO, 'Set template for Notify Preview Resource');
             }
         }
         /* see if there's a property set */
-        $propertySet = $modx->getObject('modPropertySet', array('name'=>'NotifyProperties'));
+        $propertySet = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties'));
 
         /* @var $snippet modSnippet */
         $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
         if (!($snippet)) {
-            $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not retrieve Notify Snippet');
+            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not retrieve Notify Snippet');
         }
 
-        if ( $snippet && (!empty ($propertySet))) {
+        if ($snippet && (!empty ($propertySet))) {
             /* set category in case user has uninstalled and reinstalled */
             $propertySet->set('category', $categoryId);
             $elementPropertySet = $modx->getObject(array(
-               'element' => $snippet->get('id'),
+                'element' => $snippet->get('id'),
                 'property_set' => $propertySet->get('id'),
             ));
             /* if propertySet exists, connect it to snippet
              * if not connected already  */
-            if (! $elementPropertySet) {
+            if (!$elementPropertySet) {
                 $intersect = $modx->newObject('modElementPropertySet');
-                $intersect->set('element',$snippet->get('id'));
-                $intersect->set('element_class','modSnippet');
-                $intersect->set('property_set',$propertySet->get('id'));
+                $intersect->set('element', $snippet->get('id'));
+                $intersect->set('element_class', 'modSnippet');
+                $intersect->set('property_set', $propertySet->get('id'));
                 $intersect->save();
             }
             $pluginEvents = $modx->getCollection('modPluginEvent', array('pluginId' => $plugin->get('id')));
             if (empty ($pluginEvents)) {
-                $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not get Plugin Events');
+                $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not get Plugin Events');
             } else {
                 /* @var $event modPluginEvent */
 
                 foreach ($pluginEvents as $event) {
                     $event->set('propertyset', $propertySet->get('id'));
                     if (!$event->save()) {
-                        $modx->log(xPDO::LOG_LEVEL_ERROR,'Could not Set Plugin Event');
+                        $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not Set Plugin Event');
                     }
 
                 }
@@ -193,10 +177,11 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
 
             if (!empty($tvs)) {
                 foreach ($tvs as $tv) {
-                    if (! $modx->getObject('modTemplateVarTemplate', array(
-                        'templateid'=> $defaultTemplateId,
+                    if (!$modx->getObject('modTemplateVarTemplate', array(
+                        'templateid' => $defaultTemplateId,
                         'tmplvarid' => $tv->get('id'),
-                    ))) {
+                    ))
+                    ) {
                         $tvt = $modx->newObject('modTemplateVarTemplate');
                         if ($tvt) {
                             $r1 = $tvt->set('templateid', $defaultTemplateId);
@@ -226,16 +211,13 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         } else {
             $modx->log(xPDO::LOG_LEVEL_INFO, 'Failed to attach TVs to Templates');
         }
-
         break;
-
-
 
     /* This code will execute during an uninstall */
     case xPDOTransport::ACTION_UNINSTALL:
         /* @var $category modCategory */
-        $modx->log(xPDO::LOG_LEVEL_INFO,'Uninstalling . . .');
-        $category = $modx->getObject('modCategory', array ('category' => 'Notify'));
+        $modx->log(xPDO::LOG_LEVEL_INFO, 'Uninstalling . . .');
+        $category = $modx->getObject('modCategory', array('category' => 'Notify'));
         if ($category) {
             $category->remove();
         }
@@ -243,5 +225,5 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         break;
 
 }
-$modx->log(xPDO::LOG_LEVEL_INFO,'Script resolver actions completed');
+$modx->log(xPDO::LOG_LEVEL_INFO, 'Script resolver actions completed');
 return $success;

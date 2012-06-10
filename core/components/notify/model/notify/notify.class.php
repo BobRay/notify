@@ -35,8 +35,6 @@
  *
  */
 
-
-
 class Notify
 {
 
@@ -126,7 +124,7 @@ class Notify
                 $this->pageId = isset($_POST['pageId'])? $_POST['pageId'] : '';
 
                 if (empty($this->pageId) ) {
-                    $this->setError('nf_page_id_is_empty');
+                    $this->setError($this->modx->lexicon('nf_page_id_is_empty'));
                     return '';
                 }
 
@@ -146,7 +144,7 @@ class Notify
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
                 $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
                 $this->shortenUrls = $this->urlShorteningService != 'none';
-                echo 'ShorteningService: ' . $this->urlShorteningService . "<br />";
+
                 if ($this->shortenUrls) {
                     require_once $this->corePath . 'model/notify/urlshortener.class.php';
                     $this->shortener = new UrlShortener($this->props);
@@ -168,7 +166,6 @@ class Notify
 
                         /* shorten URLs if property is set */
                         if ($this->shortenUrls) {
-                            echo 'ShortenUrls is true';
                             $this->shortenUrls($this->emailText);
                         }
                     }
@@ -188,21 +185,7 @@ class Notify
                     $this->emailText = '';
                     $this->tweetText = '';
                 }
-
-                /*$tweetTpl = $this->modx->getOption('nfTweetTpl', $this->props, 'NfTweetTpl');
-                $tweetTpl = empty($tweetTpl)? 'nfTweetTpl' : $tweetTpl;*/
-/*                $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
-                if (empty($this->tweetText)) {
-                    $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
-                } else {
-                    if ($this->shortenUrls) {
-                        $this->shortenUrls($this->tweetText);
-                    }
-                    if ($notifyFacebook) {
-                        $this->tweetText = rtrim($this->tweetText,' ') . ' #fb';
-                    }
-                }*/
-                    break;
+                break;
             /* *********************************************** */
             case 'handleSubmission':
                 $this->pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
@@ -270,19 +253,18 @@ class Notify
 
                 break;
 
+            default:
+                break;
+
         }
 
         return "";
     }
 
     public function shortenUrls(&$text) {
-        echo "Before: " . $text . "<br />";
         $this->shortener->init_curl();
-
         $this->shortener->process($text, $this->urlShorteningService);
         $this->shortener->close_curl();
-        echo "After: " . $text . "<br />";
-
     }
 
     public function displayForm() {
@@ -478,9 +460,6 @@ class Notify
             }
         }
 
-
-
-
         if (empty($this->recipients)) {
             $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
         }
@@ -626,17 +605,16 @@ class Notify
         if (empty($msg)) {
             $this->setError($this->modx->lexicon('nf.tweet_field_is_empty'));
         } else {
-            //$text = 'Tweeted from PHP - just testing some code';
             $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
             $response = $tweet->post('statuses/update', array('status' => $msg));
             /* This will get recent tweets */
-            //$response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay'));
+            /* $response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay')); */
 
             if (!$response) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
             } elseif ($response->error) {
                 $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .      '</p><p>$response->error</p><p>' . $this->modx->lexicon('nf.full_response') . '</p>
-                <pre>" . print_r($response,true) . "</pre><br />"');
+                <pre>' . print_r($response,true) . "</pre><br />");
             } else {
                 $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
             }
