@@ -26,10 +26,8 @@
  * @subpackage lexicon
  */
 
-/* notify example strings -
- * These would be used for messages displayed by your component
- * (e.g. error messages, prompts, etc.).
- */
+/* notify default strings */
+
 $_lang['notify'] = 'Notify';
 $_lang['nf.could_not_find_preview_page'] = 'Could not find NotifyPreview page';
 $_lang['nf_page_id_is_empty'] = '$_POST pageId is empty';
@@ -57,6 +55,3 @@ $_lang['nf.twitter_said_there_was_an_error'] = 'Twitter said there was an error'
 $_lang['nf.full_response'] = 'Full response: ';
 $_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully';
 $_lang['nf.tweet_sent_successfully'] = 'Tweet sent successfully';
-
-
-
