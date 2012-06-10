@@ -126,7 +126,7 @@ $properties = array(
            ),
     array(
            'name' => 'twitterOauthSecret',
-           'desc' => 'nf.twitter_oauth_token_secret_desc Secret',
+           'desc' => 'nf.twitter_oauth_token_secret_desc',
            'type' => 'textfield',
            'options' => '',
            'value' => '',
