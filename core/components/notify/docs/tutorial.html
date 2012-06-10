@@ -7,7 +7,7 @@
 <p>
 Go to System | Package Management on the main menu in the MODX Manager and click on the "Download Extras" button. That will take you to the Revolution Repository (AKA Web Transport Facility). Put Notify in the search box and press Enter. Click on the "Download" button, and when it changes to "Downloaded," click on the button that takes you back to Package Management. Click on the "Install" button next to Notify in the grid. The Notify package should now be installed.</p>
         
-<p>During the installation, the Notify TV will be connected to the site's default template. If you need to attache it to other templates, you'll have to connect it manually by editing the TV, checking the boxes on the &quot;Template Access&quot; tab, and clicking on the &quot;Save&quot; button.</p>
+<p>During the installation, the Notify TV will be connected to the site's default template. If you need to attach it to other templates, you'll have to connect it manually by editing the TV, checking the boxes on the &quot;Template Access&quot; tab, and clicking on the &quot;Save&quot; button.</p>
         
 <p>If you want Notify to post to Twitter and/or Facebook, you'll need to set the four Twitter properties (see below).</p>
         
@@ -21,22 +21,24 @@ Go to System | Package Management on the main menu in the MODX Manager and click
     <li>Go to the Create/Edit Resource form for a document</li>
     <li>Click on the &quot;Template Variables&quot; tab</li>
     <li>Select the Notify area, if necessary</li>
-    <li>Click on the &quot;Yes&quot; radio option</li>
-    <li>Important: Click on the &quot;Save&quot; button</li>
-    <li>Click on the &quot;View&quot; button</li>
+    <li>Select the type of update you want from the radio options</li>
+    <li>Click on the &quot;Launch Notify&quot; button</li>
 </ol>
 
 
-<p>That will launch the notify Form rather than showing you a preview of the resource. Of course, if you don't check the notify TV checkbox, the &quot;View&quot; button works as usual and you'll see a preview of the resource.</p>
+<p>That will launch the notify Form </p>
 
-<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the preview window.</p>
+<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. There is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The custom Tpls can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a property set for Notify (see below) and set their names in the property set.
+
+<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the preview window.</p>
         
 <p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered.</p>
         
 <p>The various options are independent, so you can send yourself a test email, send a message to subscribers, or send a Tweet without activating the other options.</p>
         
 <p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group or Tag. Just remember that placeholders are not available to you if you do this.</p>
-        
+
+[[$CreateSnippetPropertySet? &snippetName=`Notify`]]
 
 <h3>Groups</h3>
         
@@ -52,24 +54,20 @@ sbs_use_comment_field   (set the value to 'No')
 sbs_extended_field   (name of the extended field you want to use)
 </fixedpre></pre>
         
-<p>You'll have to create the extended field for each user.</p>
+<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you.</p>
   
 <h3>Email Log</h3>
-<p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
+<p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
 
 <h3>Setting the Notify Properties</h3>
-<p>Notify has many properties, but for many of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded.</p>
+<p>Notify has many properties, but for many of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a property set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded.</p>
 
-<p>Notify creates a property set called &quot;NotifyProperties&quot; and attaches that property set to the Notify snippet. To set a property, Edit the Notify snippet. On the &quot;Properties&quot; tab, select the NotifyProperties in the drop-down list (where it says &quot;default&quot;. Double-click on the &quot;Value&quot; field of the property you want to change and enter a new value. Then click on the &quot;Save Property Set&quot; button at the top right of the properties grid. The NotifyProperties property set is not overwritten when Notify is upgraded, so your settings will be safe.</p>
-
-
-        
 <h3>Posting Updates to Twitter</h3>
 <p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify properties.</p>
         
-<p>To set the System Settings, go to System | System Settings in the MODX Manager and select the &quot;notify&quot; Namespace in the drop-down list at the top of the grid (it will show the &quot;core&quot; Namespace to begin with). Double-click in the &quot;Value&quot; field for each key and paste in value from the Twitter App page.</p>
+<p>To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your property set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button).</p>
         
-<p>Once you've cleared the cache, you can post an update to Twitter from the Template Variable tab of the Create/Edit Resource panel in the Manager. Notify will pre-fill the Tweet TV for you, but you can edit it to contain whatever you like. The  Select </p>
+<p>Once you've cleared the cache, you can post an update to Twitter from the Template Variable tab of the Create/Edit Resource panel in the Manager. Notify will pre-fill the Tweet TV for you, but you can edit it to contain whatever you like. Notify will enforce the 140-character limit on the length of the tweet. </p>
 
 <h3>Posting Updates to Facebook</h3>
         
