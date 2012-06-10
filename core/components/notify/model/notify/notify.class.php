@@ -152,9 +152,6 @@ class Notify
                 $fields = $this->resource->toArray();
                 $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
 
-                /*$this->emailTpl = $this->modx->getOption('nfEmailTpl', $this->props, 'NfSubscriberEmailTpl');
-                $this->emailTpl = empty($this->emailTpl)? 'NfSubscriberEmailTpl' : $this->emailTpl; */
-
                 if ($this->tplType != 'blank') {
                     $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
                     if (empty($this->emailText)) {
