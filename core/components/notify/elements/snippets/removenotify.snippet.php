@@ -1,5 +1,4 @@
 <?php
-
 /**
  * RemoveNotify snippet
  *
@@ -27,8 +26,8 @@
 /**
  * MODx RemoveNotify plugin
  *
- * Description: Removes all vestiges of Notify package except the files
- *
+ * Description: Removes all vestiges of Notify package except the files,
+ * resources, and any user-created property sets
  *
  * @package notify
  *
@@ -111,7 +110,7 @@ $fields = array (
     'element' =>$pluginId,
     'element_class' => 'modPlugin',
     'property_set' => $propertySetId,
-    
+
 );
 
 $elementPropertySet = $modx->getObject('modElementPropertySet', $fields);
