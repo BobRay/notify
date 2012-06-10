@@ -1,6 +1,8 @@
 <h3>Overview</h3>
 <p>Notify will let you send an email notification to Subscribers on your site (or to all active users) when a page is created or updated (or just when you feel like sending them a message). Rather than sending the whole page, Notify sends a message with a link to the new or updated page. Optionally, you can specify tags for the message and only subscribers with those tags set will receive the email. Notify works in conjunction with the Subscribe extra, which lets users register at your site and manage their preferences (tags).</p>
 
+<p>(Jump to <a href>="[[~[[*id]]]#propertiesTable">Properties Table</a>.)</p>
+
 <p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
 
 <h3>Installing Notify for MODX Revolution</h3>
@@ -14,7 +16,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <h3>Using Notify</h3>
 
-<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you edit a resource, set the Notify TV, save, and preview the page, the Notify plugin forwards you to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to.</p>
+<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarde to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to.</p>
 
 <p>To launch the Notify form:</p>
 <ol>
@@ -30,13 +32,13 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. There is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The custom Tpls can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a property set for Notify (see below) and set their names in the property set.
 
-<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the preview window.</p>
+<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window.</p>
         
 <p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered.</p>
         
 <p>The various options are independent, so you can send yourself a test email, send a message to subscribers, or send a Tweet without activating the other options.</p>
         
-<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group or Tag. Just remember that placeholders are not available to you if you do this.</p>
+<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that placeholders are not available to you if you do this.</p>
 
 [[$CreateSnippetPropertySet? &snippetName=`Notify`]]
 
@@ -60,21 +62,25 @@ sbs_extended_field   (name of the extended field you want to use)
 <p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
 
 <h3>Setting the Notify Properties</h3>
-<p>Notify has many properties, but for many of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a property set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded.</p>
+<p>Notify has many properties, but for most of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a property set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded.</p>
 
 <h3>Posting Updates to Twitter</h3>
 <p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify properties.</p>
         
-<p>To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your property set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button).</p>
+<p>See the section above on creating a property set if you haven't done so already. To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your property set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button).</p>
         
 <p>Once you've cleared the cache, you can post an update to Twitter from the Template Variable tab of the Create/Edit Resource panel in the Manager. Notify will pre-fill the Tweet TV for you, but you can edit it to contain whatever you like. Notify will enforce the 140-character limit on the length of the tweet. </p>
 
 <h3>Posting Updates to Facebook</h3>
         
 <p>Notify does not post directly to Facebook, but you can set
-up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selective Twitter</a> in about 30 seconds. Once you've done that, simply adding the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. The Facebook App will remove that hashtag in the Tweet.</p>
+up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selective Twitter</a> in about 30 seconds. Once you've done that, simply add the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property of the Notify snippet, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. The Facebook App will remove that hashtag in the Tweet.</p>
 
 <p>You can also use the <a href="http://apps.facebook.com/twitter/">Twitter App</a> if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>
+
+
+<a name="propertiesTable"></a>
+
 
 <h3>Notify Properties</h3>
 
