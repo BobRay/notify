@@ -368,6 +368,9 @@ class Notify
         $this->mail_sender = $this->modx->getOption('mailSender', $this->props, $this->mail_from);
 
         $this->mail_reply_to = $this->modx->getOption('mailReplyTo', $this->props, $this->mail_from);
+        if (empty($this->mail_reply_to)) {
+            $this->mail_reply_to = $this->mail_from;
+        }
 
         $this->mail_subject = isset($_POST['nf_email_subject'])? $_POST['nf_email_subject'] :
          'Update from ' . $this->modx->getOption('site_name');
@@ -379,7 +382,6 @@ class Notify
         $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->mail_subject);
         $this->modx->mail->address('reply-to', $this->mail_reply_to);
         $this->modx->mail->setHTML(true);
-
     }
 
     /* Sends an individual email */
