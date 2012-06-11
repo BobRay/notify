@@ -181,7 +181,7 @@ class Notify
             /* *********************************************** */
             case 'handleSubmission':
                 $this->pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
-
+                $this->modx->setPlaceholder('pageAlias',$this->pageAlias);
                 $this->sendTestEmail = isset($_POST['nf_send_test_email']);
                 $this->sendBulkEmail = isset($_POST['nf_notify']);
                 $this->sendTweet = isset($_POST['nf_send_tweet']);

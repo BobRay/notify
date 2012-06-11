@@ -39,7 +39,6 @@
 /* @var $resource modResource */
 /* @var $nf Notify */
 
-
 function my_debug($message, $clear = false)
     {
         global $modx;
@@ -61,12 +60,9 @@ function my_debug($message, $clear = false)
         $chunk->save();
     }
 
-
-
 $sp =& $scriptProperties;
 
-
-/* Act only when previewing from the back end */
+/* Act only when user is a member of the Administrator group */
 if (!$modx->user->hasSessionContext('mgr')) {
     return '';
 }
