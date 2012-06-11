@@ -121,7 +121,6 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
     }
     $src .= "\n</script>";
 
-
     if (isset($resource)) {
         /* @var $tvObj modTemplateVar */
         /* @var $notifyObj modResource */

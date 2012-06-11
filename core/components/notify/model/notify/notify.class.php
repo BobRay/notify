@@ -116,6 +116,7 @@ class Notify
 
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
         $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
+        $this->setTags();
 
         switch($action) {
 
@@ -688,6 +689,53 @@ class Notify
         );
         $html = $this->strReplaceAssoc($replace, $html);
 
+    }
+
+    protected function setTags() {
+        $tags = '';
+        $tagChunkName = $this->modx->getOption('tagChunkName', $this->props, 'sbsPrefListTpl');
+        $tagList = $this->modx->getChunk($tagChunkName);
+        if (!empty($tagList)) {
+
+            $src = '<script type="text/javascript">
+function nf_insert_tag(tag) {
+    var text = document.getElementById("nf_tags").value;
+    if (text.indexOf(tag) != -1) {
+       text= text.replace("," + tag + ",","," );
+       text = text.replace(tag + ",","");
+       text = text.replace("," + tag,"");
+       text = text.replace(tag,"");
+    } else {
+        if (text) {
+        text = text + "," + tag;
+        } else {
+          text = tag;
+        }
+    }
+    var tagArray = text.split(",");
+    tagArray.sort();
+    text = tagArray.join(",");
+    document.getElementById("nf_tags").value = text;
+return false;
+    }
+</script>';
+
+            $this->modx->regClientStartupScript($src);
+            $tags = '<p>';
+            $tagArray = explode('||', $tagList);
+            natcasesort($tagArray);
+            $i = 0;
+            foreach ($tagArray as $t) {
+                $t = strtolower($t);
+                $pos = strpos($t, '==');
+                $tag = $pos ? substr($t, $pos + 2) : $t;
+                $tag = trim($tag);
+                $tags .= '<button name="button' . $i . '" id="button' . $i . '" type="button" class="nf_tag" onclick="nf_insert_tag(' . "'" . $tag . "'" . ');"' . '">' . $tag . "</button>\n";
+                $i++;
+            }
+            $tags .= '</p>';
+        }
+        $this->modx->setPlaceholder('nf_tag_list', $tags);
     }
 
 } /* end class */

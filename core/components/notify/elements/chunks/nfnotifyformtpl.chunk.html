@@ -18,10 +18,13 @@
         <label for="nf_groups">[[%nf.groups? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="50" id="nf_groups" name="nf_groups" value="[[+nf_groups]]"/>
         </label> <br/><br/>
-        [[+nf_tag_list]]
+
         <label for="nf_tags">[[%nf.tags? &namespace=`notify` &topic=`form`]]<br/>
             <input type="text" size="50" id="nf_tags" name="nf_tags" value="[[+nf_tags]]"/>
-        </label> <br/><br/>
+        </label>
+        [[+nf_tag_list]]
+
+        <br/><br/>
 
         <label for="nf_email_text">[[%nf.text_for_email? &namespace=`notify` &topic=`form`]]<br/>
             <textarea id="nf_email_text" rows="20" cols="70" name="nf_email_text">[[+nf_email_text]]</textarea>
