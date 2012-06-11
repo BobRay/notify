@@ -121,14 +121,25 @@
 /* @var $modx modX */
 /* @var $scriptProperties array */
 
+$sp =& $scriptProperties;
+
+$language = !empty($sp['language'])
+            ? $sp['language']
+            : $modx->getOption('cultureKey',null,$modx->getOption('manager_language',null,'en'));
+
+$modx->lexicon->load($language . ':notify:default');
+
+
+
 /* abort if not previewing from 'mgr' */
-if ($modx->user->isMember('Administrator')) {
+if (!$modx->user->isMember('Administrator')) {
     return $modx->lexicon('nf.unauthorized_access');
 }
+
 $output = '';
 require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path') . 'components/notify/') . 'model/notify/notify.class.php';
 
-$sp =& $scriptProperties;
+
 $nf = new Notify($modx, $sp);
 
 if (isset($_POST['submitVar']) && ($_POST['submitVar'] == 'submitVar')) {

@@ -351,7 +351,7 @@ $properties = array(
         'desc' => 'nf.profile_desc',
         'type' => 'textfield',
         'options' => '',
-        'value' => 'modUserProfile',
+        'value' => 'Profile',
         'lexicon' => 'notify:properties',
         'area' => '',
         ),

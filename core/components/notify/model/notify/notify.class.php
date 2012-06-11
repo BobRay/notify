@@ -103,12 +103,6 @@ class Notify
         $this->errors = array();
         $this->successMessages = array();
 
-        $language = !empty($this->props['language'])
-            ? $this->props['language']
-            : $this->modx->getOption('cultureKey',null,$this->modx->getOption('manager_language',null,'en'));
-
-        $this->modx->lexicon->load($language . ':notify:default');
-
         $this->previewPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
         if (! $this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
@@ -341,7 +335,7 @@ class Notify
         $this->userClass = $this->modx->getOption('userClass',$this->props);
         $this->userClass = empty($this->userClass)? 'modUser' : $this->userClass;
         $this->profileAlias = $this->modx->getOption('profileAlias',$this->props,'Profile');
-        $this->profileAlias = empty($this->profileAlias)? 'modUserProfile' : $this->profileAlias;
+        $this->profileAlias = empty($this->profileAlias)? 'Profile' : $this->profileAlias;
         $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
         $this->profileClass = empty($this->profileClass)? 'modUserProfile' : $this->profileClass;
         $this->logFile = $this->corePath . 'notify-logs/' . $this->pageAlias . '--'. date('Y-m-d-h.i.sa');
@@ -508,7 +502,6 @@ class Notify
             /* @var $user modUser */
 
             $username = $user->get('username');
-
             $profile = $user->getOne($this->profileAlias);
             $userTags = null;
             if (! $profile) {
