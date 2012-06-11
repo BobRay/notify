@@ -29,6 +29,7 @@
 /* notify default strings */
 
 $_lang['notify'] = 'Notify';
+$_lang['nf.unauthorized_access'] = 'Unauthorized Access -- must be a member of Administrator group';
 $_lang['nf.could_not_find_preview_page'] = 'Could not find NotifyPreview page';
 $_lang['nf_page_id_is_empty'] = '$_POST pageId is empty';
 $_lang['nf.could_not_get_resource'] = 'Could not get resource';

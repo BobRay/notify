@@ -122,8 +122,8 @@
 /* @var $scriptProperties array */
 
 /* abort if not previewing from 'mgr' */
-if (! $modx->user->hasSessionContext('mgr') || ! $modx->user->isMember('Administrator')) {
-    return $modx->lexicon('Unauthorized Access');
+if ($modx->user->isMember('Administrator')) {
+    return $modx->lexicon('nf.unauthorized_access');
 }
 $output = '';
 require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path') . 'components/notify/') . 'model/notify/notify.class.php';
