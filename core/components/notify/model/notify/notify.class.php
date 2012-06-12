@@ -422,8 +422,7 @@ class Notify
             foreach ($userGroupNames as $userGroupName) {
                 /* @var $group modUserGroup */
                 $userGroupName = trim($userGroupName);
-                echo '<h3>GROUP: ' . $userGroupName . '</h3>';
-                flush();
+
                 /* allow UserGroup name or ID */
                 $g = intval($userGroupName);
                 $g = is_int($g) && !empty($g) ? $userGroupName : array('name' => $userGroupName);
@@ -443,7 +442,7 @@ class Notify
                     $c->innerJoin('modUserGroupMember','UserGroupMembers');
                     //$total = $this->modx->getCount($this->userClass,$c);
 
-                    /* ToDo: Get these in batches with offset to conserve memory
+        /* ToDo: Get these in batches with offset to conserve memory
                      * $c->limit($number, $offset);
                      */
                     $users = $this->modx->getIterator($this->userClass,$c);

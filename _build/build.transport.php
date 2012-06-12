@@ -32,7 +32,7 @@
 /* Set package info be sure to set all of these */
 define('PKG_NAME','Notify');
 define('PKG_NAME_LOWER','notify');
-define('PKG_VERSION','1.0.3');
+define('PKG_VERSION','1.0.4');
 define('PKG_RELEASE','beta1');
 define('PKG_CATEGORY','Notify');
 
