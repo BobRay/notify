@@ -605,7 +605,7 @@ class Notify
             if (!$response) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
             } elseif ($response->error) {
-                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .      '</p><p>$response->error</p><p>' . $this->modx->lexicon('nf.full_response') . '</p>
+                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .  ': ' . $response->error . '</p><p>' . $this->modx->lexicon('nf.full_response') . '</p>
                 <pre>' . print_r($response,true) . "</pre><br />");
             } else {
                 $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
