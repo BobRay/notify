@@ -16,7 +16,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <h3>Using Notify</h3>
 
-<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarde to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to.</p>
+<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarded to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to by submitting the form with one of the update options checked.</p>
 
 <p>To launch the Notify form:</p>
 <ol>
@@ -27,16 +27,15 @@ Go to System | Package Management on the main menu in the MODX Manager and click
     <li>Click on the &quot;Launch Notify&quot; button</li>
 </ol>
 
-
 <p>That will launch the notify Form </p>
 
-<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. There is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The custom Tpls can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a property set for Notify (see below) and set their names in the property set.
+<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a property set for Notify (see below) and set their names in the property set.
 
 <p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window.</p>
         
 <p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered.</p>
         
-<p>The various options are independent, so you can send yourself a test email, send a message to subscribers, or send a Tweet without activating the other options.</p>
+<p>The various options are independent, so you can send a test email, send a message to subscribers, or send a Tweet without activating the other options.</p>
         
 <p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that placeholders are not available to you if you do this.</p>
 
@@ -47,35 +46,43 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 <p>Email is only sent to active users. The <fixedpre>groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can specify them by name or by User Group ID number. By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>groups</fixedpre> property. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
         
 <h3>Tags</h3>
-<p>The <fixedpre>tags</fixedpre> property is blank by default, so the email is sent to all members of User Groups specified in the <fixedpre>groups</fixedpre> property. If you enter a comma-separated list of tags in the Tags field, only users who have those tags (interests) will receive the email. You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and let users manage their own interest lists. See the Subscribe package documentation for more information on how the Tags are stored.</p>
+
+<p>The <fixedpre>tags</fixedpre> property is blank by default, so the email is sent to all members of User Groups specified in the <fixedpre>groups</fixedpre> property. If you enter tags in the Tags field, only users who have those tags (interests) will receive the email.</p>
+
+<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and it will also let users manage their own interest lists. See the Subscribe package documentation for more information on how the Tags are stored.</p>
         
-<p>If you're not using the Subscribe package and you don't want to use the &quot;Comment&quot; field to store the user's interests, you can create two new System Settings (put them in the Notify namespace to make them easier to find):</p>
+<p>If you're not using the Subscribe package and you'd rather use an extended field of the User Profile instead of the comment field, you can create two new System Settings (put them in the Notify namespace to make them easier to find):</p>
 
 <pre><fixedpre>
 sbs_use_comment_field   (set the value to 'No')
 sbs_extended_field   (name of the extended field you want to use)
 </fixedpre></pre>
         
-<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you. You'll also have to create a chunk to hold the list of user preferences (tags) and set the <fixedpre>&prefListChunkName</fixedpre> property to point to it. By default, the chunk used will be <fixedpre>sbsPrefListTpl</fixedpre>, which is the default chunk used in for tags int he Subscribe extra. </p>
+<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you. You'll also have to create a chunk to hold the list of user preferences (tags) and set the <fixedpre>&prefListChunkName</fixedpre> property to point to it. By default, the chunk used will be <fixedpre>sbsPrefListTpl</fixedpre>, which is the default chunk used for tags in the Subscribe extra. </p>
 
 <p>The format for the Preferences List Tpl chunk is a series of <fixedpre>Caption==value</fixedpre> pairs separated by <fixedpre>||</fixedpre>:</p>
+
+<p>Example:</p>
 
 <pre><fixedpre>
 Caption One==Option1||Caption Two==option2||Caption Three==option3
 </fixedpre></pre>
 
-<p>The caption (to the left of the <fixedpre>==</fixedpre> signs) is what is shown in the Subscribe extra Register and Manage Preferences forms. The value (to the right of the <fixedpre>==</fixedpre> signs) is what will be stored in the database and what will show in the Notify form. Make sure there are no spaces except in between the words of the caption and the preferences list is all on one line.</p>
+<p>The &quot;caption&quot; (to the left of the <fixedpre>==</fixedpre> signs) is what is shown in the Subscribe extra Register and Manage Preferences forms. The &quot;value&quot; (to the right of the <fixedpre>==</fixedpre> signs) is what will be stored in the database and what will show in the Notify form. Make sure there are no spaces except in between the words of the caption and the preferences list is all on one line.</p>
 
-<p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form.</p>
+<p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form. The tag buttons shown are based on the tags in the chunk specified in the <fixedpre>sbsPrefListTpl</fixedpre> property.</p>
 
 
 <h3>Email Log</h3>
+
 <p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
 
 <h3>Setting the Notify Properties</h3>
+
 <p>Notify has many properties, but for most of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a property set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded.</p>
 
 <h3>Posting Updates to Twitter</h3>
+
 <p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify properties.</p>
         
 <p>See the section above on creating a property set if you haven't done so already. To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your property set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button).</p>
