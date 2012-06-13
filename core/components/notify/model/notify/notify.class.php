@@ -687,7 +687,7 @@ class Notify
 
     protected function setTags() {
         $tags = '';
-        $tagChunkName = $this->modx->getOption('tagChunkName', $this->props, 'sbsPrefListTpl');
+        $tagChunkName = $this->modx->getOption('prefListChunkName', $this->props, 'sbsPrefListTpl');
         $tagList = $this->modx->getChunk($tagChunkName);
         if (!empty($tagList)) {
 

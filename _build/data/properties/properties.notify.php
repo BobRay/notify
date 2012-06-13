@@ -394,6 +394,16 @@ $properties = array(
         'area' => '',
         ),
 
+    array(
+        'name' => 'prefListChunkName',
+        'desc' => 'nf.pref_list_chunk_name_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => 'sbsPrefListTpl',
+        'lexicon' => 'notify:properties',
+        'area' => '',
+        ),
+
 );
 
 return $properties;

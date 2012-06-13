@@ -1,5 +1,5 @@
 Changelog for Notify
 
-Notify 1.0.3 beta1
+Notify 1.0.4 beta1
 -------------------
 Initial Version

@@ -66,3 +66,4 @@ $_lang['nf.profile_class_desc'] = ' (optional) class of the user profile object.
 $_lang['nf.batch_size_desc'] = ' (optional) Batch size for bulk email to subscribers. Default: 50';
 $_lang['nf.batch_delay_desc'] = ' (optional) Delay between batches in seconds. Default: 1';
 $_lang['nf.item_delay_desc'] = ' (optional) Delay between individual emails in seconds. Default: .51';
+$_lang['nf.pref_list_chunk_name_desc'] = ' (optional) Chunk to use for preferences (tags) list. Default: sbsPrefListTpl';

@@ -56,8 +56,19 @@ sbs_use_comment_field   (set the value to 'No')
 sbs_extended_field   (name of the extended field you want to use)
 </fixedpre></pre>
         
-<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you.</p>
-  
+<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you. You'll also have to create a chunk to hold the list of user preferences (tags) and set the <fixedpre>&prefListChunkName</fixedpre> property to point to it. By default, the chunk used will be <fixedpre>sbsPrefListTpl</fixedpre>, which is the default chunk used in for tags int he Subscribe extra. </p>
+
+<p>The format for the Preferences List Tpl chunk is a series of <fixedpre>Caption==value</fixedpre> pairs separated by <fixedpre>||</fixedpre>:</p>
+
+<pre><fixedpre>
+Caption One==Option1||Caption Two==option2||Caption Three==option3
+</fixedpre></pre>
+
+<p>The caption (to the left of the <fixedpre>==</fixedpre> signs) is what is shown in the Subscribe extra Register and Manage Preferences forms. The value (to the right of the <fixedpre>==</fixedpre> signs) is what will be stored in the database and what will show in the Notify form. Make sure there are no spaces except in between the words of the caption and the preferences list is all on one line.</p>
+
+<p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form.</p>
+
+
 <h3>Email Log</h3>
 <p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
 
@@ -267,6 +278,11 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
         <td>(optional) Delay between individual emails in seconds</td>
         <td>.51</td>
     </tr>
+    <tr>
+        <td>prefListChunkName</td>
+        <td>(optional) Chunk to use for preferences (tags) list</td>
+        <td>sbsPrefListTpl</td>
+        </tr>
 </table>
 
 
