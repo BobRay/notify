@@ -44,11 +44,9 @@ $category = 'Notify';
 
 
 /* @var $options array */
-/* @var $propertySet modPropertySet */
 /* @var $intersect modPluginEvent */
 /* @var $pluginObj modPlugin */
 /* @var $categoryObj modCategory */
-/* @var $elementPropertySet modElementPropertySet */
 /* @var $tvt modTemplateVarTemplate */
 /* @var $tv modTemplateVar */
 
@@ -118,49 +116,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                 $modx->log(xPDO::LOG_LEVEL_INFO, 'Set template for Notify Preview Resource');
             }
         }
-        /* see if there's a property set */
-        $propertySet = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties'));
 
-        /* @var $snippet modSnippet */
-        $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
-        if (!($snippet)) {
-            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not retrieve Notify Snippet');
-        }
-
-        if ($snippet && (!empty ($propertySet))) {
-            /* set category in case user has uninstalled and reinstalled */
-            $propertySet->set('category', $categoryId);
-            $elementPropertySet = $modx->getObject(array(
-                'element' => $snippet->get('id'),
-                'property_set' => $propertySet->get('id'),
-            ));
-            /* if propertySet exists, connect it to snippet
-             * if not connected already  */
-            if (!$elementPropertySet) {
-                $intersect = $modx->newObject('modElementPropertySet');
-                $intersect->set('element', $snippet->get('id'));
-                $intersect->set('element_class', 'modSnippet');
-                $intersect->set('property_set', $propertySet->get('id'));
-                $intersect->save();
-            }
-            $pluginEvents = $modx->getCollection('modPluginEvent', array('pluginId' => $plugin->get('id')));
-            if (empty ($pluginEvents)) {
-                $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not get Plugin Events');
-            } else {
-                /* @var $event modPluginEvent */
-
-                foreach ($pluginEvents as $event) {
-                    $event->set('propertyset', $propertySet->get('id'));
-                    if (!$event->save()) {
-                        $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not Set Plugin Event');
-                    }
-
-                }
-            }
-
-            $propertySet->save();
-
-        }
 
         /* Connect TV to default template if not already connected */
         $ok = true;
