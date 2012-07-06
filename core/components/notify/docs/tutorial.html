@@ -123,6 +123,12 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 
 <p>The JS code adds the color to the button and adds the form below the button with hidden input fields containing the page info. When the button is clicked, the JS code checks to make sure the Resource has been saved (popping up a warning if it hasn't), and if it has, submits the form to the Notify page where the information is read from the <fixedpre>$_POST</fixedpre> array. It's difficult to imagine doing this in any other CMS but MODX without touching a line of the core code.</p>
 
+<h3>Troubleshooting</h3>
+<p>If you create a Property Set and it is not taking effect, double check the name of the Property Set and the name used in the Notify snippet tag. They must match. Make sure the Property Set is connected to the snippet. You should be able to see the Property Set when you click on the Default drop-down on the Properties tab of the Snippet. If it's not there, click on the &quot;Add Property Set&quot; button and select the Property Set. Then click on the &quot;Save&quot; button at the upper right (not the &quot;Save Property Set&quot; button).</p>
+
+<p>If you upgrade Notify and your property set is no long shown in Tools | Property Sets, it may mean that the Property Set has an obsolete category. The only solution is to use PhpMyAdmin to edit the modx_property_sets table and change the category of the Property Set to 0.</p>
+
+<p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
 
 <a name="propertiesTable"></a>
 
