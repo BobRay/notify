@@ -97,6 +97,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 [[!Notify@NotifyProperties]]
 </fixedpre></pre>
 
+<p>The tag above is already set in the install, so if you name your property set &quot;NotifyProperties&quot; it will be used automatically.</p>
 
 <h3>Notify Template and CSS</h3>
 
@@ -135,6 +136,8 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 <p>If you upgrade Notify and your Property Set is no long shown in Tools | Property Sets, it may mean that the Property Set has an obsolete category. The only solution is to use PhpMyAdmin to edit the modx_property_sets table and change the category of the Property Set to 0.</p>
 
 <p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
+
+<p>If no emails are being sent, install the QuickEmail package to help diagnose your problem sending emails.</p>
 
 <a name="propertiesTable"></a>
 
