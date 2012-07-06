@@ -66,7 +66,7 @@ $hasTemplateVariables = true;
  * resolver (see _build/data/resolvers/install.script.php)
  */
 $hasPlugins = true;
-$hasPluginEvents = false;
+$hasPluginEvents = false; // connected in resolver
 
 $hasPropertySets = false;
 /* Note: property sets are connected to elements in the script

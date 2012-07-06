@@ -129,11 +129,14 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         }
 
         if ($snippet && (!empty ($propertySet))) {
-            /* set category in case user has uninstalled and reinstalled */
+            /* update category if the propset has one, in case user has uninstalled and reinstalled */
 
             if ($categoryObj) {
-                $categoryObj->addMany($propertySet);
-                $categoryObj->save();
+                if ($propertySet->get('category')) {
+                    $modx->log(xPDO::LOG_LEVEL_INFO, 'Updating property set category');
+                    $propertySet->set('category'. $categoryId);
+                    $propertySet->save();
+                }
             }
             $elementPropertySet = $modx->getObject(array(
                 'element' => $snippet->get('id'),
@@ -142,6 +145,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             /* if propertySet exists, connect it to snippet
              * if not connected already  */
             if (!$elementPropertySet) {
+                unset($elementPropertySet);
+                $modx->log(xPDO::LOG_LEVEL_INFO, 'Attaching property set to snippet');
                 $intersect = $modx->newObject('modElementPropertySet');
                 $intersect->set('element', $snippet->get('id'));
                 $intersect->set('element_class', 'modSnippet');

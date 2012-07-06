@@ -1,7 +1,8 @@
+
 <h3>Overview</h3>
 <p>Notify will let you send an email notification to Subscribers on your site (or to all active users) when a page is created or updated (or just when you feel like sending them a message). Rather than sending the whole page, Notify sends a message with a link to the new or updated page. Optionally, you can specify tags for the message and only subscribers with those tags set will receive the email. Notify works in conjunction with the Subscribe extra, which lets users register at your site and manage their preferences (tags).</p>
 
-<p>(Jump to <a href>="[[~[[*id]]]#propertiesTable">Properties Table</a>.)</p>
+<p>(Jump to <a href="[[~[[*id]]]]#propertiesTable">Properties Table</a>.)</p>
 
 <p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
 
@@ -29,7 +30,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <p>That will launch the notify Form </p>
 
-<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a property set for Notify (see below) and set their names in the property set.
+<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a Property Set for Notify (see below) and set their names in the Property Set.
 
 <p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window.</p>
         
@@ -41,6 +42,8 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 [[$CreateSnippetPropertySet? &snippetName=`Notify`]]
 
+<p>Call your Property Set &quot;NotifyProperties&quot;. Notify already specifies that Property Set in the Notify snippet tag for you. If you use that name, Notify will also make sure to reconnect the Property Set to the snippet when you upgrade. If you use another name for the Property Set, you'll have to remember to reconnect it to the snippet when you upgrade or your updates to Twitter, Facebook, and/or the URL shortening service may stop working.</p>
+
 <h3>Groups</h3>
         
 <p>Email is only sent to active users. The <fixedpre>groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can specify them by name or by User Group ID number. By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>groups</fixedpre> property. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
@@ -49,7 +52,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <p>The <fixedpre>tags</fixedpre> property is blank by default, so the email is sent to all members of User Groups specified in the <fixedpre>groups</fixedpre> property. If you enter tags in the Tags field, only users who have those tags (interests) will receive the email.</p>
 
-<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and it will also let users manage their own interest lists. See the Subscribe package documentation for more information on how the Tags are stored.</p>
+<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and it will also let users manage their own interest lists. See the <a href="[[~227]]">Subscribe package documentation</a> for more information on how the Tags are stored.</p>
         
 <p>If you're not using the Subscribe package and you'd rather use an extended field of the User Profile instead of the comment field, you can create two new System Settings (put them in the Notify namespace to make them easier to find):</p>
 
@@ -60,7 +63,7 @@ sbs_extended_field   (name of the extended field you want to use)
         
 <p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you. You'll also have to create a chunk to hold the list of user preferences (tags) and set the <fixedpre>&prefListChunkName</fixedpre> property to point to it. By default, the chunk used will be <fixedpre>sbsPrefListTpl</fixedpre>, which is the default chunk used for tags in the Subscribe extra. </p>
 
-<p>The format for the Preferences List Tpl chunk is a series of <fixedpre>Caption==value</fixedpre> pairs separated by <fixedpre>||</fixedpre>:</p>
+<p>The format for the Preferences List Tpl chunk is a series of <fixedpre>Caption==value</fixedpre> pairs separated by <fixedpre>||</fixedpre> symbols.</p>
 
 <p>Example:</p>
 
@@ -82,7 +85,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <h3>Setting the Notify Properties</h3>
 
-<p>Notify has many properties, but for most of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a property set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded. If you use a property set, don't forget to specify it in the Notify snippet tag on the Notify page like this:</p>
+<p>Notify has many properties, but for most of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a Property Set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded. If you use a Property Set, don't forget to specify it in the Notify snippet tag on the Notify page like this:</p>
 
 <pre><fixedpre>
 [[!Notify@NotifyProperties]]
@@ -97,7 +100,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="https://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify properties.</p>
         
-<p>See the section above on creating a property set if you haven't done so already. To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your property set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button). Don't forget to specify the property set in the Notify snippet tag as described above.</p>
+<p>See the section above on creating a Property Set if you haven't done so already. To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your Property Set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button). Don't forget to specify the Property Set in the Notify snippet tag as described above.</p>
         
 <p>Once you've cleared the cache, you can post an update to Twitter from the Template Variable tab of the Create/Edit Resource panel in the Manager. Notify will pre-fill the Tweet TV for you, but you can edit it to contain whatever you like. Notify will enforce the 140-character limit on the length of the tweet. </p>
 
@@ -315,6 +318,5 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
         <td>sbsPrefListTpl</td>
         </tr>
 </table>
-
 
 
