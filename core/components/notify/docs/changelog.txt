@@ -1,5 +1,9 @@
 Changelog for Notify
 
+Notify 1.0.5 pl
+---------------
+Better avoidance of spam filters
+
 Notify 1.0.4 beta1
--------------------
+------------------
 Initial Version

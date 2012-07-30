@@ -376,6 +376,9 @@ class Notify
          'Update from ' . $this->modx->getOption('site_name');
 
         $this->modx->mail->set(modMail::MAIL_BODY, $this->emailText);
+        require_once('html2text.php');
+        $h2t = new html2text($this->emailText);
+        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $h2t->get_text());
         $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
         $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
         $this->modx->mail->set(modMail::MAIL_SENDER, $this->mail_sender);
