@@ -61,7 +61,7 @@ class Notify
     protected $sortByAlias;
     protected $tags;
     /* @var $recipients array */
-    protected $recipients;
+    protected $recipients = array();
     protected $emailText;
     protected $emailTpl;
     protected $tweetTpl;
@@ -84,6 +84,14 @@ class Notify
     /* @var $shortener UrlShortener */
     public $shortener;
     protected $tplType; /* new, update, blank, custom */
+    /* @var $unSub Unsubscribe */
+    protected $unSub;
+    protected $unSubUrl;
+    protected $unSubTpl;
+    /* @var $profile modUserProfile */
+    protected $profile;
+    /* @var $html2text html2text */
+    protected $html2text;
 
 
 
@@ -112,10 +120,25 @@ class Notify
         $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
         $this->setTags();
 
+        /* Unsubscribe settings */
+        $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', null, null);
+        $this->unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
+        $subscribeCorePath = $this->modx->getOption('subscribe.core_path', null, $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/subscribe/');
+        require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
+        $unSubTpl = $this->modx->getOption('unsubscribe_tpl', $this->props, 'unsubscribeTpl');
+        $this->unSub = new Unsubscribe($this->modx, $this->props);
+        $this->unSub->init();
+        $this->unSubTpl = $this->modx->getChunk($unSubTpl);
+        $profile = $this->modx->user->getOne('Profile');
+        $this->profile = $profile
+            ? $profile
+            : null;
+
+
         switch($action) {
 
             /* *********************************************** */
-            case 'displayForm':
+            case 'displayForm':  /* Not a repost */
                 $this->pageId = isset($_POST['pageId'])? $_POST['pageId'] : '';
 
                 if (empty($this->pageId) ) {
@@ -153,13 +176,15 @@ class Notify
                         $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
                     } else {
                         /* convert any relative URLS in email text */
+
                         $this->fullUrls();
                         $this->imgAttributes();
-
+                        $this->emailText = $this->injectUnsubscribe($this->emailText);
                         /* shorten URLs if property is set */
                         if ($this->shortenUrls) {
                             $this->shortenUrls($this->emailText);
                         }
+
                     }
                     $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
                     if (empty($this->tweetText)) {
@@ -213,14 +238,18 @@ class Notify
                     }
                 }
                 $this->emailText = $_POST['nf_email_text'];
-                $this->fullUrls();
+                // $this->fullUrls();
                 $this->imgAttributes();
-                $this->updatePreviewPage();
+                $this->updatePreviewPage($this->emailText);
+
 
                 /* **************************** */
 
                 /* perform requested actions */
                 if ($this->sendBulkEmail || $this->sendTestEmail) {
+
+                    require_once('html2text.php');
+                    $this->html2text = new html2text();
                     /* Set preview in case user forgot */
                     $this->initEmail();
                     $this->initializeMailer();
@@ -252,6 +281,20 @@ class Notify
 
         return "";
     }
+    public function injectUnsubscribe($chunk) {
+        $tpl = $this->unSubTpl;
+        if (stristr($chunk, '</body>')) {
+            /* inject link just above the closing body tag */
+            // $html = $chunk;
+            $chunk = str_replace('</body>', "\n" . $tpl . "\n" . '</body>', $chunk);
+        } else {
+            /* append link to the end if there is no body tag */
+            $chunk = $chunk . $tpl;
+        }
+       // unset($profile);
+        return $chunk;
+
+    }
 
     public function shortenUrls(&$text) {
         $this->shortener->init_curl();
@@ -276,19 +319,25 @@ class Notify
         $this->modx->setPlaceholder('nf_tags', $tags);
 
         /* @var $tempPage modResource */
-        $this->updatePreviewPage();
 
-        $this->modx->setPlaceholder('nf_email_text', $this->emailText);
+        /* temporary insertion of URL -- does not change $this->emailText */
+        $url = $this->unSub->createUrl($this->unSubUrl, $this->profile);
+        $content = str_replace('[[+unsubscribeUrl]]', $url, $this->emailText);
+        $this->updatePreviewPage($content);
+
+
+        $this->modx->setPlaceholder('nf_email_text', $content);
         $subjectTpl = $this->modx->getOption('nfSubjectTpl', $this->props);
         $subjectTpl = empty($subjectTpl)? 'NfEmailSubjectTpl' : $subjectTpl;
         $this->modx->setPlaceholder('nf_email_subject',$this->modx->getChunk($subjectTpl));
         $this->modx->setPlaceholder('nf_tweet_text', $this->tweetText);
 
+
         return $this->modx->getChunk($this->formTpl);
 
     }
-    protected function updatePreviewPage() {
-        $this->previewPage->setContent($this->emailText);
+    protected function updatePreviewPage($content) {
+        $this->previewPage->setContent($content);
         $this->previewPage->save();
         $this->modx->setPlaceholder('nf_temp_url', $this->modx->makeUrl($this->previewPage->get('id'), "", "", "full"));
 
@@ -375,10 +424,6 @@ class Notify
         $this->mail_subject = isset($_POST['nf_email_subject'])? $_POST['nf_email_subject'] :
          'Update from ' . $this->modx->getOption('site_name');
 
-        $this->modx->mail->set(modMail::MAIL_BODY, $this->emailText);
-        require_once('html2text.php');
-        $h2t = new html2text($this->emailText);
-        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $h2t->get_text());
         $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
         $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
         $this->modx->mail->set(modMail::MAIL_SENDER, $this->mail_sender);
@@ -387,10 +432,23 @@ class Notify
         $this->modx->mail->setHTML(true);
     }
 
-    /* Sends an individual email */
 
-    public function sendMail($address, $name)
-    {
+    /**
+     * Sends an individual email
+     *
+     * @param $address string user email address
+     * @param $name string - username
+     * @param $profile mixed - may be a user profile object or a profile ID
+     * @return bool - true on success; false on failure to mail.
+     */
+    public function sendMail($address, $name, $profile) {
+        /* see if it's an ID or a modUserProfile Object - get profile obj if the former */
+        $userProfile = $profile instanceof modUserProfile ? $profile : $this->modx->getObject('modUserProfile', $profile);
+        $url = $this->unSub->createUrl($this->unSubUrl, $userProfile);
+        $content  = str_replace('[[+unsubscribeUrl]]', $url, $this->emailText);
+        $this->modx->mail->set(modMail::MAIL_BODY, $content);
+        $this->html2text->set_html($content);
+        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $this->html2text->get_text());
         $this->modx->mail->address('to', $address, $name);
         $success = $this->modx->mail->send();
         if (! $success) {
@@ -401,8 +459,7 @@ class Notify
 
     }
 
-    public function sendBulkEmail()
-    {
+    public function sendBulkEmail() {
         /* @var $user modUser */
 
         $this->recipients = array();
@@ -474,7 +531,9 @@ class Notify
             //fwrite($fp,print_r($this->recipients, true));
         }
         foreach ($this->recipients as $recipient) {
-            if ($this->sendMail($recipient['email'], $recipient['fullName'])) {
+            /* @var  array $recipient  */
+
+            if ($this->sendMail($recipient['email'], $recipient['fullName'], $recipient['profileId'])) {
                 if ($fp) {
                     fwrite($fp, 'Successful send to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') User Tags: ' . $recipient['userTags'] . "\n");
                 }
@@ -557,6 +616,7 @@ class Notify
                     'email' => $email,
                     'fullName' => $fullName,
                     'userTags' => $userTags,
+                    'profileId' => $profile->get('id'),
                 );
             } else {
                 $this->setError($username . ' ' .  $this->modx->lexicon('nf.has_no_email_address'));
@@ -569,7 +629,10 @@ class Notify
             $this->setError ($this->modx->lexicon('nf.test_email_address_empty') . $this->modx->lexicon('nf.test_email_not_sent'));
             return;
         }
-        if (! $this->sendMail($address, $name)) {
+        if (! $this->profile instanceof modUserProfile) {
+            $this->setError('Admin Profile is empty');
+        }
+        if (! $this->sendMail($address, $name, $this->profile)) {
             $this->setError($this->modx->lexicon('nf.mail_error_sending_test_email'));
         } else {
             $this->setSuccess($this->modx->lexicon('nf.test_email_sent_successfully'));
@@ -667,6 +730,8 @@ class Notify
 
         /* handle base-relative URLs */
         $html = preg_replace('@\<([^>]*) (href|src)="(?!http|mailto|sip|tel|callto|sms|ftp|sftp|gtalk|skype)(([^\:"])*|([^"]*:[^/"].*))"@i', '<\1 \2="' . $base . '\3"', $html);
+
+
 
         $this->emailText = $html;
     }
