@@ -92,6 +92,8 @@ class Notify
     protected $profile;
     /* @var $html2text html2text */
     protected $html2text;
+    protected $requireAllTags;
+    protected $requireDefault;
 
 
 
@@ -110,7 +112,6 @@ class Notify
     public function init($action) {
         $this->errors = array();
         $this->successMessages = array();
-
         $this->previewPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
         if (! $this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
@@ -118,6 +119,7 @@ class Notify
 
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
         $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
+        $this->requireDefault = $this->modx->getOption('requireAllTagsDefault', $this->props, false);
         $this->setTags();
 
         /* Unsubscribe settings */
@@ -144,6 +146,9 @@ class Notify
                 if (empty($this->pageId) ) {
                     $this->setError($this->modx->lexicon('nf_page_id_is_empty'));
                     return '';
+                }
+                if ($this->requireDefault) {
+                        $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
                 }
 
                 $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
@@ -205,6 +210,7 @@ class Notify
                 break;
             /* *********************************************** */
             case 'handleSubmission':
+                $this->requireAllTags = isset($_POST['nf_require_all_tags']) && (!empty($_POST['nf_require_all_tags']));
                 $this->pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
                 $this->modx->setPlaceholder('pageAlias',$this->pageAlias);
                 $this->sendTestEmail = isset($_POST['nf_send_test_email']);
@@ -214,6 +220,9 @@ class Notify
                 $this->tweetText = isset($_POST['nf_tweet_text'])? $_POST['nf_tweet_text'] : '';
                 if ($this->sendTestEmail) {
                     $this->modx->setPlaceholder('nf_send_test_email_checked','checked="checked"');
+                }
+                if ($this->requireAllTags) {
+                    $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"' );
                 }
                 /* set form placeholders */
                 if ($this->sendBulkEmail) {
@@ -468,7 +477,7 @@ class Notify
         if (empty ($this->groups)) {
             $c = $this->modx->newQuery($this->userClass);
             $c->select($this->modx->getSelectColumns($this->userClass,$this->userClass),"", array('id','username','active'));
-                        $c->sortby($this->modx->escape($this->sortByAlias).'.'.$this->modx->escape($this->sortBy),'ASC');
+            $c->sortby($this->modx->escape($this->sortByAlias).'.'.$this->modx->escape($this->sortBy),'ASC');
             $c->where(array(
                 'active' => '1',
             ));
@@ -521,6 +530,7 @@ class Notify
             $this->setError($this->modx->lexicon('nf.bulk_emails_not_sent'));
             return false;
         }
+
         /* $this->recipients array now complete and no errors - send bulk emails */
         $i = 1;
         $fp = fopen($this->logFile, 'w');
@@ -596,9 +606,12 @@ class Notify
                 foreach ($tags as $tag) {
                     $tag = trim($tag);
 
-
                     if ( (!empty($tag)) && stristr($userTags,$tag)) {
                         $hasTag = true;
+                    }
+                    if ( (!$hasTag) && $this->requireAllTags) {
+                        /* needs all tags and doesn't have this one, skip to next user */
+                        continue 2;
                     }
                 }
                 if (! $hasTag) {

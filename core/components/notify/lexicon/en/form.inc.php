@@ -39,3 +39,4 @@ $_lang['nf.email_preview'] = 'Email Preview';
 $_lang['nf.notify_twitter'] = 'Notify Twitter';
 $_lang['nf.send_tweet'] = 'Send Tweet';
 $_lang['nf.text_for_tweet'] = 'Text for Tweet';
+$_lang['nf.require_all_tags'] = 'Require All Tags';

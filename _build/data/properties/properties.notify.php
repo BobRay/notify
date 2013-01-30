@@ -88,6 +88,15 @@ $properties = array(
         'area' => '',
         ),
     array(
+        'name' => 'requireAllTagsDefault',
+        'desc' => 'nf.require_all_tags_default_desc',
+        'type' => 'combo-boolean',
+        'options' => '',
+        'value' => false,
+        'lexicon' => 'notify:properties',
+        'area' => '',
+    ),
+    array(
         'name' => 'notifyFacebook',
         'desc' => 'nf.notify_facebook_desc',
         'type' => 'combo-boolean',
