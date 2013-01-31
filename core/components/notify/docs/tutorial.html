@@ -6,6 +6,13 @@
 
 <p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
 
+<div class="box">
+<p><b>Upgrading from Version 1.0.4 or earlier</b></p>
+<p>To use newer versions of Notify, you need to install Version 1.2.0 (or later) of the Subscribe snippet. As of Version 1.1.0, Notify will automatically insert a secure &quot;Unsubscribe/Manage Preferences&quot; link at the end of each email sent for conformance with the CAN-Spam act. The code for this feature is actually in the Subscribe package. When a user clicks on the link, he or she will be logged in silently and sent to the Subscribe  &quot;Manage Preferences&quot; page.</p>
+
+<p>Another new feature in Version 1.1.0 of Notify is the option to select users who have *all* tags selected in the Notify form (rather than the default of *any* tag. In other words, the tags are processed with AND rather than OR. If you want to use this option and are using your own notify form Tpl chunk, you need to modify it slightly to activate this feature (see the &quot;Require All Tags&quot; section below). If you don't need this feature, you shouldn't have to do anything except upgrade Subscribe.</p>
+
+</div>
 <h3>Installing Notify for MODX Revolution</h3>
 <p>
 Go to System | Package Management on the main menu in the MODX Manager and click on the "Download Extras" button. That will take you to the Revolution Repository (AKA Web Transport Facility). Put Notify in the search box and press Enter. Click on the "Download" button, and when it changes to "Downloaded," click on the button that takes you back to Package Management. Click on the "Install" button next to Notify in the grid. The Notify package should now be installed.</p>
@@ -80,6 +87,22 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 <p>The &quot;caption&quot; (to the left of the <fixedpre>==</fixedpre> signs) is what is shown in the Subscribe extra Register and Manage Preferences forms. The &quot;value&quot; (to the right of the <fixedpre>==</fixedpre> signs) is what will be stored in the database. It is also be used for the tag buttons in the Notify form and is what you should use in the Notify &quot;Tags&quot; input field. Make sure that there are no spaces except in between the words of the caption and that the preferences list is all on one line in the Tpl chunk.</p>
 
 <p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form. The tag buttons shown are based on the tags in the chunk specified in the Notify <fixedpre>&prefListChunk</fixedpre> property.</p>
+
+<h3>Require All Tags</h3>
+<p>By default, a user will receive an email if he or she has a tag that matches *any* of the tags selected in the form. As of Version 1.1.0, you can add a checkbox to the form that will let you select only users who have *all* the selected tags. You might have a 'developers' tag and a 'modx' tag. With the checkbox unchecked, if you select those two tags in the form, users with either tag will get the email. With &quot;Require All Tags&quot; checked, however, only users with both tags will get the email.
+Because Notify responds to the checkbox, this option is settable on a per-email basis.</p>
+
+<p>If you don't need this feature, you shouldn't need to do anything. If you do want it, and are using a customized Tpl chunk for the form (rather than the default one), you need to know that the form Tpl has changed. Just insert the following code in your NotifyFormTpl chunk.</p>
+
+<pre><fixedpre>
+<label for="nf_require_all_tags">
+    <input type="checkbox" id="nf_require_all_tags" name="nf_require_all_tags" [[+nf_require_checked]]/> [[%nf.require_all_tags? &namespace=`notify` &topic=`form`]]
+</label>
+</fixedpre></pre>
+
+<p>The code can go anywhere in the form, but just below the section containing the tag buttons is a good location.</p>
+
+<p>The &quot;Require All Tags&quot; checkbox is unchecked by default. If you would like to change that, add <fixedpre>&requireAllTagsDefault=`1`</fixedpre> to the Notify snippet tag or set that property to 'Yes' in the property set.</p>
 
 <h3>Notify and Articles</h3>
 
@@ -331,7 +354,12 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
         <td>prefListChunkName</td>
         <td>(optional) Chunk to use for preferences (tags) list</td>
         <td>sbsPrefListTpl</td>
-        </tr>
+    </tr>
+    <tr>
+        <td>requireAllTagsDefault</td>
+        <td>(optional) If set, the Require All Tags checkbox will be checked by default</td>
+        <td>false</td>
+    </tr>
 </table>
 
 

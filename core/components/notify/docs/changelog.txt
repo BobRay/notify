@@ -1,5 +1,10 @@
 Changelog for Notify
 
+Notify 1.1.0 pl
+---------------
+Secure Unsubscribe/Manage Preferences link in every email
+Option to require all selected tags for user selection
+
 Notify 1.0.5 pl
 ---------------
 Better avoidance of spam filters
