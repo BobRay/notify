@@ -96,9 +96,13 @@ class Notify
     protected $requireDefault;
 
 
-
-    public function __construct(&$modx, &$props, &$resource = null)
-    {
+    /**
+     * Class constructor
+     * 
+     * @param $modx modX - $modx object
+     * @param $props array - $scriptProperties array
+     */
+    public function __construct(&$modx, &$props) {
         /* @var $modx modX */
         /* @var $resource modResource */
 
@@ -109,6 +113,10 @@ class Notify
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
     }
 
+    /**
+     * @param $action string - 'displayform' or 'handleSubmission'
+     * @return string - returns formTpl or empty string 
+     */
     public function init($action) {
         $this->errors = array();
         $this->successMessages = array();
@@ -290,27 +298,43 @@ class Notify
 
         return "";
     }
-    public function injectUnsubscribe($chunk) {
+
+    /**
+     * Injects Unsubscribe URL above body tag or appends it if no body tag
+     * 
+     * @param $content string - Entire page content
+     * @return string - Content with Unsubscribe link injected
+     */
+    public function injectUnsubscribe($content) {
         $tpl = $this->unSubTpl;
-        if (stristr($chunk, '</body>')) {
+        if (stristr($content, '</body>')) {
             /* inject link just above the closing body tag */
-            // $html = $chunk;
-            $chunk = str_replace('</body>', "\n" . $tpl . "\n" . '</body>', $chunk);
+            // $html = $content;
+            $content = str_replace('</body>', "\n" . $tpl . "\n" . '</body>', $content);
         } else {
             /* append link to the end if there is no body tag */
-            $chunk = $chunk . $tpl;
+            $content = $content . $tpl;
         }
        // unset($profile);
-        return $chunk;
+        return $content;
 
     }
 
+    /**
+     * Shorten URLs using specified servise
+     * @param $text string - url to shorten
+     */
     public function shortenUrls(&$text) {
         $this->shortener->init_curl();
         $this->shortener->process($text, $this->urlShorteningService);
         $this->shortener->close_curl();
     }
 
+    /**
+     * Displays fully formatted form
+     *
+     * @return string - form
+     */
     public function displayForm() {
         $testEmailAddress = $this->modx->getOption('nfTestEmailAddress', $this->props, '');
         $testEmailAddress = empty($testEmailAddress)? $this->modx->getOption('emailsender'): $testEmailAddress;
@@ -345,6 +369,13 @@ class Notify
         return $this->modx->getChunk($this->formTpl);
 
     }
+
+    /**
+     * Updates the preview page resource and sets the URL placeholder for the
+     * iFrame to show it in the form
+     *
+     * @param $content string - content to place in content field of preview resource
+     */
     protected function updatePreviewPage($content) {
         $this->previewPage->setContent($content);
         $this->previewPage->save();
@@ -352,15 +383,38 @@ class Notify
 
     }
 
+    /**
+     * Adds an error string to the errors array
+     *
+     * @param $msg string - error message string
+     */
     protected function setError($msg) {
         $this->errors[] = $msg;
     }
+
+    /**
+     * Returns true if there are errors, false if not
+     *
+     * @return bool
+     */
     public function hasErrors() {
         return ! empty($this->errors);
     }
+
+    /**
+     * Returns the current array of error strings
+     *
+     * @return array
+     */
     public function getErrors() {
         return $this->errors;
     }
+
+    /**
+     * Returns HTML to display all current error messages
+     *
+     * @return string
+     */
     public function displayErrors() {
         $msg = '';
         foreach ($this->errors as $error) {
@@ -368,10 +422,21 @@ class Notify
         }
         return $msg;
     }
+
+    /**
+     * Addes a success message to the array of success messages to print at the top of the form
+     *
+     * @param $msg string - success message to add
+     */
     public function setSuccess($msg) {
         $this->successMessages[] = $msg;
     }
 
+    /**
+     * Creates HTML to display the current success messages
+     *
+     * @return string
+     */
     public function displaySuccessMessages() {
         $msg = '';
         foreach($this->successMessages as $message)
@@ -379,12 +444,27 @@ class Notify
         return $msg;
     }
 
+    /**
+     * Returns the text for the Tweet
+     *
+     * @return string
+     */
     public function getTweetText() {
         return $this->tweetText;
     }
+
+    /**
+     * Returns the current email text
+     *
+     * @return string
+     */
     public function getEmailText() {
         return $this->emailText;
     }
+
+    /**
+     * Initialize variables used for mailing
+     */
     public function initEmail() {
         $this->sortBy = $this->modx->getOption('sortBy',$this->props);
         $this->sortBy = empty($this->sortBy)? 'username' : $this->sortBy;
@@ -409,12 +489,21 @@ class Notify
     }
 
 
+    /**
+     * Uses an associative array for replacing multiple strings
+     * @param $replace - array of search => replace terms
+     * @param $subject string - string to do replacement on
+     * @return string - $subject with replacements done
+     */
     public function strReplaceAssoc($replace, $subject) {
            $msg =  str_replace(array_keys($replace), array_values($replace), $subject);
            return $msg;
 
     }
 
+    /**
+     * Initialize the modx Mailer
+     */
     public function initializeMailer() {
         set_time_limit(0);
         $this->modx->getService('mail', 'mail.modPHPMailer');
@@ -468,6 +557,11 @@ class Notify
 
     }
 
+    /**
+     * Fills the $this->recipients array and sends email to all users on it
+     *
+     * @return bool - true on success, false on failure
+     */
     public function sendBulkEmail() {
         /* @var $user modUser */
 
@@ -509,7 +603,6 @@ class Notify
                         'active' => '1',
                     ));
                     $c->innerJoin('modUserGroupMember','UserGroupMembers');
-                    //$total = $this->modx->getCount($this->userClass,$c);
 
         /* ToDo: Get these in batches with offset to conserve memory
                      * $c->limit($number, $offset);
@@ -537,19 +630,25 @@ class Notify
         if (!$fp) {
             $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
         } else {
-            fwrite($fp, "MESSAGE\n*****************************\n" . $this->emailText . "\n*****************************\n\n");
-            //fwrite($fp,print_r($this->recipients, true));
+            fwrite($fp, "MESSAGE\n*****************************\n" . 
+                $this->emailText .
+                "\n*****************************\n\n");
+            
         }
         foreach ($this->recipients as $recipient) {
             /* @var  array $recipient  */
 
-            if ($this->sendMail($recipient['email'], $recipient['fullName'], $recipient['profileId'])) {
+            if ($this->sendMail($recipient['email'], $recipient['fullName'], 
+                $recipient['profileId'])) {
                 if ($fp) {
                     fwrite($fp, 'Successful send to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') User Tags: ' . $recipient['userTags'] . "\n");
                 }
             } else {
                 if ($fp) {
-                    fwrite($fp, 'Error sending to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') ' . "\n");
+                    fwrite($fp, 'Error sending to: ' . 
+                        $recipient['email'] . ' (' . 
+                        $recipient['fullName'] . ') ' .
+                        "\n");
                 }
 
 
@@ -570,6 +669,13 @@ class Notify
 
 
     }
+
+    /**
+     * Adds users to $this->recipients array 
+     * 
+     * @param $users array of modUserObjects
+     * @param $userGroupName string - name of user group being processed
+     */
     protected function addUsers($users, $userGroupName) {
         foreach ($users as $user) {
             /* @var $user modUser */
@@ -636,6 +742,13 @@ class Notify
             }
         }
     }
+
+    /**
+     * Sends a test email to the selected test email address
+     *
+     * @param $address string - email address for test email
+     * @param $name string - name to use
+     */
     public function sendTestEmail($address, $name){
 
         if (empty($address)) {
@@ -653,6 +766,9 @@ class Notify
         return;
     }
 
+    /**
+     * Sends a Tweet from the form via Twitter API
+     */
     public function tweet() {
 
         require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
@@ -693,6 +809,12 @@ class Notify
     }
 
 
+    /**
+     * Writes debugging code to 'debug' chunk
+     *
+     * @param $message string - message to write
+     * @param bool $clear - if set, chunk will be cleared before adding this message
+     */
     public function my_debug($message, $clear = false)
     {
         /* @var $chunk modChunk */
@@ -713,7 +835,10 @@ class Notify
         $chunk->save();
     }
 
-    /* correct any non-full urls in email text */
+
+    /**
+     * Correct any non-full urls in email text
+     */
     public function fullUrls() {
         /* extract domain name from $base */
         $base = $this->modx->getOption('site_url');
@@ -749,7 +874,10 @@ class Notify
         $this->emailText = $html;
     }
 
-    /* Correct image tags for email use */
+
+    /**
+     * Fix image attributes for Microsoft Mail
+     */
     public function imgAttributes() {
         $html =& $this->emailText;
         $replace = array (
@@ -766,6 +894,10 @@ class Notify
 
     }
 
+    /**
+     * Gets the possible tags from the preList Tpl chunk and, if not empty,
+     * injects the HTML and JS code to let user add tags by clicking on the buttons
+     */
     protected function setTags() {
         $tags = '';
         $tagChunkName = $this->modx->getOption('prefListChunkName', $this->props, 'sbsPrefListTpl');
