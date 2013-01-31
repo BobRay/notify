@@ -2,7 +2,7 @@
 /**
  * Notify Build Script
  *
- * Copyright 2012 Bob Ray <http://bobsguides/com>
+ * Copyright 2012-2013 Bob Ray <http://bobsguides/com>
  *
  * Notify is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free

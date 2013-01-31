@@ -3,7 +3,7 @@
 /**
  * Script to interact with user during Notify package install
  *
- * Copyright 2012 Bob Ray <http://bobsguides/com>
+ * Copyright 2012-2013 Bob Ray <http://bobsguides/com>
  * @author Bob Ray <http://bobsguides/com>
  * 3/27/12
  *
