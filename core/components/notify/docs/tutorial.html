@@ -8,9 +8,9 @@
 
 <div class="box">
 <p><b>Upgrading from Version 1.0.4 or earlier</b></p>
-<p>To use newer versions of Notify, you need to install Version 1.2.0 (or later) of the Subscribe snippet. As of Version 1.1.0, Notify will automatically insert a secure &quot;Unsubscribe/Manage Preferences&quot; link at the end of each email sent for conformance with the CAN-Spam act. The code for this feature is actually in the Subscribe package. When a user clicks on the link, he or she will be logged in silently and sent to the Subscribe  &quot;Manage Preferences&quot; page.</p>
+<p>To use newer versions of Notify, you need to install Version 1.2.0 (or later) of the Subscribe snippet. As of Version 1.1.1, Notify will automatically insert a secure &quot;Unsubscribe/Manage Preferences&quot; link at the end of each email sent for conformance with the CAN-Spam act. The code for this feature is actually in the Subscribe package. When a user clicks on the link, he or she will be logged in silently and sent to the Subscribe  &quot;Manage Preferences&quot; page.</p>
 
-<p>Another new feature in Version 1.1.0 of Notify is the option to select users who have *all* tags selected in the Notify form (rather than the default of *any* tag). In other words, the tags are processed with <fixedpre>AND</fixedpre> rather than <fixedpre>OR</fixedpre>. If you want to use this option and are using your own Notify form Tpl chunk, you need to modify it slightly to activate this feature (see the &quot;Require All Tags&quot; section below). If you don't need this feature, you shouldn't have to do anything except upgrade Subscribe.</p>
+<p>Another new feature in Version 1.1.1 of Notify is the option to select users who have *all* tags selected in the Notify form (rather than the default of *any* tag). In other words, the tags are processed with <fixedpre>AND</fixedpre> rather than <fixedpre>OR</fixedpre>. If you want to use this option and are using your own Notify form Tpl chunk, you need to modify it slightly to activate this feature (see the &quot;Require All Tags&quot; section below). If you don't need this feature, you shouldn't have to do anything except upgrade Subscribe.</p>
 
 </div>
 <h3>Installing Notify for MODX Revolution</h3>
@@ -89,7 +89,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 <p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form. The tag buttons shown are based on the tags in the chunk specified in the Notify <fixedpre>&prefListChunk</fixedpre> property.</p>
 
 <h3>Require All Tags</h3>
-<p>By default, a user will receive an email if he or she has a tag that matches *any* of the tags selected in the form. As of Notify Version 1.1.0, you can add a checkbox to the form that will let you select only users who have *all* the selected tags. You might have a 'developers' tag and a 'modx' tag, for example. With the checkbox unchecked, if you select those two tags in the form, users with either tag will get the email. With &quot;Require All Tags&quot; checked, however, only users with both tags will get the email. Because Notify responds to the checkbox, this option is settable on a per-email basis.</p>
+<p>By default, a user will receive an email if he or she has a tag that matches *any* of the tags selected in the form. As of Notify Version 1.1.1, you can add a checkbox to the form that will let you select only users who have *all* the selected tags. You might have a 'developers' tag and a 'modx' tag, for example. With the checkbox unchecked, if you select those two tags in the form, users with either tag will get the email. With &quot;Require All Tags&quot; checked, however, only users with both tags will get the email. Because Notify responds to the checkbox, this option is settable on a per-email basis.</p>
 
 <div class="box">
     <p>I haven't actually tested this, but I think if the &quot;Require All Tags&quot; checkbox is checked and you don't select any tags, no users will be selected. That combination doesn't make much sense anyway.</p>
