@@ -94,6 +94,7 @@ class Notify
     protected $html2text;
     protected $requireAllTags;
     protected $requireDefault;
+    protected $badSends = 0;
 
 
     /**
@@ -424,7 +425,7 @@ class Notify
     }
 
     /**
-     * Addes a success message to the array of success messages to print at the top of the form
+     * Adds a success message to the array of success messages to print at the top of the form
      *
      * @param $msg string - success message to add
      */
@@ -551,6 +552,7 @@ class Notify
         $success = $this->modx->mail->send();
         if (! $success) {
             $this->setError($this->modx->mail->mailer->ErrorInfo);
+            $this->badSends++;
         }
         $this->modx->mail->mailer->ClearAddresses();
         return $success;
@@ -664,7 +666,10 @@ class Notify
         if ($fp) {
             fclose($fp);
         }
-        $this->setSuccess($this->modx->lexicon('nf.email_to_subscribers_sent_successfully'));
+        $successCount = count($this->recipients) - $this->badSends;
+        $msg = $this->modx->lexicon('nf.email_to_subscribers_sent_successfully');
+        $msg = str_replace('[[+nf_number]]', $successCount, $msg);
+        $this->setSuccess($msg);
         return true;
 
 

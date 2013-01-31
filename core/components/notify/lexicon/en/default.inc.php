@@ -54,5 +54,5 @@ $_lang['nf.tweet_field_is_empty'] = 'Tweet field is empty';
 $_lang['nf.unknown_error_using_twitter_api'] = 'Unknown error using Twitter API';
 $_lang['nf.twitter_said_there_was_an_error'] = 'Twitter said there was an error';
 $_lang['nf.full_response'] = 'Full response: ';
-$_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully';
+$_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully to [[+nf_number]] recipients';
 $_lang['nf.tweet_sent_successfully'] = 'Tweet sent successfully';
