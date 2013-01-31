@@ -68,4 +68,4 @@ $_lang['nf.batch_delay_desc'] = ' (optional) Delay between batches in seconds. D
 $_lang['nf.item_delay_desc'] = ' (optional) Delay between individual emails in seconds. Default: .51';
 $_lang['nf.pref_list_chunk_name_desc'] = ' (optional) Chunk to use for preferences (tags) list. Default: sbsPrefListTpl';
 
-$_lang['nf.require_all_tags_default_desc'] = ' (optional) sets the default value of the Require All Tags checkbox; if set, only users who have all tags will recieve email; default: No';
+$_lang['nf.require_all_tags_default_desc'] = ' (optional) sets the default value of the Require All Tags checkbox; if set, only users who have all tags will receive email; default: No';
