@@ -39,8 +39,8 @@
 /* @var $resource modResource */
 /* @var $nf Notify */
 
-function my_debug($message, $clear = false)
-    {
+if (!function_exists("my_debug")) {
+    function my_debug($message, $clear = false) {
         global $modx;
         /* @var $chunk modChunk */
         $chunk = $modx->getObject('modChunk', array('name' => 'debug'));
@@ -59,7 +59,7 @@ function my_debug($message, $clear = false)
         $chunk->setContent($content);
         $chunk->save();
     }
-
+}
 $sp =& $scriptProperties;
 
 /* Act only when user is a member of the Administrator group */
