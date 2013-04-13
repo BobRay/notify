@@ -1,5 +1,9 @@
 Changelog for Notify
 
+Notify 1.1.2 pl
+---------------
+Fix bug with missing Unsubscribe link
+
 Notify 1.1.1 pl
 ---------------
 Secure Unsubscribe/Manage Preferences link in every email
