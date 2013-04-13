@@ -316,6 +316,15 @@ $properties = array(
         'area' => '',
         ),
     array(
+        'name' => 'nfUnsubscribeTpl',
+        'desc' => 'nf.unsubscribe_tpl_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => 'NfUnsubscribeTpl',
+        'lexicon' => 'notify:properties',
+        'area' => '',
+    ),
+    array(
         'name' => 'nfTestEmailAddress',
         'desc' => 'nf.test_email_address_desc',
         'type' => 'textfield',
@@ -324,7 +333,6 @@ $properties = array(
         'lexicon' => 'notify:properties',
         'area' => '',
         ),
-
 
     array(
         'name' => 'sortBy',

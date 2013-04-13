@@ -86,4 +86,14 @@ $chunks[8] ->fromArray(array(
     'properties' => '',
 ),'',true,true);
 
+$chunks[9] = $modx->newObject('modChunk');
+$chunks[9]->fromArray(array(
+    'id' => 9,
+    'name' => 'NfUnsubscribeTpl',
+    'description' => 'Unsubscribe link chunk for Notify Extra',
+    'snippet' => file_get_contents($sources['source_core'] . '/elements/chunks/nfunsubscribetpl.chunk.html'),
+    'properties' => '',
+), '', true, true);
+
+
 return $chunks;
