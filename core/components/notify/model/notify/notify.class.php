@@ -175,7 +175,7 @@ class Notify
 
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
                 $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
-                $this->shortenUrls = stristr($this->urlShorteningService, 'none') == 'none';
+                $this->shortenUrls = stristr($this->urlShorteningService, 'none') != 'none';
 
                 if ($this->shortenUrls) {
                     require_once $this->corePath . 'model/notify/urlshortener.class.php';
