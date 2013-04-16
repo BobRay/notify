@@ -145,7 +145,7 @@ class Notify
             ? $profile
             : null;
 
-
+        set_time_limit(0);
         switch($action) {
 
             /* *********************************************** */
@@ -175,15 +175,15 @@ class Notify
 
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
                 $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
-                $this->shortenUrls = $this->urlShorteningService != 'none';
+                $this->shortenUrls = stristr($this->urlShorteningService, 'none') == 'none';
 
                 if ($this->shortenUrls) {
                     require_once $this->corePath . 'model/notify/urlshortener.class.php';
                     $this->shortener = new UrlShortener($this->props);
                 }
                 $fields = $this->resource->toArray();
-                $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
 
+                $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
                 if ($this->tplType != 'blank') {
                     $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
                     if (empty($this->emailText)) {
@@ -356,7 +356,8 @@ class Notify
 
         /* temporary insertion of URL -- does not change $this->emailText */
         $url = $this->unSub->createUrl($this->unSubUrl, $this->profile);
-        $content = str_replace('[[+unsubscribeUrl]]', $url, $this->emailText);
+        // $content = str_replace('[[+unsubscribeUrl]]', $url, $this->emailText);
+        $content = $this->emailText;
         $this->updatePreviewPage($content);
 
 
@@ -544,7 +545,7 @@ class Notify
         /* see if it's an ID or a modUserProfile Object - get profile obj if the former */
         $userProfile = $profile instanceof modUserProfile ? $profile : $this->modx->getObject('modUserProfile', $profile);
         $url = $this->unSub->createUrl($this->unSubUrl, $userProfile);
-        $content  = str_replace('[[+unsubscribeUrl]]', $url, $this->emailText);
+        $content  = str_replace('UNSUBSCRIBE_URL', $url, $this->emailText);
         $this->modx->mail->set(modMail::MAIL_BODY, $content);
         $this->html2text->set_html($content);
         $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $this->html2text->get_text());
@@ -660,6 +661,7 @@ class Notify
             /* implement batch delay if it's time */
             if (($i % $this->batchSize) == 0) {
                 sleep($this->batchDelay);
+                set_time_limit(0);
             }
             $i++;
         }
@@ -823,19 +825,19 @@ class Notify
     public function my_debug($message, $clear = false)
     {
         /* @var $chunk modChunk */
-        $chunk = $this->modx->getObject('modChunk', array('name' => 'debug'));
+        $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
 
         if (!$chunk) {
-            $chunk = $this->modx->newObject('modChunk', array('name' => 'debug'));
+            $chunk = $this->modx->newObject('modChunk', array('name' => 'Debug'));
             $chunk->save();
-            $chunk = $this->modx->getObject('modChunk', array('name' => 'debug'));
+            $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
         }
         if ($clear) {
             $content = '';
         } else {
             $content = $chunk->getContent();
         }
-        $content .= $message;
+        $content .= "\n" . $message . "\n";
         $chunk->setContent($content);
         $chunk->save();
     }
