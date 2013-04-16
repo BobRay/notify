@@ -15,22 +15,22 @@
 </div>
 <br />
 <div class="box">
-<h3>Version 1.1.1 Issues</h3>
+<h3>Version 1.1.2 Issues</h3>
 
-<p>Version 1.1.1 of Notify had a small security issue (thanks to MODX user adi778 for bringing it to my attention). If you did not send any user emails using version 1.1.1, you can skip this section.</p>
+<p>Version 1.1.2 of Notify had a small security issue (thanks to MODX user adi778 for bringing it to my attention). If you did not send any user emails using version 1.1.2, you can skip this section.</p>
 
-<p>In Version 1.1.1, under some circumstances, all users received an unsubscribe link for the admin user. Although the users could not gain access to the Manager, they did get access to the Manage Preferences page as the admin user. It's unlikely, but they could have unsubscribed the admin user (which sets the admin user as inactive) or changed the admin's preferences.
+<p>In Version 1.1.2, under some circumstances, all users received an unsubscribe link for the admin user. Although the users could not gain access to the Manager, they did get access to the Manage Preferences page as the admin user. It's unlikely, but they could have unsubscribed the admin user (which sets the admin user as inactive) or changed the admin's preferences.
 
 <p>Another issue is that users who followed the Unsubscribe/Manage Preferences link were able to see the admin's username. It's unlikely that one of the few users who followed the link would want to launch a brute-force hacking attempt, but it's best to keep the admin's username a secret. If you expose the admin user's username in other parts of the site (e.g. Articles), you might want to do something about that too.</p>
 
-<p>If you did send an email using 1.1.1, make the following two changes *before* upgrading to version 1.1.3.</p>
+<p>If you did send an email using 1.1.2, make the following two changes *before* upgrading to version 1.1.3.</p>
 
 <p>1. Change the admin's username. For the best security, it should not be admin, administrator, webmaster, your email address, a pet's name, or (ideally) any dictionary word or any word related to you or your site that might be guessed.
     </p>
 
     <p>2. Change the <fixedpre>sbs_secret_key</fixedpre> System Setting. It says not to change it, but ignore that. Be careful, don't change the SBS at the beginning and don't change the length, just replace one or two of the digits with other digits. This will make all the Unsubscribe/Manage Preferences links in past emails obsolete and harmless.</p>
 
-<p>One last note: Part of the process of hardening Notify involved changing the unsubscribe url placeholder in the nfUnsubscribeTpl chunk. It is no longer a placeholder. It's now just the string UNSUBSCRIBE_URL. If you have duplicated that chunk and are using your own chunk, be sure to make that change in your Tpl chunk.</p>
+<p>One last note: Part of the process of hardening Notify involved changing the unsubscribe url placeholder in the NfUnsubscribeTpl chunk. It is no longer a placeholder. It's now just the string UNSUBSCRIBE_URL. If you have duplicated that chunk and are using your own chunk, be sure to make that change in your Tpl chunk.</p>
 
 <p>Change</p>
 
