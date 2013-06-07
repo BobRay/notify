@@ -89,7 +89,7 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
             var tv = '[[+tv]]';
             var path = '[[+notifyUrl]]';
             var url = '[[+url]]';
-            var pagetitle = '[[+pagetitle]]';
+            var pagetitle = [[+pagetitle]];
             var form = document.createElement('form');
             var pageId = '[[+pageId]]';
             var checkedItem = Ext.getCmp(tv).getValue();
@@ -155,7 +155,9 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
         $src = str_replace('[[+notifyUrl]]', $notifyUrl, $src);
         $src = str_replace('[[+tv]]', $tv, $src);
         $src = str_replace('[[+url]]', $url, $src);
-        $src = str_replace('[[+pagetitle]]', $resource->get('pagetitle'), $src);
+        $pagetitle = $resource->get('pagetitle');
+        $pagetitle = var_export($pagetitle, true);
+        $src = str_replace('[[+pagetitle]]', $pagetitle, $src);
     }
 
     $modx->regClientStartupScript($src);
