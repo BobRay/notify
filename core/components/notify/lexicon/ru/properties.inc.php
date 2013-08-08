@@ -26,6 +26,8 @@
  * @subpackage lexicon
  */
 
+/** Translation by Viktor Matushevskyi (Viktorminator) <https://github.com/Viktorminator> */
+
 /* Notify Property Description strings */
 
 /* Lexicon Strings in: properties.notify.php */

@@ -26,6 +26,8 @@
  * @subpackage lexicon
  */
 
+/** Translation by Viktor Matushevskyi (Viktorminator) <https://github.com/Viktorminator> */
+
 /* notify default strings */
 
 $_lang['notify'] = 'Notify';

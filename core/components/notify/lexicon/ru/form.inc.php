@@ -26,6 +26,8 @@
  * @subpackage lexicon
  */
 
+/** Translation by Viktor Matushevskyi (Viktorminator) <https://github.com/Viktorminator> */
+
 /* Strings for use in the Notify form */
 
 $_lang['nf.notify_subscribers'] = 'Уведомить подписчиков';
