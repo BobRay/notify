@@ -804,11 +804,10 @@ class Notify
             /* This will get recent tweets */
             /* $response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay')); */
 
-            if (!$response) {
+            if ($response == null) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
-            } elseif ($response->error) {
-                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .  ': ' . $response->error . '</p><p>' . $this->modx->lexicon('nf.full_response') . '</p>
-                <pre>' . print_r($response,true) . "</pre><br />");
+            } elseif (isset($response->errors)) {
+                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .  ': ' . $response->errors[0]->message . '</p><br />');
             } else {
                 $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
             }
