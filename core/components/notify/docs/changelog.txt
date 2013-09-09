@@ -1,11 +1,12 @@
 Changelog for Notify
 
-Notify 1.1.4
+Notify 1.1.4 pl
 ------------
-Russian Translation -Thanks to Viktor Matushevskyi (Viktorminator)
+Adapt to yet another Twitter API Change
+Russian Translation - thanks to Viktor Matushevskyi (Viktorminator)
+Fix bug with quotes in pagetitles
 
-
-Notify 1.1.3
+Notify 1.1.3 pl
 ------------
 Fixed bug with wrong unsubscribe link being sent
 Better avoidance of timeouts
