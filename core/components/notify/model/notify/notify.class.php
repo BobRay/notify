@@ -174,16 +174,42 @@ class Notify
                 }
 
                 $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
-                $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'none');
-                $this->shortenUrls = stristr($this->urlShorteningService, 'none') != 'none';
+                $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'None');
+                $this->shortenUrls = stristr($this->urlShorteningService, 'None') === false;
 
                 if ($this->shortenUrls) {
                     require_once $this->corePath . 'model/notify/urlshortener.class.php';
                     $this->shortener = new UrlShortener($this->props);
                 }
                 $fields = $this->resource->toArray();
-
                 $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
+
+                if ($this->modx->getOption('tvPlaceholders', $this->props, false)) {
+                    $templateId = $this->resource->get('template');
+                    $templateObj = $this->modx->getObject('modTemplate', $templateId);
+                    $tvts = $templateObj->getMany('TemplateVarTemplates');
+                    $renderTvs = $this->modx->getOption('renderTvs', $this->props, false);
+                    $tvPrefix = $this->modx->getOption('tvPrefix', $this->props, '');
+                    foreach($tvts as $tvt) {
+                        /** @var $tvt modTemplateVarTemplate */
+                        $tvId = $tvt->get('tmplvarid');
+                        $tvObj = $this->modx->getObject('modTemplateVar', $tvId);
+                        if ($tvObj) {
+                            $tvName = $tvObj->get('name');
+                        } else {
+                            continue;
+                        }
+
+                        if ($renderTvs) {
+                            $tvValue = $this->resource->getTVValue($tvId);
+                        } else {
+                            /** @var $tvObj modTemplateVar*/
+                            $tvValue = $tvObj->getValue($this->resource->get('id'));
+                        }
+                        $fields[$tvName] = $tvValue;
+                    }
+                }
+
                 if ($this->tplType != 'blank') {
                     $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
                     if (empty($this->emailText)) {
@@ -198,7 +224,6 @@ class Notify
                         if ($this->shortenUrls) {
                             $this->shortenUrls($this->emailText);
                         }
-
                     }
                     $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
                     if (empty($this->tweetText)) {
@@ -211,7 +236,6 @@ class Notify
                             $this->tweetText = rtrim($this->tweetText,' ') . ' #fb';
                         }
                     }
-
                 } else {
                     $this->emailText = '';
                     $this->tweetText = '';
@@ -541,11 +565,25 @@ class Notify
      * @param $profile mixed - may be a user profile object or a profile ID
      * @return bool - true on success; false on failure to mail.
      */
-    public function sendMail($address, $name, $profile) {
+    public function sendMail($address, $name, $profile, $username) {
         /* see if it's an ID or a modUserProfile Object - get profile obj if the former */
         $userProfile = $profile instanceof modUserProfile ? $profile : $this->modx->getObject('modUserProfile', $profile);
         $url = $this->unSub->createUrl($this->unSubUrl, $userProfile);
         $content  = str_replace('UNSUBSCRIBE_URL', $url, $this->emailText);
+        if ($this->modx->getOption('userPlaceholders', $this->props, false)) {
+
+            $fields = array();
+            if ($userProfile instanceof modUserProfile) {
+                $fields = $userProfile->toArray();
+            }
+            $fields['username'] = $username;
+            foreach ($fields as $key => $value) {
+
+                if (! is_array($value)) {
+                    $content = str_replace('{{+' . $key . '}}', $value, $content);
+                }
+            }
+        }
         $this->modx->mail->set(modMail::MAIL_BODY, $content);
         $this->html2text->set_html($content);
         $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $this->html2text->get_text());
@@ -640,9 +678,8 @@ class Notify
         }
         foreach ($this->recipients as $recipient) {
             /* @var  array $recipient  */
-
-            if ($this->sendMail($recipient['email'], $recipient['fullName'], 
-                $recipient['profileId'])) {
+            if ($this->sendMail($recipient['email'], $recipient['fullName'],
+                $recipient['profileId'], $recipient['username'])) {
                 if ($fp) {
                     fwrite($fp, 'Successful send to: ' . $recipient['email'] . ' (' . $recipient['fullName'] . ') User Tags: ' . $recipient['userTags'] . "\n");
                 }
@@ -743,6 +780,7 @@ class Notify
                     'fullName' => $fullName,
                     'userTags' => $userTags,
                     'profileId' => $profile->get('id'),
+                    'username' => $username,
                 );
             } else {
                 $this->setError($username . ' ' .  $this->modx->lexicon('nf.has_no_email_address'));
@@ -765,7 +803,7 @@ class Notify
         if (! $this->profile instanceof modUserProfile) {
             $this->setError('Admin Profile is empty');
         }
-        if (! $this->sendMail($address, $name, $this->profile)) {
+        if (! $this->sendMail($address, $name, $this->profile, $name)) {
             $this->setError($this->modx->lexicon('nf.mail_error_sending_test_email'));
         } else {
             $this->setSuccess($this->modx->lexicon('nf.test_email_sent_successfully'));

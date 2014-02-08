@@ -1,7 +1,12 @@
 Changelog for Notify
 
+Notify 1.2.0 pl
+-----------------
+Handle TV placeholders - thanks to support from Aaron Baxter
+Handle User placeholders
+
 Notify 1.1.4 pl
-------------
+----------------
 Adapt to yet another Twitter API Change
 Russian Translation - thanks to Viktor Matushevskyi (Viktorminator)
 Fix bug with quotes in pagetitles
