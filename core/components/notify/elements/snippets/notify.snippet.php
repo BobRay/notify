@@ -121,6 +121,10 @@
 /* @var $modx modX */
 /* @var $scriptProperties array */
 
+if (! defined('MODX_CORE_PATH')) {
+    require_once 'c:/xampp/htdocs/addons/assets/mycomponents/instantiatemodx/instantiatemodx.php';
+}
+
 $sp =& $scriptProperties;
 
 $language = !empty($sp['language'])
@@ -132,7 +136,7 @@ $modx->lexicon->load($language . ':notify:default');
 
 
 /* abort if not previewing from 'mgr' */
-if (!$modx->user->isMember('Administrator')) {
+if (!$modx->user->isMember('Administrator') && (php_sapi_name() !== 'cli')) {
     return $modx->lexicon('nf.unauthorized_access');
 }
 
@@ -141,16 +145,16 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
 
 $nf = new Notify($modx, $sp);
-
+$nf->init();
 if (isset($_POST['submitVar']) && ($_POST['submitVar'] == 'submitVar')) {
     /* Handle repost */
-    $output .= $nf->init('handleSubmission');
+    $output .= $nf->process('handleSubmission');
     $output = $nf->displayErrors() . $nf->displaySuccessMessages() . $output;
 } else {
     /* Display form */
     /* @var $res modResource */
 
-    $nf->init('displayForm');
+    $nf->process('displayForm');
     if ($nf->hasErrors()) {
         $output = $nf->displayErrors();
     } else {
