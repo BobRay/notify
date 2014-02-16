@@ -95,6 +95,9 @@ class Notify
     protected $requireAllTags;
     protected $requireDefault;
     protected $badSends = 0;
+    protected $useMandrill = false;
+    /* @var $mx MandrillX */
+    protected $mx = null;
 
 
     /**
@@ -114,38 +117,52 @@ class Notify
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
     }
 
-    /**
-     * @param $action string - 'displayform' or 'handleSubmission'
-     * @return string - returns formTpl or empty string 
-     */
-    public function init($action) {
+    public function init() {
+        $this->useMandrill = $this->modx->getOption('useMandrill', $this->props, false);
+        $this->useMandrill = empty($this->useMandrill)
+            ? false
+            : true;
         $this->errors = array();
         $this->successMessages = array();
-        $this->previewPage = $this->modx->getObject('modResource', array('alias'=> 'notify-preview'));
-        if (! $this->previewPage) {
+        $this->previewPage = $this->modx->getObject('modResource', array('alias' => 'notify-preview'));
+        if (!$this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
         }
 
         $this->formTpl = $this->modx->getOption('nfFormTpl', $this->props, 'NfNotifyFormTpl');
-        $this->formTpl = empty($this->formTpl)? 'NfNotifyFormTpl' : $this->formTpl;
+        $this->formTpl = empty($this->formTpl)
+            ? 'NfNotifyFormTpl'
+            : $this->formTpl;
         $this->requireDefault = $this->modx->getOption('requireAllTagsDefault', $this->props, false);
         $this->setTags();
+        $this->setUserGroups();
 
         /* Unsubscribe settings */
-        $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', null, null);
+        $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
         $this->unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
-        $subscribeCorePath = $this->modx->getOption('subscribe.core_path', null, $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/subscribe/');
+        $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
+            $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
+            'components/subscribe/');
         require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
-        $unSubTpl = $this->modx->getOption('nfUnsubscribeTpl', $this->props, 'NfUnsubscribeTpl');
+        $unSubTpl = $this->modx->getOption('nfUnsubscribeTpl',
+            $this->props, 'NfUnsubscribeTpl');
         $this->unSub = new Unsubscribe($this->modx, $this->props);
         $this->unSub->init();
         $this->unSubTpl = $this->modx->getChunk($unSubTpl);
         $profile = $this->modx->user->getOne('Profile');
         $this->profile = $profile
             ? $profile
-            : null;
+            : NULL;
 
         set_time_limit(0);
+    }
+
+    /**
+     * @param $action string - 'displayform' or 'handleSubmission'
+     * @return string - returns formTpl or empty string 
+     */
+    public function process($action) {
+
         switch($action) {
 
             /* *********************************************** */
@@ -157,93 +174,22 @@ class Notify
                     return '';
                 }
                 if ($this->requireDefault) {
-                        $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
+                    $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
                 }
 
                 $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
                 /* set Tpl name using $_POST data */
                 $this->emailTpl = 'NfSubscriberEmailTpl' . $this->tplType;
                 $this->tweetTpl = 'NfTweetTpl' . $this->tplType;
-
-                $this->resource = $this->modx->getObject('modResource',$this->pageId);
-                if (!$this->resource) {
-                    $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
+                if (! $this->prepareTpl()) {
                     return '';
-                } else {
-                    $this->modx->setPlaceholder('pageAlias',$this->resource->get('alias'));
                 }
 
-                $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, null);
-                $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'None');
-                $this->shortenUrls = stristr($this->urlShorteningService, 'None') === false;
-
-                if ($this->shortenUrls) {
-                    require_once $this->corePath . 'model/notify/urlshortener.class.php';
-                    $this->shortener = new UrlShortener($this->props);
-                }
-                $fields = $this->resource->toArray();
-                $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
-
-                if ($this->modx->getOption('tvPlaceholders', $this->props, false)) {
-                    $templateId = $this->resource->get('template');
-                    $templateObj = $this->modx->getObject('modTemplate', $templateId);
-                    $tvts = $templateObj->getMany('TemplateVarTemplates');
-                    $renderTvs = $this->modx->getOption('renderTvs', $this->props, false);
-                    $tvPrefix = $this->modx->getOption('tvPrefix', $this->props, '');
-                    foreach($tvts as $tvt) {
-                        /** @var $tvt modTemplateVarTemplate */
-                        $tvId = $tvt->get('tmplvarid');
-                        $tvObj = $this->modx->getObject('modTemplateVar', $tvId);
-                        if ($tvObj) {
-                            $tvName = $tvObj->get('name');
-                        } else {
-                            continue;
-                        }
-
-                        if ($renderTvs) {
-                            $tvValue = $this->resource->getTVValue($tvId);
-                        } else {
-                            /** @var $tvObj modTemplateVar*/
-                            $tvValue = $tvObj->getValue($this->resource->get('id'));
-                        }
-                        $fields[$tvName] = $tvValue;
-                    }
-                }
-
-                if ($this->tplType != 'blank') {
-                    $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
-                    if (empty($this->emailText)) {
-                        $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
-                    } else {
-                        /* convert any relative URLS in email text */
-
-                        $this->fullUrls();
-                        $this->imgAttributes();
-                        $this->emailText = $this->injectUnsubscribe($this->emailText);
-                        /* shorten URLs if property is set */
-                        if ($this->shortenUrls) {
-                            $this->shortenUrls($this->emailText);
-                        }
-                    }
-                    $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
-                    if (empty($this->tweetText)) {
-                        $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
-                    } else {
-                        if ($this->shortenUrls) {
-                            $this->shortenUrls($this->tweetText);
-                        }
-                        if ($notifyFacebook) {
-                            $this->tweetText = rtrim($this->tweetText,' ') . ' #fb';
-                        }
-                    }
-                } else {
-                    $this->emailText = '';
-                    $this->tweetText = '';
-                }
                 break;
             /* *********************************************** */
             case 'handleSubmission':
-                $this->requireAllTags = isset($_POST['nf_require_all_tags']) && (!empty($_POST['nf_require_all_tags']));
+                $this->requireAllTags = isset($_POST['nf_require_all_tags']) &&
+                    (!empty($_POST['nf_require_all_tags']));
                 $this->pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
                 $this->modx->setPlaceholder('pageAlias',$this->pageAlias);
                 $this->sendTestEmail = isset($_POST['nf_send_test_email']);
@@ -303,7 +249,9 @@ class Notify
 
                     if ($this->sendTestEmail) {
                         /* send test email */
-                        $testEmailAddress = isset($_POST['nf_test_email_address'])? $_POST['nf_test_email_address'] : '';
+                        $testEmailAddress = isset($_POST['nf_test_email_address'])
+                            ? $_POST['nf_test_email_address']
+                            : '';
                         $username = $this->modx->user->get('username');
                         $this->sendTestEmail($testEmailAddress, $username);
                     }
@@ -324,6 +272,94 @@ class Notify
         return "";
     }
 
+    public function prepareTpl() {
+        if ($this->tplType == 'blank') {
+            $this->emailText = '';
+            $this->tweetText = '';
+            return true;
+        }
+
+        $this->resource = $this->modx->getObject('modResource', $this->pageId);
+        if (!$this->resource) {
+            $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
+            return false;
+        } else {
+            $this->modx->setPlaceholder('pageAlias', $this->resource->get('alias'));
+        }
+
+        $notifyFacebook = $this->modx->getOption('notifyFacebook', $this->props, NULL);
+        $this->urlShorteningService = $this->modx->getOption('urlShorteningService', $this->props, 'None');
+        $this->shortenUrls = stristr($this->urlShorteningService, 'None') === false;
+
+        if ($this->shortenUrls) {
+            require_once $this->corePath . 'model/notify/urlshortener.class.php';
+            $this->shortener = new UrlShortener($this->props);
+        }
+        $fields = $this->resource->toArray();
+        $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
+        $includeTVs = $this->modx->getOption('includeTVs', $this->props, false);
+        $includeTVList = !empty($includeTVList)
+            ? explode(',', $includeTVList)
+            : array();
+
+        if ($includeTVs) {
+            $renderTvs = $this->modx->getOption('renderTvs', $this->props, true);
+            if (!empty($includeTVList)) {
+                $tvs = $this->modx->getCollection('modTemplateVar', array('name:IN' => $includeTVList));
+            } else {
+                $tvs = $this->resource->getMany('TemplateVars');
+            }
+
+            foreach ($tvs as $tvId => $templateVar) {
+                /** @var $templateVar modTemplateVar */
+                if ($renderTvs) {
+                    $fields[$templateVar->get('name')] = $templateVar->renderOutput($this->pageId);
+                } else {
+                    $fields[$templateVar->get('name')] = $templateVar->getValue($this->pageId);
+                }
+            }
+        }
+
+        $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
+
+        if (empty($this->emailText)) {
+            $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
+        } else {
+            /* convert any relative URLS in email text */
+            $this->fullUrls();
+            /* Fix image attributes */
+            $this->imgAttributes();
+            /* Inject unsubscribe link */
+            $this->emailText = $this->injectUnsubscribe($this->emailText);
+            /* Convert all {{-style placeholders to lowercase */
+            $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
+            preg_match_all($pattern, $this->emailText, $matches);
+            if (isset($matches[1])) {
+                foreach($matches[1] as $match) {
+                    $this->emailText = str_replace('{{+' . $match . '}}',
+                        '{{+' . strtolower($match) . '}}', $this->emailText);
+                }
+            }
+
+            /* shorten URLs if property is set */
+            if ($this->shortenUrls) {
+                $this->shortenUrls($this->emailText);
+            }
+        }
+        $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
+        if (empty($this->tweetText)) {
+            $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
+        } else {
+            if ($this->shortenUrls) {
+                $this->shortenUrls($this->tweetText);
+            }
+            if ($notifyFacebook) {
+                $this->tweetText = rtrim($this->tweetText, ' ') . ' #fb';
+            }
+        }
+
+    return true;
+    }
     /**
      * Injects Unsubscribe URL above body tag or appends it if no body tag
      * 
@@ -332,6 +368,10 @@ class Notify
      */
     public function injectUnsubscribe($content) {
         $tpl = $this->unSubTpl;
+        /* for backward compatibility */
+
+        $tpl = str_ireplace('"UNSUBSCRIBE_URL"', '"{{+UNSUBSCRIBE_URL}}"', $tpl);
+        $tpl = str_ireplace('{{UNSUBSCRIBE_URL}}', '{{+UNSUBSCRIBE_URL}}', $tpl);
         if (stristr($content, '</body>')) {
             /* inject link just above the closing body tag */
             // $html = $content;
@@ -340,13 +380,13 @@ class Notify
             /* append link to the end if there is no body tag */
             $content = $content . $tpl;
         }
-       // unset($profile);
+
         return $content;
 
     }
 
     /**
-     * Shorten URLs using specified servise
+     * Shorten URLs using specified service
      * @param $text string - url to shorten
      */
     public function shortenUrls(&$text) {
@@ -378,22 +418,15 @@ class Notify
 
         /* @var $tempPage modResource */
 
-        /* temporary insertion of URL -- does not change $this->emailText */
-        $url = $this->unSub->createUrl($this->unSubUrl, $this->profile);
-        // $content = str_replace('[[+unsubscribeUrl]]', $url, $this->emailText);
         $content = $this->emailText;
         $this->updatePreviewPage($content);
-
 
         $this->modx->setPlaceholder('nf_email_text', $content);
         $subjectTpl = $this->modx->getOption('nfSubjectTpl', $this->props);
         $subjectTpl = empty($subjectTpl)? 'NfEmailSubjectTpl' : $subjectTpl;
         $this->modx->setPlaceholder('nf_email_subject',$this->modx->getChunk($subjectTpl));
         $this->modx->setPlaceholder('nf_tweet_text', $this->tweetText);
-
-
         return $this->modx->getChunk($this->formTpl);
-
     }
 
     /**
@@ -491,7 +524,7 @@ class Notify
     /**
      * Initialize variables used for mailing
      */
-    public function initEmail() {
+    protected function  initEmail() {
         $this->sortBy = $this->modx->getOption('sortBy',$this->props);
         $this->sortBy = empty($this->sortBy)? 'username' : $this->sortBy;
         $this->sortByAlias = $this->modx->getOption('sortByAlias',$this->props);
@@ -508,7 +541,7 @@ class Notify
 
         $this->groups = isset($_POST['nf_groups'])? $_POST['nf_groups']: '';
 
-        $this->batchSize = (integer) $this->modx->getOption('batchSize', $this->props, 50);
+        $this->batchSize = (integer) $this->modx->getOption('batchSize', $this->props, 25);
         $this->batchDelay = (integer) $this->modx->getOption('batchDelay', $this->props, 1);
         $this->itemDelay = (float) $this->modx->getOption('itemDelay', $this->props, .51);
 
@@ -533,60 +566,95 @@ class Notify
     public function initializeMailer() {
         set_time_limit(0);
         $this->modx->getService('mail', 'mail.modPHPMailer');
-        $this->mail_from = $this->modx->getOption('mailFrom', $this->props, $this->modx->getOption('emailsender'));
-        if (empty($this->mail_from)) $this->mail_from = $this->modx->getOption('emailsender');
+        $this->mail_from = $this->modx->getOption('mailFrom', $this->props,
+            $this->modx->getOption('emailsender'));
+        if (empty($this->mail_from)) {
+            $this->mail_from = $this->modx->getOption('emailsender');
+        }
 
-        $this->mail_from_name = $this->modx->getOption('mailFromName', $this->props, $this->modx->getOption('site_name', null));
-        if (empty($this->mail_from_name)) $this->mail_from_name = $this->modx->getOption('site_name', null);
-        $this->mail_sender = $this->modx->getOption('mailSender', $this->props, $this->mail_from);
+        $this->mail_from_name = $this->modx->getOption('mailFromName',
+            $this->props, $this->modx->getOption('site_name', null));
+        if (empty($this->mail_from_name)) {
+            $this->mail_from_name = $this->modx->getOption('site_name', NULL);
+        }
+        $this->mail_sender = $this->modx->getOption('mailSender',
+            $this->props, $this->mail_from);
 
-        $this->mail_reply_to = $this->modx->getOption('mailReplyTo', $this->props, $this->mail_from);
+        $this->mail_reply_to = $this->modx->getOption('mailReplyTo',
+            $this->props, $this->mail_from);
         if (empty($this->mail_reply_to)) {
             $this->mail_reply_to = $this->mail_from;
         }
 
-        $this->mail_subject = isset($_POST['nf_email_subject'])? $_POST['nf_email_subject'] :
-         'Update from ' . $this->modx->getOption('site_name');
+        $this->mail_subject = isset($_POST['nf_email_subject'])
+            ? $_POST['nf_email_subject']
+            : 'Update from ' . $this->modx->getOption('site_name');
 
         $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
         $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
         $this->modx->mail->set(modMail::MAIL_SENDER, $this->mail_sender);
         $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->mail_subject);
         $this->modx->mail->address('reply-to', $this->mail_reply_to);
-        $this->modx->mail->setHTML(true);
+        $this->modx->mail->setHtml(true);
     }
 
 
     /**
-     * Sends an individual email
+     * Sends an individual email - not used if sending via Mandrill
      *
-     * @param $address string user email address
-     * @param $name string - username
-     * @param $profile mixed - may be a user profile object or a profile ID
+     * @param $username string
+     * @param $profile modUserProfile
+     * @param $extra xPDOObject - custom object if modUser is extended.
      * @return bool - true on success; false on failure to mail.
      */
-    public function sendMail($address, $name, $profile, $username) {
-        /* see if it's an ID or a modUserProfile Object - get profile obj if the former */
-        $userProfile = $profile instanceof modUserProfile ? $profile : $this->modx->getObject('modUserProfile', $profile);
-        $url = $this->unSub->createUrl($this->unSubUrl, $userProfile);
-        $content  = str_replace('UNSUBSCRIBE_URL', $url, $this->emailText);
-        if ($this->modx->getOption('userPlaceholders', $this->props, false)) {
+    public function sendMail($username, $profile, $extra = null) {
 
-            $fields = array();
-            if ($userProfile instanceof modUserProfile) {
-                $fields = $userProfile->toArray();
+        $fields = array();
+        if ($profile instanceof modUserProfile) {
+            $fields = $profile->toArray();
+        }
+
+
+        $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $profile);
+
+        $content  = $this->emailText;
+        /* for backward compatibility */
+        // $fields['UNSUBSCRIBE_URL'] = $fields['unsubscribe_url'];
+
+
+        $fields['username'] = $username;
+        $address = $profile->get('email');
+        $name = empty($fields['fullname'])
+            ? $username
+            : $fields['fullname'];
+
+        /* ToDo: User Extended fields here */
+        /* ToDo: Extended user object fields here */
+
+        /* Get Fields used in Tpl */
+        $fieldsUsed = array();
+        $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
+        preg_match_all($pattern, $content, $matches);
+        if (isset($matches[1]) && (! empty($matches[1]))) {
+            $fieldsUsed = $matches[1];
+        }
+
+        //xxx
+
+        foreach ($fields as $key => $value) {
+            if (is_array($value)) {
+                continue;
             }
-            $fields['username'] = $username;
-            foreach ($fields as $key => $value) {
-
-                if (! is_array($value)) {
-                    $content = str_replace('{{+' . $key . '}}', $value, $content);
-                }
+            if (in_array(strtoupper($key), $fieldsUsed)) {}
+            if (! is_array($value)) {
+                $content = str_replace('{{+' . $key . '}}', $value, $content);
             }
         }
+
         $this->modx->mail->set(modMail::MAIL_BODY, $content);
         $this->html2text->set_html($content);
-        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $this->html2text->get_text());
+        $text = $this->html2text->get_text();
+        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text );
         $this->modx->mail->address('to', $address, $name);
         $success = $this->modx->mail->send();
         if (! $success) {
@@ -598,13 +666,183 @@ class Notify
 
     }
 
+    public function sendBulkEmail() {
+        if ($this->useMandrill) {
+            require_once('C:/xampp/htdocs/addons/assets/mycomponents/mandrillx/core/components/mandrillx/model/mandrillx/mandrillx.class.php');
+            $apiKey = $this->modx->getOption('mandrill_api_key');
+            if (empty($apiKey)) {
+                $this->setError('No Mandrill API Key');
+                return false;
+            } else {
+                $this->mx = new MandrillX($this->modx, $apiKey);
+            }
+        }
+
+        $groups = empty($this->groups)
+            ? array()
+            : explode(',', $this->groups);
+
+        foreach ($groups as $key => $group) {
+            $group = trim($group);
+            if (!is_numeric($group)) {
+                $grp = $this->modx->getObject('modUserGroup', array('name' => $group));
+                $groups[$key] = $grp
+                    ? $grp->get('id')
+                    : '';
+                unset($grp);
+            } else {
+                $groups[$key] = $group;
+            }
+        }
+
+        $userClass = $this->userClass;
+
+        $c = $this->modx->newQuery($userClass);
+        $c->select($this->modx->getSelectColumns($userClass, $userClass, "", array(
+            'id',
+            'username',
+            'active',
+        )));
+        $c->sortby($this->modx->escape('username'), 'ASC');
+        if (!empty($groups)) {
+
+            $c->where(array(
+                'UserGroupMembers.user_group:IN' => $groups,
+                'active'                         => '1',
+            ));
+            $c->leftJoin('modUserGroupMember', 'UserGroupMembers');
+
+        } else {
+            $c->where(array(
+                'active' => '1',
+            ));
+        }
+
+        $c->prepare();
+        $totalCount = $this->modx->getCount('modUser', $c);
+        $totalSent = 0;
+        echo "\n<br>TotalCount: " . $totalCount;
+        $i = 0;
+        $offset = 0;
+        while ($offset < $totalCount) {
+            $i++;
+
+            /*if ($i > 10) {
+                echo "Done";
+            }*/
+            $c->limit($this->batchSize, $offset);
+            $c->prepare();
+            // $users = $modx->getCollection($userClass, $c);
+            $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
+            $offset += $this->batchSize;
+            $msg = "\n\n<br>" . $i . "  Count: " . count($users) . "\n<br>Offset: " . $offset . "\n<br>BatchSize: " . $this->batchSize;
+            echo($msg);
+            $sentCount = 0;
+            foreach ($users as $user) {
+                /** @var $user modUser */
+                $username = $user->get('username');
+                if (!empty($this->tags)) {
+                    if (!$this->qualifyUser($user->Profile, $username, $this->requireAllTags)) {
+                        continue;
+                    }
+                }
+
+                if ($this->useMandrill) {
+                $this->addUsertoMandrill($user);
+                } else {
+                    $this->sendMail($username, $user->Profile);
+                }
+                echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
+                $sentCount++;
+
+            }
+            if (!empty($sentCount)) {
+                echo "\n<br>Sending Batch of " . $sentCount . "\n\n";
+            }
+            if ($this->useMandrill) {
+                $this->mx->sendMessage();
+                $this->mx->clearUsers();
+            }
+            $totalSent += $sentCount;
+
+
+        }
+        echo "\n<br>Total Sent: " . $totalSent;
+        return true;
+    }
+
+    /**
+     * See if User should receive email based on
+     * tags selected in form
+     *
+     * @param $profile modUserProfile - User Profile object
+     * @param $username string
+     * @param bool $requireAll
+     * @return bool - True if use should receive email
+     */
+    public function qualifyUser($profile, $username, $requireAll = false) {
+
+        /* Get User's Tags */
+        $userTags = NULL;
+        if (!$profile) {
+            $this->setError($this->modx->lexicon('nf.no_profile_for') . ': ' . $username);
+            $result = false;
+        } else {
+            if ($this->modx->getOption('sbs_use_comment_field', NULL, NULL) == 'No') {
+                $field = $this->modx->getOption('sbs_extended_field');
+                if (empty($field)) {
+                    $this->setError($this->modx->lexicon('nf.sbs_extended_field_not_set'));
+                } else {
+                    $extended = $profile->get('extended');
+                    $userTags = $extended[$field];
+                }
+            } else {
+                $userTags = $profile->get('comment');
+            }
+        }
+        $hasTag = false;
+        if (!empty($userTags)) {
+            $tags = explode(',', $this->tags);
+
+            foreach ($tags as $tag) {
+                $tag = trim($tag);
+                $hasTag = false;
+                if ((!empty($tag)) && stristr($userTags, $tag)) {
+                    $hasTag = true;
+                    if (!$requireAll) {
+                        break;
+                    }
+                }
+                if ((!$hasTag) && $requireAll) {
+                    /* needs all tags and doesn't have this one, skip to next user */
+                    $hasTag = false;
+                    break;
+                }
+            }
+        }
+
+        return $hasTag;
+    }
+
+    /**
+     * Add user's info to the Mandrill Message array
+     * @param $user modUser
+     */
+    protected function addUserToMandrill($user) {
+        echo "Sending to user (Mandrill): " . $user->get('username');
+
+    }
     /**
      * Fills the $this->recipients array and sends email to all users on it
      *
      * @return bool - true on success, false on failure
      */
-    public function sendBulkEmail() {
+
+
+    public function XsendBulkEmail() {
         /* @var $user modUser */
+
+
 
         $this->recipients = array();
 
@@ -938,6 +1176,11 @@ class Notify
 
     }
 
+    /* ToDo: Set user groups with JS like the tags */
+
+    public function setUserGroups(){
+
+    }
     /**
      * Gets the possible tags from the preList Tpl chunk and, if not empty,
      * injects the HTML and JS code to let user add tags by clicking on the buttons
