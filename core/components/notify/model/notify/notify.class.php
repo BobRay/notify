@@ -767,6 +767,13 @@ class Notify
                 }
 
                 $fields['name'] = empty($fields['fullname'])? $fields['username'] : $fields['fullname'];
+
+                /* If firstname field is not set, extract it from fullname */
+                $fields['firstname'] = isset($fields['firstname']) && (!empty($fields['firstname']))
+                    ? $fields['firstname']
+                    : substr($fields['name'], 0, strpos($fields['name'], ' '));
+                $fields['firstname'] = !empty($fields['firstname'])? $fields['firstname'] : $username;
+                /* Send the email */
                 if ($this->useMandrill) {
                     $this->addUsertoMandrill($fields);
                 } else {
@@ -782,7 +789,7 @@ class Notify
             if ($this->useMandrill) {
                 $results = $this->mx->sendMessage();
                 $this->mx->clearUsers();
-                echo "\n" . print_r($results, true) . "\n";
+                echo "\n<pre>" . print_r($results, true) . "</pre>\n";
             }
             $totalSent += $sentCount;
 
