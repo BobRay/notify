@@ -662,13 +662,18 @@ class Notify
     public function sendBulkEmail() {
 
         if ($this->useMandrill) {
-            require_once('C:/xampp/htdocs/addons/assets/mycomponents/mandrillx/core/components/mandrillx/model/mandrillx/mandrillx.class.php');
+            require_once $this->modx->getOption('mandrillx.core.path', null,  MODX_CORE_PATH) . 'components/mandrillx/model/mandrillx/mandrillx.class.php';
+
             $apiKey = $this->modx->getOption('mandrill_api_key');
             if (empty($apiKey)) {
                 $this->setError('nf.no_mandrill_api_key~~No Mandrill API Key');
                 return false;
             } else {
                 $this->props['html'] = $this->emailText;
+                $this->html2text->set_html($this->emailText);
+                $text = $this->html2text->get_text();
+                $this->props['text'] = $text;
+                unset($text);
                 $this->mx = new MandrillX($this->modx, $apiKey, $this->props);
                 if (! $this->mx instanceof MandrillX) {
                     $this->setError('nf.no_mandrill~~Could not instantiate Mandrill object');
