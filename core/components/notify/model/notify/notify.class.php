@@ -38,8 +38,8 @@
 class Notify
 {
 
-    /* @var $modx modX */
-    /* @var $resource modResource */
+    /** @var $modx modX */
+    /** @var $resource modResource */
     protected $resource;
     protected $resourceId;
     protected $modx;
@@ -60,44 +60,46 @@ class Notify
     protected $sortBy;
     protected $sortByAlias;
     protected $tags;
-    /* @var $recipients array */
+    /** @var $recipients array */
     protected $recipients = array();
     protected $emailText;
     protected $emailTpl;
     protected $tweetTpl;
     protected $tweetText;
     protected $replace;
-    /* @var $successMessages array */
+    /** @var $successMessages array */
     protected $successMessages;
-    /* @var $errors array */
+    /** @var $errors array */
     protected $errors;
     protected $pageId;
     protected $pageAlias;
     protected $sendBulkEmail;
     protected $sendTestEmail;
     protected $sendTweet;
-    /* @var $previewPage modResource */
+    /** @var $previewPage modResource */
     protected $previewPage;
     protected $formTpl;
     protected $urlShorteningService;
     protected $shortenUrls;
-    /* @var $shortener UrlShortener */
+    /** @var $shortener UrlShortener */
     public $shortener;
     protected $tplType; /* new, update, blank, custom */
-    /* @var $unSub Unsubscribe */
+    /** @var $unSub Unsubscribe */
     protected $unSub;
     protected $unSubUrl;
     protected $unSubTpl;
-    /* @var $profile modUserProfile */
+    /** @var $profile modUserProfile */
     protected $profile;
-    /* @var $html2text html2text */
+    /** @var $html2text html2text */
     protected $html2text;
     protected $requireAllTags;
     protected $requireDefault;
     protected $badSends = 0;
     protected $useMandrill = false;
-    /* @var $mx MandrillX */
+    /** @var $mx MandrillX */
     protected $mx = null;
+    /** @var $userFields array - array of user placeholders used in message */
+    protected $userFields = array();
 
 
     /**
@@ -136,6 +138,35 @@ class Notify
         $this->requireDefault = $this->modx->getOption('requireAllTagsDefault', $this->props, false);
         $this->setTags();
         $this->setUserGroups();
+
+        /* Message Settings */
+        $this->mail_from = $this->modx->getOption('mailFrom', $this->props,
+            $this->modx->getOption('emailsender'));
+        if (empty($this->mail_from)) {
+            $this->mail_from = $this->modx->getOption('emailsender');
+        }
+        $this->props['mail_from'] = $this->mail_from;
+
+        $this->mail_from_name = $this->modx->getOption('mailFromName',
+            $this->props, $this->modx->getOption('site_name', NULL));
+        if (empty($this->mail_from_name)) {
+            $this->mail_from_name = $this->modx->getOption('site_name', NULL);
+        }
+        $this->props['from_name'] = $this->mail_from_name;
+        $this->mail_sender = $this->modx->getOption('mailSender',
+            $this->props, $this->mail_from);
+
+        $this->mail_reply_to = $this->modx->getOption('mailReplyTo',
+            $this->props, $this->mail_from);
+        if (empty($this->mail_reply_to)) {
+            $this->mail_reply_to = $this->mail_from;
+        }
+
+        $this->mail_subject = isset($_POST['nf_email_subject'])
+            ? $_POST['nf_email_subject']
+            : 'Update from ' . $this->modx->getOption('site_name');
+
+        $this->props['mail_subject'] = $this->mail_subject;
 
         /* Unsubscribe settings */
         $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
@@ -566,29 +597,7 @@ class Notify
     public function initializeMailer() {
         set_time_limit(0);
         $this->modx->getService('mail', 'mail.modPHPMailer');
-        $this->mail_from = $this->modx->getOption('mailFrom', $this->props,
-            $this->modx->getOption('emailsender'));
-        if (empty($this->mail_from)) {
-            $this->mail_from = $this->modx->getOption('emailsender');
-        }
 
-        $this->mail_from_name = $this->modx->getOption('mailFromName',
-            $this->props, $this->modx->getOption('site_name', null));
-        if (empty($this->mail_from_name)) {
-            $this->mail_from_name = $this->modx->getOption('site_name', NULL);
-        }
-        $this->mail_sender = $this->modx->getOption('mailSender',
-            $this->props, $this->mail_from);
-
-        $this->mail_reply_to = $this->modx->getOption('mailReplyTo',
-            $this->props, $this->mail_from);
-        if (empty($this->mail_reply_to)) {
-            $this->mail_reply_to = $this->mail_from;
-        }
-
-        $this->mail_subject = isset($_POST['nf_email_subject'])
-            ? $_POST['nf_email_subject']
-            : 'Update from ' . $this->modx->getOption('site_name');
 
         $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
         $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
@@ -602,50 +611,28 @@ class Notify
     /**
      * Sends an individual email - not used if sending via Mandrill
      *
-     * @param $username string
-     * @param $profile modUserProfile
-     * @param $extra xPDOObject - custom object if modUser is extended.
+
+     * @param $fields array - fields for user placeholders.
      * @return bool - true on success; false on failure to mail.
      */
-    public function sendMail($username, $profile, $extra = null) {
-
-        $fields = array();
-        if ($profile instanceof modUserProfile) {
-            $fields = $profile->toArray();
-        }
-
-
-        $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $profile);
+    public function sendMail($fields) {
 
         $content  = $this->emailText;
-        /* for backward compatibility */
-        // $fields['UNSUBSCRIBE_URL'] = $fields['unsubscribe_url'];
 
 
-        $fields['username'] = $username;
-        $address = $profile->get('email');
+        $address = $fields['email'];
         $name = empty($fields['fullname'])
-            ? $username
+            ? $fields['username']
             : $fields['fullname'];
 
-        /* ToDo: User Extended fields here */
-        /* ToDo: Extended user object fields here */
-
         /* Get Fields used in Tpl */
-        $fieldsUsed = array();
-        $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
-        preg_match_all($pattern, $content, $matches);
-        if (isset($matches[1]) && (! empty($matches[1]))) {
-            $fieldsUsed = $matches[1];
-        }
-
-        //xxx
+        $fieldsUsed = $this->userFields;
 
         foreach ($fields as $key => $value) {
             if (is_array($value)) {
                 continue;
             }
-            if (in_array(strtoupper($key), $fieldsUsed)) {}
+            if (in_array($key, $fieldsUsed)) {}
             if (! is_array($value)) {
                 $content = str_replace('{{+' . $key . '}}', $value, $content);
             }
@@ -665,17 +652,41 @@ class Notify
         return $success;
 
     }
+    public function getUserFields() {
+        $content = $this->emailText;
+
+        /* Get Fields used in Tpl */
+        $fieldsUsed = array();
+        $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
+        preg_match_all($pattern, $content, $matches);
+        if (isset($matches[1]) && (!empty($matches[1]))) {
+            $fieldsUsed = $matches[1];
+        }
+        return $fieldsUsed;
+    }
 
     public function sendBulkEmail() {
+
         if ($this->useMandrill) {
             require_once('C:/xampp/htdocs/addons/assets/mycomponents/mandrillx/core/components/mandrillx/model/mandrillx/mandrillx.class.php');
             $apiKey = $this->modx->getOption('mandrill_api_key');
             if (empty($apiKey)) {
-                $this->setError('No Mandrill API Key');
+                $this->setError('nf.no_mandrill_api_key~~No Mandrill API Key');
                 return false;
             } else {
-                $this->mx = new MandrillX($this->modx, $apiKey);
+                $this->props['html'] = $this->emailText;
+                $this->mx = new MandrillX($this->modx, $apiKey, $this->props);
+                if (! $this->mx instanceof MandrillX) {
+                    $this->setError('nf.no_mandrill~~Could not instantiate Mandrill object');
+                    return false;
+                }
+                /* Note: init() takes care of placeholder conversion
+                   to Mandrill-style placeholders */
+                $this->mx->init();
+                $this->userFields = $this->mx->getUserPlaceholders();
             }
+        } else {
+            $this->userFields = $this->getUserFields();
         }
 
         $groups = empty($this->groups)
@@ -727,12 +738,8 @@ class Notify
         while ($offset < $totalCount) {
             $i++;
 
-            /*if ($i > 10) {
-                echo "Done";
-            }*/
             $c->limit($this->batchSize, $offset);
             $c->prepare();
-            // $users = $modx->getCollection($userClass, $c);
             $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
             $offset += $this->batchSize;
             $msg = "\n\n<br>" . $i . "  Count: " . count($users) . "\n<br>Offset: " . $offset . "\n<br>BatchSize: " . $this->batchSize;
@@ -746,11 +753,24 @@ class Notify
                         continue;
                     }
                 }
+                /* Now we have a user to send to */
+                $fields = array();
+                $fields['username'] = $username;
+                $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $user->Profile);
+                $fields = array_merge($user->Profile->toArray(), $fields);
+                if ($this->modx->getOption('useExtendedFields', $this->props, false)) {
+                    $extended = $user->Profile->get('extended');
+                    $fields = array_merge($extended, $fields);
+                }
+                $fields['tags'] = $this->tags;
+                if (isset($user->Extra) && (!empty($user->Extra))) {
+                    $fields = array_merge($user->Extra->toArray(), $fields);
+                }
 
                 if ($this->useMandrill) {
-                $this->addUsertoMandrill($user);
+                    $this->addUsertoMandrill($fields);
                 } else {
-                    $this->sendMail($username, $user->Profile);
+                    $this->sendMail($fields);
                 }
                 echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
                 $sentCount++;
@@ -826,10 +846,13 @@ class Notify
 
     /**
      * Add user's info to the Mandrill Message array
-     * @param $user modUser
+     * @param $fields array - user fields with values
      */
-    protected function addUserToMandrill($user) {
-        echo "Sending to user (Mandrill): " . $user->get('username');
+    protected function addUserToMandrill($fields) {
+        echo "Sending to user (Mandrill): " . $fields['username'];
+        if (! $this->mx) {
+            $this->setError('No Mandrill Class');
+        } //xxx
 
     }
     /**
