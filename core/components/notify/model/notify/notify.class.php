@@ -619,12 +619,6 @@ class Notify
 
         $content  = $this->emailText;
 
-
-        $address = $fields['email'];
-        $name = empty($fields['fullname'])
-            ? $fields['username']
-            : $fields['fullname'];
-
         /* Get Fields used in Tpl */
         $fieldsUsed = $this->userFields;
 
@@ -642,7 +636,7 @@ class Notify
         $this->html2text->set_html($content);
         $text = $this->html2text->get_text();
         $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text );
-        $this->modx->mail->address('to', $address, $name);
+        $this->modx->mail->address('to', $fields['email'], $fields['name']);
         $success = $this->modx->mail->send();
         if (! $success) {
             $this->setError($this->modx->mail->mailer->ErrorInfo);
@@ -767,6 +761,7 @@ class Notify
                     $fields = array_merge($user->Extra->toArray(), $fields);
                 }
 
+                $fields['name'] = empty($fields['fullname'])? $fields['username'] : $fields['fullname'];
                 if ($this->useMandrill) {
                     $this->addUsertoMandrill($fields);
                 } else {
@@ -780,8 +775,9 @@ class Notify
                 echo "\n<br>Sending Batch of " . $sentCount . "\n\n";
             }
             if ($this->useMandrill) {
-                $this->mx->sendMessage();
+                $results = $this->mx->sendMessage();
                 $this->mx->clearUsers();
+                echo "\n" . print_r($results, true) . "\n";
             }
             $totalSent += $sentCount;
 
@@ -850,9 +846,9 @@ class Notify
      */
     protected function addUserToMandrill($fields) {
         echo "Sending to user (Mandrill): " . $fields['username'];
-        if (! $this->mx) {
-            $this->setError('No Mandrill Class');
-        } //xxx
+        if ($this->mx) {
+            $this->mx->addUser($fields);
+        }
 
     }
     /**
