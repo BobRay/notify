@@ -120,7 +120,7 @@ class Notify
     }
 
     public function init() {
-        $this->useMandrill = $this->modx->getOption('useMandrill', $this->props, false);
+        $this->useMandrill = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->useMandrill = empty($this->useMandrill)
             ? false
             : true;
