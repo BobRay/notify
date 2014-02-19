@@ -29,3 +29,7 @@ iframe {
     width:600px;
     height:400px;
 }
+
+.nf_error {
+    color: #c82b07;
+}

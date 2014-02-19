@@ -100,6 +100,7 @@ class Notify
     protected $mx = null;
     /** @var $userFields array - array of user placeholders used in message */
     protected $userFields = array();
+    protected $debug;
 
 
     /**
@@ -184,6 +185,8 @@ class Notify
         $this->profile = $profile
             ? $profile
             : NULL;
+
+        $this->debug = $this->modx->getOption('debug', $this->props, false);
 
         set_time_limit(0);
     }
@@ -508,7 +511,7 @@ class Notify
     public function displayErrors() {
         $msg = '';
         foreach ($this->errors as $error) {
-            $msg .= '<p>' . $error . '</p>';
+            $msg .= '<p class="nf_error">' . $error . '</p>';
         }
         return $msg;
     }
@@ -731,7 +734,6 @@ class Notify
         $c->prepare();
         $totalCount = $this->modx->getCount('modUser', $c);
         $totalSent = 0;
-        echo "\n<br>TotalCount: " . $totalCount;
         $i = 0;
         $offset = 0;
         while ($offset < $totalCount) {
@@ -741,8 +743,10 @@ class Notify
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
             $offset += $this->batchSize;
-            $msg = "\n\n<br>" . $i . "  Count: " . count($users) . "\n<br>Offset: " . $offset . "\n<br>BatchSize: " . $this->batchSize;
-            echo($msg);
+            $msg = "\n\n<br />" . $i . "  Count: " . count($users) . "\n<br />Offset: " . $offset . "\n<br />BatchSize: " . $this->batchSize;
+            if ($this->debug) {
+                echo($msg);
+            }
             $sentCount = 0;
             foreach ($users as $user) {
                 /** @var $user modUser */
@@ -779,23 +783,34 @@ class Notify
                 } else {
                     $this->sendMail($fields);
                 }
-                echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
+                if ($this->debug) {
+                    echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
+                }
                 $sentCount++;
 
             }
             if (!empty($sentCount)) {
-                echo "\n<br>Sending Batch of " . $sentCount . "\n\n";
+                echo "\n<p>" . $this->modx->lexicon('sending_batch_of~~Sending Batch of') .
+                    ' '. $sentCount . "\n\n</p>";
             }
             if ($this->useMandrill) {
                 $results = $this->mx->sendMessage();
                 $this->mx->clearUsers();
-                echo "\n<pre>" . print_r($results, true) . "</pre>\n";
+                if ($this->mx->hasError()) {
+                    $errors = $this->mx->getErrors();
+                    foreach($errors as $error) {
+                        $this->setError($error);
+                    }
+                }
+                if ($this->debug) {
+                    echo "\n<pre>" . print_r($results, true) . "</pre>\n";
+                }
             }
             $totalSent += $sentCount;
 
 
         }
-        echo "\n<br>Total Sent: " . $totalSent;
+        echo "\n<p>" . $this->modx->lexicon('total_sent~~Total Sent') .  ": " . $totalSent . "\n</p>";
         return true;
     }
 
