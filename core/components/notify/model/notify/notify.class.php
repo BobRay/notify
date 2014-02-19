@@ -834,7 +834,6 @@ class Notify
         $userTags = NULL;
         if (!$profile) {
             $this->setError($this->modx->lexicon('nf.no_profile_for') . ': ' . $username);
-            $result = false;
         } else {
             if ($this->modx->getOption('sbs_use_comment_field', NULL, NULL) == 'No') {
                 $field = $this->modx->getOption('sbs_extended_field');
