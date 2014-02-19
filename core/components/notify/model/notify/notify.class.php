@@ -533,7 +533,7 @@ class Notify
     public function displaySuccessMessages() {
         $msg = '';
         foreach($this->successMessages as $message)
-            $msg .= '<p>' . $message . '</p>';
+            $msg .= '<p class="nf_success">' . $message . '</p>';
         return $msg;
     }
 
@@ -779,6 +779,8 @@ class Notify
                 $fields['firstname'] = !empty($fields['firstname'])? $fields['firstname'] : $username;
                 /* Send the email */
                 if ($this->useMandrill) {
+                    /* This will not trigger an error because the message
+                       is not sent here */
                     $this->addUsertoMandrill($fields);
                 } else {
                     $this->sendMail($fields);
@@ -790,14 +792,15 @@ class Notify
 
             }
             if (!empty($sentCount)) {
-                echo "\n<p>" . $this->modx->lexicon('sending_batch_of~~Sending Batch of') .
-                    ' '. $sentCount . "\n\n</p>";
+                $this->setSuccess($this->modx->lexicon('sending_batch_of~~Sending Batch of') .
+                    ' ' . $sentCount);
             }
             if ($this->useMandrill) {
                 $results = $this->mx->sendMessage();
                 $this->mx->clearUsers();
                 if ($this->mx->hasError()) {
                     $errors = $this->mx->getErrors();
+                    $this->successMessages = array();
                     foreach($errors as $error) {
                         $this->setError($error);
                     }
@@ -810,7 +813,9 @@ class Notify
 
 
         }
-        echo "\n<p>" . $this->modx->lexicon('total_sent~~Total Sent') .  ": " . $totalSent . "\n</p>";
+        if (! $this->hasErrors()) {
+            $this->setSuccess($this->modx->lexicon('total_sent~~Total Sent') . ": " . $totalSent);
+        }
         return true;
     }
 
@@ -872,7 +877,10 @@ class Notify
      * @param $fields array - user fields with values
      */
     protected function addUserToMandrill($fields) {
-        echo "Sending to user (Mandrill): " . $fields['username'];
+        if ($this->debug) {
+            echo $this->modx->lexicon('nf_send_user_mandrill~~Sending to user (Mandrill)') .
+                ': ' . $fields['username'];
+        }
         if ($this->mx) {
             $this->mx->addUser($fields);
         }

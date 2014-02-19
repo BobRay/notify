@@ -33,3 +33,7 @@ iframe {
 .nf_error {
     color: #c82b07;
 }
+
+.nf_success {
+    color:green;
+}
