@@ -332,13 +332,15 @@ class Notify
         }
         $fields = $this->resource->toArray();
         $fields['url'] = $this->modx->makeUrl($this->pageId, "", "", "full");
-        $includeTVs = $this->modx->getOption('includeTVs', $this->props, false);
-        $includeTVList = !empty($includeTVList)
-            ? explode(',', $includeTVList)
-            : array();
+        $includeTVs = (bool) $this->modx->getOption('includeTVs', $this->props, false);
 
         if ($includeTVs) {
-            $renderTvs = $this->modx->getOption('renderTvs', $this->props, true);
+            $includeTVList = $this->modx->getOption('includeTVList', $this->props, '');
+            $includeTVList = !empty($includeTVList)
+                ? explode(',', $includeTVList)
+                : array();
+
+            $renderTvs = $this->modx->getOption('processTvs', $this->props, true);
             if (!empty($includeTVList)) {
                 $tvs = $this->modx->getCollection('modTemplateVar', array('name:IN' => $includeTVList));
             } else {
