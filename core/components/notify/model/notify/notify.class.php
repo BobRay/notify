@@ -826,6 +826,7 @@ class Notify
                                 "\n");
                         }
                     }
+                    sleep($this->itemDelay);
                 }
                 if ($this->debug) {
                     echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
@@ -833,6 +834,8 @@ class Notify
                 $sentCount++;
 
             }
+            sleep($this->batchDelay);
+            set_time_limit(0);
             if (!empty($sentCount)) {
                 $this->setSuccess($this->modx->lexicon('sending_batch_of~~Sending Batch of') .
                     ' ' . $sentCount);
@@ -974,7 +977,8 @@ class Notify
                 $group = $this->modx->getObject('modUserGroup',$g);
 
                 if (empty($group)) {
-                    $this->setError ($this->modx->lexicon('nf.could_not_find_user_group') . ': ' . $userGroupName);
+                    $this->setError ($this->modx->lexicon('nf.could_not_find_user_group') .
+                        ': ' . $userGroupName);
                 } else {
                     /* get users */
                     $c = $this->modx->newQuery($this->userClass);
@@ -1138,7 +1142,8 @@ class Notify
     public function sendTestEmail($address, $name){
 
         if (empty($address)) {
-            $this->setError ($this->modx->lexicon('nf.test_email_address_empty') . $this->modx->lexicon('nf.test_email_not_sent'));
+            $this->setError ($this->modx->lexicon('nf.test_email_address_empty') .
+                $this->modx->lexicon('nf.test_email_not_sent'));
             return;
         }
         if (! $this->profile instanceof modUserProfile) {
