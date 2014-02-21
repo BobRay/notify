@@ -665,6 +665,7 @@ class Notify
 
     public function sendBulkEmail($singleEmail = null) {
         $singleUser = $singleEmail !== null;
+        $fp = null;
 
         if ($this->useMandrill) {
             require_once $this->modx->getOption('mandrillx.core.path', null,  MODX_CORE_PATH) . 'components/mandrillx/model/mandrillx/mandrillx.class.php';
@@ -690,6 +691,16 @@ class Notify
             }
         } else {
             $this->userFields = $this->getUserFields();
+            $fp = fopen($this->logFile, 'w');
+            
+            if (!$fp) {
+                $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
+            } else {
+                fwrite($fp, "MESSAGE\n*****************************\n" .
+                    $this->emailText .
+                    "\n*****************************\n\n");
+
+            }
         }
 
         $groups = empty($this->groups)
@@ -801,7 +812,20 @@ class Notify
                        is not sent here */
                     $this->addUsertoMandrill($fields);
                 } else {
-                    $this->sendMail($fields);
+                    if ($this->sendMail($fields)) {
+                        if ($fp) {
+                            fwrite($fp, 'Successful send to: ' . $fields['email'] . ' (' .
+                                $fields['name'] . ') User Tags: ' .
+                                $fields['userTags'] . "\n");
+                        }
+                    } else {
+                        if ($fp) {
+                            fwrite($fp, 'Error sending to: ' .
+                                $fields['email'] . ' (' .
+                                $fields['name'] . ') ' .
+                                "\n");
+                        }
+                    }
                 }
                 if ($this->debug) {
                     echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
@@ -838,6 +862,9 @@ class Notify
         }
         if ($totalSent == 0) {
             $this->setError($this->modx->lexicon('nf_no_messages_sent~~No Messages Sent'));
+        }
+        if ($fp !== null) {
+            fclose($fp);
         }
         return true;
     }
