@@ -85,6 +85,30 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
+  'includeTVList' => 
+  array (
+    'name' => 'includeTVList',
+    'desc' => 'nf.include_tv_list_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
+  'includeTVs' => 
+  array (
+    'name' => 'includeTVs',
+    'desc' => 'nf.include_tvs_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'itemDelay' => 
   array (
     'name' => 'itemDelay',
@@ -298,6 +322,18 @@ $properties = array (
     array (
     ),
     'value' => 'sbsPrefListTpl',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
+  'processTVs' => 
+  array (
+    'name' => 'processTVs',
+    'desc' => 'nf.process_tvs_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -535,34 +571,10 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
-  'includeTVs' => 
+  'useExtendedFields' => 
   array (
-    'name' => 'includeTVs',
-    'desc' => 'nf.include_tvs_desc',
-    'type' => 'combo-boolean',
-    'options' => 
-    array (
-    ),
-    'value' => false,
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'includeTVList' => 
-  array (
-    'name' => 'includeTVList',
-    'desc' => 'nf.include_tv_list_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'processTVs' => 
-  array (
-    'name' => 'processTVs',
-    'desc' => 'nf.process_tvs_desc',
+    'name' => 'useExtendedFields',
+    'desc' => 'nf.use_extended_fields_desc',
     'type' => 'combo-boolean',
     'options' => 
     array (
