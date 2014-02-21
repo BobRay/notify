@@ -31,7 +31,7 @@ if (! function_exists('stripPhpTags')) {
  */
 $success= true;
 if ($transport && $transport->xpdo) {
-    $signature = 'mandrillx-1.0.2-pl';
+    $signature = 'mandrillx-1.0.3-pl';
     $modx =& $transport->xpdo;
     $modx->addPackage('modx.transport',$modx->getOption('core_path').'model/');
     

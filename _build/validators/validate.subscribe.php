@@ -36,7 +36,7 @@ if ($transport && $transport->xpdo) {
             $modx =& $transport->xpdo;
 
             /* define subscribe version */
-            $newVersion = '1.2.0-pl';
+            $newVersion = '1.2.1-pl';
             $newVersionMajor = '1';
             $name = 'subscribe';
 

@@ -31,7 +31,7 @@ if (! function_exists('stripPhpTags')) {
  */
 $success= true;
 if ($transport && $transport->xpdo) {
-    $signature = 'subscribe-1.2.0-pl';
+    $signature = 'subscribe-1.2.1-pl';
     $modx =& $transport->xpdo;
     $modx->addPackage('modx.transport',$modx->getOption('core_path').'model/');
     

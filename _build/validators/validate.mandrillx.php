@@ -36,7 +36,7 @@ if ($transport && $transport->xpdo) {
             $modx =& $transport->xpdo;
 
             /* define mandrillx version */
-            $newVersion = '1.0.2-pl';
+            $newVersion = '1.0.3-pl';
             $newVersionMajor = '1';
             $name = 'mandrillx';
 
