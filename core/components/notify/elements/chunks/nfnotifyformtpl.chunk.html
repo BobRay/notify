@@ -1,3 +1,16 @@
+<script type="text/javascript">
+    /* <![CDATA[ */
+    function nf_toggle(id) {
+        e = document.getElementById(id);
+        if (e.style.display == 'block')
+            e.style.display = 'none';
+        else
+            e.style.display = 'block';
+    }
+    /* ]]> */
+</script>
+
+
 <form id="nf_form" action="[[~[[*id]]]]" method="post">
     <input type="hidden" name="submitVar" id="submitVar" value="submitVar"/>
     <input type="hidden" name="pageAlias" value="[[+pageAlias]]"/>
@@ -7,12 +20,14 @@
     </label> <br/><br/>
 
     <label for="nf_send_test_email">
-        <input type="checkbox" id="nf_send_test_email" name="nf_send_test_email" [[+nf_send_test_email_checked]] /> [[%nf.send_test_email?
+        <input type="checkbox" id="nf_send_test_email" name="nf_send_test_email" [[+nf_send_test_email_checked]]
+OnClick="nf_toggle('nf_single_user');"/> [[%nf.send_test_email?
         &namespace=`notify` &topic=`form`]] </label><br/><br/>
-
+<div id="nf_single_user">
     <label for="nf_test_email_address">[[%nf.email_address_for_test? &namespace=`notify` &topic=`form`]]<br/>
         <input type="text" size="50" id="nf_test_email_address" name="nf_test_email_address" value="[[+nf_test_email_address]]"/>
     </label> <br/><br/>
+</div>
 
     <label for="nf_email_subject">[[%nf.email_subject? &namespace=`notify` &topic=`form`]]<br/>
         <input type="text" size="50" id="nf_email_subject" name="nf_email_subject" value="[[+nf_email_subject]]"/>
@@ -20,8 +35,10 @@
 
     <label for="nf_groups">[[%nf.groups? &namespace=`notify` &topic=`form`]]<br/>
         <input type="text" size="50" id="nf_groups" name="nf_groups" value="[[+nf_groups]]"/>
-    </label> <br/><br/>
+    </label> <!-- <br/><br/> -->
+    [[+nf_group_list]]
 
+    <br />
     <label for="nf_tags">[[%nf.tags? &namespace=`notify` &topic=`form`]]<br/>
         <input type="text" size="50" id="nf_tags" name="nf_tags" value="[[+nf_tags]]"/>
     </label>
@@ -65,5 +82,5 @@
 
     <br/><br/>
 
-
 </form>
+

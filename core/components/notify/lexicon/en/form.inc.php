@@ -29,8 +29,8 @@
 /* Strings for use in the Notify form */
 
 $_lang['nf.notify_subscribers'] = 'Notify Subscribers';
-$_lang['nf.send_test_email'] = 'Send Test Email';
-$_lang['nf.email_address_for_test'] = 'Email address for Test';
+$_lang['nf.send_test_email'] = 'Send Single Email';
+$_lang['nf.email_address_for_test'] = 'Username or email for Single Email';
 $_lang['nf.email_subject'] = 'Email Subject';
 $_lang['nf.groups'] = 'Groups (comma-separated list of groups to send to)';
 $_lang['nf.tags'] = 'Tags (comma-separated list of tags)';

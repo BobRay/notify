@@ -37,3 +37,8 @@ iframe {
 .nf_success {
     color:green;
 }
+
+#nf_single_user {
+    display:none;
+    padding-left: 30px;
+}

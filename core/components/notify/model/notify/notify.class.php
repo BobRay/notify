@@ -286,8 +286,9 @@ class Notify
                         $testEmailAddress = isset($_POST['nf_test_email_address'])
                             ? $_POST['nf_test_email_address']
                             : '';
-                        $username = $this->modx->user->get('username');
-                        $this->sendTestEmail($testEmailAddress, $username);
+                        $this->tags = '';
+                        $this->groups = '';
+                        $this->sendBulkEmail($testEmailAddress);
                     }
                 }
                 if ($this->sendTweet) {
@@ -436,7 +437,7 @@ class Notify
      */
     public function displayForm() {
         $testEmailAddress = $this->modx->getOption('nfTestEmailAddress', $this->props, '');
-        $testEmailAddress = empty($testEmailAddress)? $this->modx->getOption('emailsender'): $testEmailAddress;
+        $testEmailAddress = empty($testEmailAddress)? $this->modx->user->get('username'): $testEmailAddress;
 
         $this->modx->setPlaceholder('nf_test_email_address', $testEmailAddress);
 
@@ -509,11 +510,11 @@ class Notify
      * @return string
      */
     public function displayErrors() {
-        $msg = '';
+        $msg = "\n" . '<p class="nf_error">';
         foreach ($this->errors as $error) {
-            $msg .= '<p class="nf_error">' . $error . '</p>';
+            $msg .= "\n" . '<br />' . $error;
         }
-        return $msg;
+        return $msg . "\n</p>";
     }
 
     /**
@@ -531,10 +532,10 @@ class Notify
      * @return string
      */
     public function displaySuccessMessages() {
-        $msg = '';
+        $msg = "\n" . '<p class="nf_success">';
         foreach($this->successMessages as $message)
-            $msg .= '<p class="nf_success">' . $message . '</p>';
-        return $msg;
+            $msg .= "\n<br />" . $message;
+        return $msg . "\n</p>";
     }
 
     /**
@@ -662,7 +663,8 @@ class Notify
         return $fieldsUsed;
     }
 
-    public function sendBulkEmail() {
+    public function sendBulkEmail($singleEmail = null) {
+        $singleUser = $singleEmail !== null;
 
         if ($this->useMandrill) {
             require_once $this->modx->getOption('mandrillx.core.path', null,  MODX_CORE_PATH) . 'components/mandrillx/model/mandrillx/mandrillx.class.php';
@@ -679,11 +681,10 @@ class Notify
                 unset($text);
                 $this->mx = new MandrillX($this->modx, $apiKey, $this->props);
                 if (! $this->mx instanceof MandrillX) {
-                    $this->setError('nf.no_mandrill~~Could not instantiate Mandrill object');
+                    $this->setError($this->modx->lexicon('nf.no_mandrill~~Could not instantiate Mandrill object'));
                     return false;
                 }
-                /* Note: init() takes care of placeholder conversion
-                   to Mandrill-style placeholders */
+
                 $this->mx->init();
                 $this->userFields = $this->mx->getUserPlaceholders();
             }
@@ -717,14 +718,24 @@ class Notify
             'active',
         )));
         $c->sortby($this->modx->escape('username'), 'ASC');
-        if (!empty($groups)) {
+        if ($singleUser) {
+            if ($u = $this->modx->getObject('modUser', array('username' => $singleEmail))) {
+                $c->where(array('username' => $singleEmail));
+                unset($u);
+            } elseif ($p = $this->modx->getObject('modUserProfile', array('email' => $singleEmail))) {
+                $c->where(array('id' => $p->get('internalKey') ));
+                unset($p);
+            } else {
+                $this->setError($this->modx->lexicon('nf_user_not_found~~User Not Found'));
+                return false;
+            }
 
+        } else if (!empty($groups)) {
             $c->where(array(
                 'UserGroupMembers.user_group:IN' => $groups,
                 'active'                         => '1',
             ));
             $c->leftJoin('modUserGroupMember', 'UserGroupMembers');
-
         } else {
             $c->where(array(
                 'active' => '1',
@@ -733,6 +744,9 @@ class Notify
 
         $c->prepare();
         $totalCount = $this->modx->getCount('modUser', $c);
+        if ($this->debug) {
+            echo "<br>Total Count: " . $totalCount;
+        }
         $totalSent = 0;
         $i = 0;
         $offset = 0;
@@ -742,9 +756,13 @@ class Notify
             $c->limit($this->batchSize, $offset);
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
+            // echo "<br>User Count: " . count($users);
             $offset += $this->batchSize;
-            $msg = "\n\n<br />" . $i . "  Count: " . count($users) . "\n<br />Offset: " . $offset . "\n<br />BatchSize: " . $this->batchSize;
+
             if ($this->debug) {
+            $msg = "\n\n<br />" . $i . "  Count: " . count($users) .
+                "\n<br />Offset: " . $offset . "\n<br />BatchSize: " .
+                $this->batchSize;
                 echo($msg);
             }
             $sentCount = 0;
@@ -813,8 +831,13 @@ class Notify
 
 
         }
-        if (! $this->hasErrors()) {
-            $this->setSuccess($this->modx->lexicon('total_sent~~Total Sent') . ": " . $totalSent);
+        if ((! $this->hasErrors()) && $totalSent) {
+            $msg = $this->modx->lexicon('nf.email_to_subscribers_sent_successfully');
+            $msg = str_replace('[[+nf_number]]', $totalSent, $msg);
+            $this->setSuccess($msg);
+        }
+        if ($totalSent == 0) {
+            $this->setError($this->modx->lexicon('nf_no_messages_sent~~No Messages Sent'));
         }
         return true;
     }
@@ -1232,7 +1255,52 @@ class Notify
     /* ToDo: Set user groups with JS like the tags */
 
     public function setUserGroups(){
+        $groups = '';
+        $groupChunkName = $this->modx->getOption('groupListChunkName', $this->props, 'sbsGroupListTpl');
+        $groupList = $this->modx->getChunk($groupChunkName);
+        if (!empty($groupList)) {
 
+            $src = '<script type="text/javascript">
+function nf_insert_group(group) {
+    var text = document.getElementById("nf_groups").value;
+    if (text.indexOf(group) != -1) {
+       text= text.replace("," + group + ",","," );
+       text = text.replace(group + ",","");
+       text = text.replace("," + group,"");
+       text = text.replace(group,"");
+    } else {
+        if (text) {
+        text = text + "," + group;
+        } else {
+          text = group;
+        }
+    }
+    var groupArray = text.split(",");
+    groupArray.sort();
+    text = groupArray.join(",");
+    document.getElementById("nf_groups").value = text;
+return false;
+    }
+</script>';
+
+            $this->modx->regClientStartupScript($src);
+            $groups = '<p>';
+            $groupArray = explode('||', $groupList);
+            natcasesort($groupArray);
+            $i = 0;
+            foreach ($groupArray as $t) {
+                /* $t = strtolower($t); */
+                $pos = strpos($t, '==');
+                $group = $pos
+                    ? substr($t, $pos + 2)
+                    : $t;
+                $group = trim($group);
+                $groups .= '<button name="button' . $i . '" id="button' . $i . '" type="button" class="nf_group" onclick="nf_insert_group(' . "'" . $group . "'" . ');"' . '">' . $group . "</button>\n";
+                $i++;
+            }
+            $groups .= '</p>';
+        }
+        $this->modx->setPlaceholder('nf_group_list', $groups);
     }
     /**
      * Gets the possible tags from the preList Tpl chunk and, if not empty,
