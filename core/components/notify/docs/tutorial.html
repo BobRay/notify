@@ -5,46 +5,40 @@
 <p>(Jump to <a href="[[~[[*id]]]]#propertiesTable">Properties Table</a>.)</p>
 
 <p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
+
+<h3>What's New</h3>
+<p>A number of nice features have been added in the latest version. The new version:</p>
+<ul>
+    <li>sends email (optionally) with the Mandrill email service (see below for more info).</li>
+    <li>has Buttons to select User Groups to send to.</li>
+    <li>sends mail in batches to save memory (batch size is adjustable).</li>
+    <li>has much faster database queries</li>
+    <li>sends email to a single user by email or username</li>
+    <li>allows user tags for any field of the user profile (including the 'extended' fields).</li>
+    <li>processes chunk, snippet, and setting tags in the Tpl chunk.</li>
+    <li>allows resource and TV placeholder tags!</li>
+    <li>installs/updates MandrillX and Subscribe automatically</li>
+
+</ul>
+
+
 <br />
 <div class="box">
-<h3>Upgrading from Version 1.0.4 or Earlier</h3>
-<p>To use newer versions of Notify, you need to install Version 1.2.0 (or later) of the Subscribe snippet. As of Version 1.1.3, Notify will automatically insert a secure &quot;Unsubscribe/Manage Preferences&quot; link at the end of each email sent for conformance with the CAN-Spam act. The code for this feature is actually in the Subscribe package. When a user clicks on the link, he or she will be logged in silently and sent to the Subscribe  &quot;Manage Preferences&quot; page.</p>
+<h3>Upgrade Notes</h3>
 
-<p>Another new feature in Version 1.1.1 of Notify is the option to select users who have *all* tags selected in the Notify form (rather than the default of *any* tag). In other words, the tags are processed with <fixedpre>AND</fixedpre> rather than <fixedpre>OR</fixedpre>. If you want to use this option and are using your own Notify form Tpl chunk, you need to modify it slightly to activate this feature (see the &quot;Require All Tags&quot; section below). If you don't need this feature, you shouldn't have to do anything except upgrade Subscribe.</p>
-
-</div>
-<br />
-<div class="box">
-<h3>Version 1.1.2 Issues</h3>
-
-<p>Version 1.1.2 of Notify had a small security issue (thanks to MODX user adi778 for bringing it to my attention). If you did not send any user emails using version 1.1.2, you can skip this section.</p>
-
-<p>In Version 1.1.2, under some circumstances, all users received an unsubscribe link for the admin user. Although the users could not gain access to the Manager, they did get access to the Manage Preferences page as the admin user. It's unlikely, but they could have unsubscribed the admin user (which sets the admin user as inactive) or changed the admin's preferences.
-
-<p>Another issue is that users who followed the Unsubscribe/Manage Preferences link were able to see the admin's username. It's unlikely that one of the few users who followed the link would want to launch a brute-force hacking attempt, but it's best to keep the admin's username a secret. If you expose the admin user's username in other parts of the site (e.g. Articles), you might want to do something about that too.</p>
-
-<p>If you did send an email using 1.1.2, make the following two changes *before* upgrading to version 1.1.3.</p>
-
-<p>1. Change the admin's username. For the best security, it should not be admin, administrator, webmaster, your email address, a pet's name, or (ideally) any dictionary word or any word related to you or your site that might be guessed.
-    </p>
-
-    <p>2. Change the <fixedpre>sbs_secret_key</fixedpre> System Setting. It says not to change it, but ignore that. Be careful, don't change the SBS at the beginning and don't change the length, just replace one or two of the digits with other digits. This will make all the Unsubscribe/Manage Preferences links in past emails obsolete and harmless.</p>
-
-<p>One last note: Part of the process of hardening Notify involved changing the unsubscribe url placeholder in the NfUnsubscribeTpl chunk. It is no longer a placeholder. It's now just the string UNSUBSCRIBE_URL. If you have duplicated that chunk and are using your own chunk, be sure to make that change in your Tpl chunk.</p>
-
-<p>Change</p>
+<p>The new version is mostly compatible with earlier versions, but in order to use the Mandrill API, there have been some changes in the Tpl chunk structure that may affect you. All user-specific placeholders, including the unsubscribe_url, now take this form: {{+username}}, {{+email}}, {{+unsubscribe_url}}. Snippet, chunk, and setting tags are standard MODX tags. Resource Fields and TVs are now available with MODX placeholder tags:</p>
 
 <pre><fixedpre>
-    <a href="[[+unsubscribeUrl]]"> here </a>
+[[+pagetitle]]
+[[+TvName]]
 </fixedpre></pre>
 
-<p>to</p>
-
+<p>User Groups can now be entered in the form with buttons like the tags. Notify uses the sbsGroupListTpl chunk in the Subscribe category as the list of available groups:</p>
 <pre><fixedpre>
-<a href="UNSUBSCRIBE_URL"> here </a>
+Displayed GroupName==ActualGroupName||Displayed Other GroupName==ActualOtherGroupName
 </fixedpre></pre>
 
-<p>Notice that the new version is not a tag.</p>
+
 </div>
 
 <br />
@@ -76,11 +70,11 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a Property Set for Notify (see below) and set their names in the Property Set.
 
-<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window.</p>
+<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window. You can't, however, add MODX tags to the message. All MODX tags are processed as the Tpl chunk is retrieved, so by the time you're entering the message, it's too late. You can add user field placeholders, however, in this form {{+fieldName}}. </p>
         
 <p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered.</p>
         
-<p>The various options are independent, so you can send a test email, send a message to subscribers, or send a Tweet without activating the other options.</p>
+<p>The various options are independent, so you can send a single email, send a message to subscribers, or send a Tweet without activating the other options.</p>
         
 <p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that placeholders are not available to you if you do this.</p>
 
@@ -90,7 +84,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <h3>Groups</h3>
         
-<p>Email is only sent to active users. The <fixedpre>&groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can specify them by name or by User Group ID number. By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>&groups</fixedpre> property. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
+<p>Email is only sent to active users. The <fixedpre>&groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can also add them to the form by clicking on the buttons below the input. The buttons come from the content of the SbsGroupListTpl chunk, which you're free to edit (see the format for the tags Tpl chunk in the next section). By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>&groups</fixedpre> property of the snippet. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
         
 <h3>Tags</h3>
 <br />
@@ -143,6 +137,20 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 <p>The code can go anywhere in the form, but just below the section containing the tag buttons is a good location.</p>
 
 <p>The &quot;Require All Tags&quot; checkbox is unchecked by default. If you would like to change that, add <fixedpre>&requireAllTagsDefault=`1`</fixedpre> to the Notify snippet tag or set that property to 'Yes' in the Property Set.</p>
+
+<h3>Mandrill</h3>
+
+<p>Mandrill is an email service and a subsidiary of MailChimp. I've created the MandrillX class to make it easier to send mail with Mandrill, and that class is automatically installed with Notify.</p>
+
+<p>Mandrill allows you to send up to 12,000 emails per month (yes, twelve thousand!). Beyond that, there is a very reasonable charge for additional sends. Mandrill also has some very useful email analytics for you. You can track opens, clicks, bounces, and a bunch of other things.</p>
+
+<p>Using Mandrill with Notify couldn't be much simpler. Go to <a href="https://mandrillapp.com">Mandrill</a> and open a free account. Hover over the little gear icon at the upper right and select &quot;SMTP & API Credentials.&quot;. Click on the blue &quot;New API Key&quot; button. Copy the API key code and paste it into the mandrill_api_key System Setting in the Manager (find it with the search box at the upper right in System -> System Settings).</p>
+
+<p>Before you leave Mandrillapp.com, hover over &quot;Outbound&quot; on the top menu and select &quot;Subaccounts&quot; in the dropdown menu. Click on the blue &quot;Create a Subaccount&quot; button. Call your subaccount <code>test</code> (all lowercase). This is the default subaccount used by Notify when you install it. It assumes that you don't want all your test emails in a real subaccount. Once you are up and running, you can create a new subaccount, add &subaccount=`NewSubName` to the Notify snippet tag or its property set, and (optionally) delete the &quot;test&quot; subacccount at Mandrill.</p>
+
+<p>One last thing is necessary for using Mandrill &mdash; you have to tell Notify to use Mandrill by adding &nfUseMandrill=`1` to the snippet tag or setting that property to Yes in the property set.</p>
+
+<p>That's it. Once you've complete those steps, Notify will use Mandrill automatically for all its emails.</p>
 
 <h3>Notify and Articles</h3>
 
@@ -356,7 +364,7 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 
     <tr>
         <td>nfTestEmailAddress</td>
-        <td>(optional) Email address for test email</td>
+        <td>(optional) Default email address for single emails</td>
         <td>emailsender System Setting</td>
     </tr>
     <tr>
@@ -412,3 +420,4 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 </table>
 
 <p>&nbsp;</p>
+
