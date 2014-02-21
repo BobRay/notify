@@ -35,7 +35,6 @@ $_lang['nf_page_id_is_empty'] = '$_POST pageId is empty';
 $_lang['nf.could_not_get_resource'] = 'Could not get resource';
 $_lang['nf.could_not_find_email_tpl_chunk'] = 'Could not find email Tpl chunk';
 $_lang['nf.could_not_find_tweet_tpl_chunk'] = 'Could not find tweet Tpl chunk';
-$_lang['nf.could_not_find_user_group'] = 'Could not find user group';
 $_lang['nf.no_recipients_to_send_to'] = 'No recipients to send to';
 $_lang['nf.bulk_emails_not_sent'] = 'Bulk emails not sent';
 $_lang['nf.could_not_open_log_file'] = 'Could not open log file (make sure log directory exists)';
@@ -56,3 +55,14 @@ $_lang['nf.twitter_said_there_was_an_error'] = 'Twitter said there was an error'
 $_lang['nf.full_response'] = 'Full response: ';
 $_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully to [[+nf_number]] recipients';
 $_lang['nf.tweet_sent_successfully'] = 'Tweet sent successfully';
+
+
+/* Used in notify.class.php */
+$_lang['nf.no_mandrill_api_key'] = 'No Mandrill API Key';
+$_lang['nf.no_mandrill'] = 'Could not instantiate Mandrill object';
+$_lang['nf.user_not_found'] = 'User Not Found';
+$_lang['nf.sending_batch_of'] = 'Sending Batch of';
+$_lang['nf.no_messages_sent'] = 'No Messages Sent';
+$_lang['nf.send_user_mandrill'] = 'Sending to user (Mandrill)';
+
+

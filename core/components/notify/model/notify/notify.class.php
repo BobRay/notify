@@ -672,7 +672,7 @@ class Notify
 
             $apiKey = $this->modx->getOption('mandrill_api_key');
             if (empty($apiKey)) {
-                $this->setError('nf.no_mandrill_api_key~~No Mandrill API Key');
+                $this->setError($this->modx->lexicon('nf.no_mandrill_api_key'));
                 return false;
             } else {
                 $this->props['html'] = $this->emailText;
@@ -682,7 +682,7 @@ class Notify
                 unset($text);
                 $this->mx = new MandrillX($this->modx, $apiKey, $this->props);
                 if (! $this->mx instanceof MandrillX) {
-                    $this->setError($this->modx->lexicon('nf.no_mandrill~~Could not instantiate Mandrill object'));
+                    $this->setError($this->modx->lexicon('nf.no_mandrill'));
                     return false;
                 }
 
@@ -737,7 +737,7 @@ class Notify
                 $c->where(array('id' => $p->get('internalKey') ));
                 unset($p);
             } else {
-                $this->setError($this->modx->lexicon('nf_user_not_found~~User Not Found'));
+                $this->setError($this->modx->lexicon('nf.user_not_found'));
                 return false;
             }
 
@@ -837,7 +837,7 @@ class Notify
             sleep($this->batchDelay);
             set_time_limit(0);
             if (!empty($sentCount)) {
-                $this->setSuccess($this->modx->lexicon('sending_batch_of~~Sending Batch of') .
+                $this->setSuccess($this->modx->lexicon('nf.sending_batch_of') .
                     ' ' . $sentCount);
             }
             if ($this->useMandrill) {
@@ -864,7 +864,7 @@ class Notify
             $this->setSuccess($msg);
         }
         if ($totalSent == 0) {
-            $this->setError($this->modx->lexicon('nf_no_messages_sent~~No Messages Sent'));
+            $this->setError($this->modx->lexicon('nf.no_messages_sent'));
         }
         if ($fp !== null) {
             fclose($fp);
@@ -930,7 +930,7 @@ class Notify
      */
     protected function addUserToMandrill($fields) {
         if ($this->debug) {
-            echo $this->modx->lexicon('nf_send_user_mandrill~~Sending to user (Mandrill)') .
+            echo $this->modx->lexicon('nf.send_user_mandrill') .
                 ': ' . $fields['username'];
         }
         if ($this->mx) {
@@ -1048,7 +1048,8 @@ class Notify
             if ($response == null) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
             } elseif (isset($response->errors)) {
-                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .  ': ' . $response->errors[0]->message . '</p><br />');
+                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .
+                    ': ' . $response->errors[0]->message . '</p><br />');
             } else {
                 $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
             }
