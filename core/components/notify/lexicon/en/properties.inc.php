@@ -72,4 +72,7 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
-$_lang['nf.use_mandrill_desc'] = 'Use Mandrill to send email.';
+$_lang['nf.include_tvs_desc'] = 'Set to yes if any TVs need to be shown.';
+$_lang['nf.include_tv_list_desc'] = 'Comma-separated list of TVs to include.';
+$_lang['nf.process_tvs_desc'] = 'Set to Yes to use the rendered value of any TVs rather than the raw value.';
+$_lang['nf.use_mandrill_desc'] = 'Use Mandrill service to send email.';
