@@ -1,21 +1,17 @@
 Changelog for Notify
 
-Notify 1.2.3
+Notify 1.2.0
 --------------
 Add Mandrill Capability, &nfUseMandrill property
 Add &maxLogs property to limit number of logs kept
+Handle TV placeholders - thanks to support from Aaron Baxter
 Add &includeTVs, &includeTVList, and &processTVs properties
 Add &useExtendedFields property
+Groups can now be selected with buttons, like Tags
 Set url placeholder for resources
 Improve Error Handling
 Retrieve users in batches to conserve memory
 Add &debug property
-
-
-Notify 1.2.0 pl
------------------
-Handle TV placeholders - thanks to support from Aaron Baxter
-Handle User placeholders
 
 Notify 1.1.4 pl
 ----------------
