@@ -148,6 +148,7 @@ class Notify
             $this->mail_from = $this->modx->getOption('emailsender');
         }
         $this->props['mail_from'] = $this->mail_from;
+        $this->props['from_email'] = $this->mail_from;
 
         $this->mail_from_name = $this->modx->getOption('mailFromName',
             $this->props, $this->modx->getOption('site_name', NULL));
@@ -169,6 +170,7 @@ class Notify
             : 'Update from ' . $this->modx->getOption('site_name');
 
         $this->props['mail_subject'] = $this->mail_subject;
+        $this->props['subject'] = $this->mail_subject;
 
         $this->maxLogs = $this->modx->getOption('maxLogs', $this->props, 5);
 
