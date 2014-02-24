@@ -33,7 +33,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => '50',
+    'value' => '25',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -88,7 +88,7 @@ $properties = array (
   'includeTVList' => 
   array (
     'name' => 'includeTVList',
-    'desc' => 'nf.include_tv_list_desc',
+    'desc' => 'include_tv_list_property_desc',
     'type' => 'textfield',
     'options' => 
     array (
@@ -100,13 +100,13 @@ $properties = array (
   'includeTVs' => 
   array (
     'name' => 'includeTVs',
-    'desc' => 'nf.include_tvs_desc',
+    'desc' => 'include_tvs_property_desc',
     'type' => 'combo-boolean',
     'options' => 
     array (
     ),
     'value' => false,
-    'lexicon' => 'notify:properties',
+    'lexicon' => 'Notify:Properties',
     'area' => '',
   ),
   'itemDelay' => 
@@ -333,7 +333,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => false,
+    'value' => true,
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -559,6 +559,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
+  'useExtendedFields' => 
+  array (
+    'name' => 'useExtendedFields',
+    'desc' => 'use_extended_fields_property_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'userClass' => 
   array (
     'name' => 'userClass',
@@ -571,15 +583,27 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
-  'useExtendedFields' => 
+  'debug' => 
   array (
-    'name' => 'useExtendedFields',
-    'desc' => 'nf.use_extended_fields_desc',
+    'name' => 'debug',
+    'desc' => 'debug_property_desc',
     'type' => 'combo-boolean',
     'options' => 
     array (
     ),
     'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
+  'maxLogs' => 
+  array (
+    'name' => 'maxLogs',
+    'desc' => 'maxlogs_property_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '5',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),

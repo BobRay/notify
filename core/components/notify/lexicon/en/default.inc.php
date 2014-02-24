@@ -66,3 +66,18 @@ $_lang['nf.no_messages_sent'] = 'No Messages Sent';
 $_lang['nf.send_user_mandrill'] = 'Sending to user (Mandrill)';
 
 
+
+
+/* Used in nfnotifyformtpl.chunk.html */
+$_lang['nf.notify_subscribers'] = '';
+$_lang['nf.send_test_email'] = '';
+$_lang['nf.email_address_for_test'] = '';
+$_lang['nf.email_subject'] = '';
+$_lang['nf.groups'] = '';
+$_lang['nf.tags'] = '';
+$_lang['nf.require_all_tags'] = '';
+$_lang['nf.text_for_email'] = '';
+$_lang['nf.email_preview'] = '';
+$_lang['nf.notify_twitter'] = '';
+$_lang['nf.send_tweet'] = '';
+$_lang['nf.text_for_tweet'] = '';

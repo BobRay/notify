@@ -345,7 +345,7 @@ class Notify
                 ? explode(',', $includeTVList)
                 : array();
 
-            $renderTvs = $this->modx->getOption('processTvs', $this->props, true);
+            $renderTvs = $this->modx->getOption('processTVs', $this->props, true);
             if (!empty($includeTVList)) {
                 $tvs = $this->modx->getCollection('modTemplateVar', array('name:IN' => $includeTVList));
             } else {

@@ -16,7 +16,7 @@ $components = array(
     'packageName' => 'Notify',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'Notify project for MyComponent extra',
-    'version' => '1.1.5',
+    'version' => '1.2.0',
     'release' => 'pl',
     'author' => 'Bob Ray',
     'email' => '<http://bobsguides.com>',
@@ -560,7 +560,7 @@ $components = array(
 
     /* ******************** LEXICON HELPER SETTINGS ***************** */
     /* These settings are used by LexiconHelper */
-    'rewriteCodeFiles' => false,  /* remove ~~descriptions */
+    'rewriteCodeFiles' => true,  /* remove ~~descriptions */
     'rewriteLexiconFiles' => true, /* automatically add missing strings to lexicon files */
     /* ******************************************* */
 

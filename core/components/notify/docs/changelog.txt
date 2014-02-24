@@ -2,7 +2,7 @@ Changelog for Notify
 
 Notify 1.2.3
 --------------
-Add Mandrill Capability, &useMandrill property
+Add Mandrill Capability, &nfUseMandrill property
 Add &maxLogs property to limit number of logs kept
 Add &includeTVs, &includeTVList, and &processTVs properties
 Add &useExtendedFields property

@@ -72,8 +72,13 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['include_tv_list_property_desc'] = 'Comma-separated list of TV names. Only TVs on the list will have their placeholders set.';
+$_lang['include_tvs_property_desc'] = 'If set, placeholders will be set for Resource TVs; default: No.';
+$_lang['use_extended_fields_property_desc'] = 'If set, placeholders will be set for the extended fields of the User Profile; default: No';
+$_lang['debug_property_desc'] = 'Set to Yes to output debugging information';
+$_lang['maxlogs_property_desc'] = 'Set this to limit the number of email logs kept. The oldest one will be deleted. Set to 0 for unlimited logs. Default: 5';
 $_lang['nf.use_extended_fields_desc'] = 'Set this to true to set placeholders from the extended field of the user profile.';
 $_lang['nf.include_tvs_desc'] = 'Set to yes if any TVs need to be shown.';
 $_lang['nf.include_tv_list_desc'] = 'Comma-separated list of TVs to include.';
-$_lang['nf.process_tvs_desc'] = 'Set to Yes to use the rendered value of any TVs rather than the raw value.';
+$_lang['nf.process_tvs_desc'] = 'If set to No, the raw values of the TVs will used. Default: Yes.';
 $_lang['nf.use_mandrill_desc'] = 'Use Mandrill service to send email.';
