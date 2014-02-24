@@ -419,6 +419,41 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
         <td>(optional) If set, the Require All Tags checkbox will be checked by default</td>
         <td>false</td>
     </tr>
+    <tr>
+        <td>useMandrill</td>
+        <td>(optional) If set, the Mandrill service will be used to send the email</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td>includeTVs</td>
+        <td>(optional) TV values will be processed and will replace [[+placeholderName]] tags</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td>includeTVList</td>
+        <td>(optional) If set, only TVs on this comma-separated list will have placeholders set</td>
+        <td>''</td>
+    </tr>
+    <tr>
+        <td>processTVs</td>
+        <td>(optional) If set to 'No', the raw values of the TVs will be used</td>
+        <td>true</td>
+    </tr>
+    <tr>
+        <td>maxLogs</td>
+        <td>(optional) If set, limits the number of logs kept; set to 0 for unlimited logs. Note that no local logs are kept when using Mandrill</td>
+        <td>5</td>
+    </tr>
+    <tr>
+        <td>useExtendedFields</td>
+        <td>(optional) If set, placeholders will also be set for the extended fields in the User Profile</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td>debug</td>
+        <td>(optional) If set, debugging information is displayed</td>
+        <td>false</td>
+    </tr>
 </table>
 
 <p>&nbsp;</p>
