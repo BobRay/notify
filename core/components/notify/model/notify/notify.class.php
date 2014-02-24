@@ -869,6 +869,9 @@ class Notify
         if ((! $this->hasErrors()) && $totalSent) {
             $msg = $this->modx->lexicon('nf.email_to_subscribers_sent_successfully');
             $msg = str_replace('[[+nf_number]]', $totalSent, $msg);
+            if ($this->useMandrill) {
+                $msg .= ' ' . $this->modx->lexicon('nf.using') .  ' Mandrill';
+            }
             $this->setSuccess($msg);
         }
         if ($totalSent == 0) {

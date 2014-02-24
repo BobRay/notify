@@ -53,7 +53,9 @@ $_lang['nf.tweet_field_is_empty'] = 'Tweet field is empty';
 $_lang['nf.unknown_error_using_twitter_api'] = 'Unknown error using Twitter API';
 $_lang['nf.twitter_said_there_was_an_error'] = 'Twitter said there was an error';
 $_lang['nf.full_response'] = 'Full response: ';
-$_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully to [[+nf_number]] recipients';
+$_lang['nf.email_to_subscribers_sent_successfully'] = 'Email to Subscribers sent successfully to [[+nf_number]]
+recipients';
+$_lang['nf.using'] = 'using';
 $_lang['nf.tweet_sent_successfully'] = 'Tweet sent successfully';
 
 
@@ -67,17 +69,3 @@ $_lang['nf.send_user_mandrill'] = 'Sending to user (Mandrill)';
 
 
 
-
-/* Used in nfnotifyformtpl.chunk.html */
-$_lang['nf.notify_subscribers'] = '';
-$_lang['nf.send_test_email'] = '';
-$_lang['nf.email_address_for_test'] = '';
-$_lang['nf.email_subject'] = '';
-$_lang['nf.groups'] = '';
-$_lang['nf.tags'] = '';
-$_lang['nf.require_all_tags'] = '';
-$_lang['nf.text_for_email'] = '';
-$_lang['nf.email_preview'] = '';
-$_lang['nf.notify_twitter'] = '';
-$_lang['nf.send_tweet'] = '';
-$_lang['nf.text_for_tweet'] = '';
