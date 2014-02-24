@@ -83,3 +83,4 @@ $_lang['nf.include_tvs_desc'] = 'Set to yes if any TVs need to be shown.';
 $_lang['nf.include_tv_list_desc'] = 'Comma-separated list of TVs to include.';
 $_lang['nf.process_tvs_desc'] = 'If set to No, the raw values of the TVs will used. Default: Yes.';
 $_lang['nf.use_mandrill_desc'] = 'Use Mandrill service to send email.';
+$_lang['nf.group_list_chunk_name_desc'] = 'Specifies the chunk that will be used for the buttons under the Groups input in the form; default: sbsGroupListTpl';

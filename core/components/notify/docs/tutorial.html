@@ -33,7 +33,7 @@
 [[+TvName]]
 </fixedpre></pre>
 
-<p>User Groups can now be entered in the form with buttons like the tags. Notify uses the sbsGroupListTpl chunk in the Subscribe category as the list of available groups:</p>
+<p>User Groups can now be entered in the form with buttons like the tags. Notify uses the chunk specified in the <code>&groupListChunkName</code> property as the source of the group buttons. That property defaults to the sbsGroupListTpl chunk in the Subscribe category. The chunk should be formatted as follows:</p>
 <pre><fixedpre>
 DisplayedGroupName==ActualGroupName||DisplayedOtherGroupName==ActualOtherGroupName
 </fixedpre></pre>
@@ -84,7 +84,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <h3>Groups</h3>
         
-<p>Email is only sent to active users. The <fixedpre>&groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can also add them to the form by clicking on the buttons below the input. The buttons come from the content of the SbsGroupListTpl chunk, which you're free to edit (see the format for the tags Tpl chunk in the next section). By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>&groups</fixedpre> property of the snippet. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
+<p>Email is only sent to active users. The <fixedpre>&groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can also add them to the form by clicking on the buttons below the input. The buttons come from the content of a Tpl Chunk specified in the <code>&groupListChunkName</code> property. It defaults to the SbsGroupListTpl chunk (see the format for the tags Tpl chunk in the next section). By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>&groups</fixedpre> property of the snippet. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
         
 <h3>Tags</h3>
 <br />
@@ -454,6 +454,12 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
         <td>(optional) If set, debugging information is displayed</td>
         <td>false</td>
     </tr>
+    <tr>
+        <td>groupListChunkName</td>
+        <td>Specifies the chunk that will be used for the buttons under the Groups input in the form.</td>
+        <td>sbsGroupListTpl</td>
+    </tr>
+
 </table>
 
 <p>&nbsp;</p>
