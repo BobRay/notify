@@ -698,17 +698,21 @@ class Notify
             }
         } else {
             $this->userFields = $this->getUserFields();
-            $fp = fopen($this->logFile, 'w');
-            
-            if (!$fp) {
-                $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
-            } else {
-                fwrite($fp, "MESSAGE\n*****************************\n" .
-                    $this->emailText .
-                    "\n*****************************\n\n");
-
-            }
         }
+        if ($this->useMandrill) {
+            $this->logFile .= "(Mandrill)";
+        }
+        $fp = fopen($this->logFile, 'w');
+            
+        if (!$fp) {
+            $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
+        } else {
+            fwrite($fp, "MESSAGE\n*****************************\n" .
+                $this->emailText .
+                "\n*****************************\n\n");
+
+        }
+
 
         $groups = empty($this->groups)
             ? array()

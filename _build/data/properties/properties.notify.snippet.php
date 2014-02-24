@@ -97,19 +97,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
-
-  'groupListChunkName' =>
-      array(
-          'name'    => 'groupListChunkName',
-          'desc'    => 'nf.group_list_chunk_name_desc',
-          'type'    => 'textfield',
-          'options' =>
-              array(),
-          'value'   => 'sbsGroupListTpl',
-          'lexicon' => 'notify:properties',
-          'area'    => '',
-      ),
-
+  'groupListChunkName' => 
+  array (
+    'name' => 'groupListChunkName',
+    'desc' => 'nf.group_list_chunk_name_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'sbsGroupListTpl',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'includeTVList' => 
   array (
     'name' => 'includeTVList',
