@@ -140,11 +140,11 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <h3>Mandrill</h3>
 
-<p>Mandrill is an email service and a subsidiary of MailChimp. I've created the MandrillX class to make it easier to send mail with Mandrill, and that class is automatically installed with Notify.</p>
+<p>Mandrill is an email service and a subsidiary of MailChimp. I've created the MandrillX class to make it easier to send mail with Mandrill. If you want to use Mandrill with Notify, you need to get the MandrillX package through Package Manager, create a Mandrill account, get a Mandrill API Key, create a subaccount called <code>test</code> at Mandrill, set the <code>mandrill_api_key</code> System Setting, and the <code>&useMandrill</code> snippet property. All of that should take about 10-20 minutes and is described in more detail below.</p>
 
 <p>Mandrill allows you to send up to 12,000 emails per month (yes, twelve thousand!). Beyond that, there is a very reasonable charge for additional sends. Mandrill also has some very useful email analytics for you. You can track opens, clicks, bounces, and a bunch of other things.</p>
 
-<p>Using Mandrill with Notify couldn't be much simpler. Go to <a href="https://mandrillapp.com">Mandrill</a> and open a free account. Hover over the little gear icon at the upper right and select &quot;SMTP & API Credentials.&quot;. Click on the blue &quot;New API Key&quot; button. Copy the API key code and paste it into the mandrill_api_key System Setting in the Manager (find it with the search box at the upper right in System -> System Settings).</p>
+<p>Using Mandrill with Notify couldn't be much simpler. Go to <a href="https://mandrillapp.com">Mandrill</a> and open a free account. Hover over the little gear icon at the upper right and select &quot;SMTP & API Credentials.&quot;. Click on the blue &quot;New API Key&quot; button. Copy the API key code and paste it either into the input when you install MandrillX, or any time later, into the <code>mandrill_api_key</code> System Setting in the Manager (find it with the search box at the upper right in System -> System Settings).</p>
 
 <p>Before you leave Mandrillapp.com, hover over &quot;Outbound&quot; on the top menu and select &quot;Subaccounts&quot; in the dropdown menu. Click on the blue &quot;Create a Subaccount&quot; button. Call your subaccount <code>test</code> (all lowercase). This is the default subaccount used by Notify when you install it. It assumes that you don't want all your test emails in a real subaccount. Once you are up and running, you can create a new subaccount, add &subaccount=`NewSubName` to the Notify snippet tag or its property set, and (optionally) delete the &quot;test&quot; subacccount at Mandrill.</p>
 
@@ -158,7 +158,9 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <h3>Email Log</h3>
 
-<p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user.</p>
+<p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs.</p>
+        
+<p>When using Mandrill, no local log is kept since there is a much better log kept for you at Mandrill with some sophisticated analytics.</p>        
 
 <h3>Setting the Notify Properties</h3>
 

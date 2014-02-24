@@ -101,6 +101,7 @@ class Notify
     /** @var $userFields array - array of user placeholders used in message */
     protected $userFields = array();
     protected $debug;
+    protected $maxLogs = 5;
 
 
     /**
@@ -168,6 +169,8 @@ class Notify
             : 'Update from ' . $this->modx->getOption('site_name');
 
         $this->props['mail_subject'] = $this->mail_subject;
+
+        $this->maxLogs = $this->modx->getOption('maxLogs', $this->props, 5);
 
         /* Unsubscribe settings */
         $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
@@ -767,6 +770,7 @@ class Notify
             $i++;
 
             $c->limit($this->batchSize, $offset);
+            // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
             // echo "<br>User Count: " . count($users);
@@ -869,9 +873,28 @@ class Notify
             $this->setError($this->modx->lexicon('nf.no_messages_sent'));
         }
         if ($fp !== null) {
+            $dir = $this->corePath . 'notify-logs';
+            if ($this->maxLogs != '0') {
+                $this->removeOldestFile($dir);
+            }
             fclose($fp);
         }
         return true;
+    }
+
+    public function removeOldestFile($dir) {
+        $files = glob($dir . '/*.*');
+
+        if (count($files) > $this->maxLogs) {
+            array_multisort(
+                array_map('filemtime', $files),
+                SORT_NUMERIC,
+                SORT_ASC,
+                $files
+            );
+
+            unlink($files[0]);
+        }
     }
 
     /**
