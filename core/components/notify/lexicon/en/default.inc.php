@@ -66,6 +66,3 @@ $_lang['nf.user_not_found'] = 'User Not Found';
 $_lang['nf.sending_batch_of'] = 'Sending Batch of';
 $_lang['nf.no_messages_sent'] = 'No Messages Sent';
 $_lang['nf.send_user_mandrill'] = 'Sending to user (Mandrill)';
-
-
-

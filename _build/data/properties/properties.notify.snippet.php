@@ -61,6 +61,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
+  'debug' => 
+  array (
+    'name' => 'debug',
+    'desc' => 'debug_property_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'googleApiKey' => 
   array (
     'name' => 'googleApiKey',
@@ -166,6 +178,18 @@ $properties = array (
     array (
     ),
     'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
+  'maxLogs' => 
+  array (
+    'name' => 'maxLogs',
+    'desc' => 'maxlogs_property_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '5',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -397,6 +421,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
+  'subaccount' => 
+  array (
+    'name' => 'subaccount',
+    'desc' => 'subaccount_property_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'test',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'suprApiKey' => 
   array (
     'name' => 'suprApiKey',
@@ -580,30 +616,6 @@ $properties = array (
     array (
     ),
     'value' => 'modUser',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'debug' => 
-  array (
-    'name' => 'debug',
-    'desc' => 'debug_property_desc',
-    'type' => 'combo-boolean',
-    'options' => 
-    array (
-    ),
-    'value' => false,
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'maxLogs' => 
-  array (
-    'name' => 'maxLogs',
-    'desc' => 'maxlogs_property_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '5',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),

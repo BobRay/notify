@@ -72,6 +72,7 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['subaccount_property_desc'] = 'Name of the Mandrill subaccount to send through if using Mandrill. Subaccount must exist or send will fail. Default: test';
 $_lang['include_tv_list_property_desc'] = 'Comma-separated list of TV names. Only TVs on the list will have their placeholders set.';
 $_lang['include_tvs_property_desc'] = 'If set, placeholders will be set for Resource TVs; default: No.';
 $_lang['use_extended_fields_property_desc'] = 'If set, placeholders will be set for the extended fields of the User Profile; default: No';
