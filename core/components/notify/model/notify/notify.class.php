@@ -844,7 +844,8 @@ class Notify
             }
             sleep($this->batchDelay);
             set_time_limit(0);
-            if (!empty($sentCount)) {
+            if ((!empty($sentCount)) && $this->debug) {
+
                 $this->setSuccess($this->modx->lexicon('nf.sending_batch_of') .
                     ' ' . $sentCount);
             }
