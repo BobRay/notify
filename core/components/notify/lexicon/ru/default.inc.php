@@ -57,4 +57,14 @@ $_lang['nf.unknown_error_using_twitter_api'] = 'При использовани�
 $_lang['nf.twitter_said_there_was_an_error'] = 'Twitter уведомил о возникновении ошибки';
 $_lang['nf.full_response'] = 'Полный ответ: ';
 $_lang['nf.email_to_subscribers_sent_successfully'] = 'Email было успешно отправлено к Подписчикам в количестве [[+nf_number]] получателей';
+$_lang['nf.using'] = 'с помощью';
 $_lang['nf.tweet_sent_successfully'] = 'Твит успешно отправлен';
+
+
+/* Used in notify.class.php */
+$_lang['nf.no_mandrill_api_key'] = 'Нет Mandrill API Ключа';
+$_lang['nf.no_mandrill'] = 'Не смог создать объект Mandrill';
+$_lang['nf.user_not_found'] = 'Пользователь не найден';
+$_lang['nf.sending_batch_of'] = 'Отправляю партию';
+$_lang['nf.no_messages_sent'] = 'Сообщения не отправлены';
+$_lang['nf.send_user_mandrill'] = 'Отправляю пользователю (Mandrill)';
