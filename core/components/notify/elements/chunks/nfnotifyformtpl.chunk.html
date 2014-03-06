@@ -1,12 +1,34 @@
 <script type="text/javascript">
-    /* <![CDATA[ */
-    function nf_toggle(id) {
+
+
+    $(document).ready(function (event) {
+        $('#nf_notify').click(function () {
+            /*alert("Notify Clicked");*/
+            if ($('#nf_notify').prop('checked') == true) {
+                $('#nf_send_single_section').slideUp("slow");
+            } else {
+                $('#nf_send_single_section').slideDown("slow");
+            }
+        });
+        $('#nf_send_test_email').click(function () {
+            /*$('#mailSubscribeAll').removeAttr('checked');*/
+            if ($('#nf_send_test_email').prop('checked') == true) {
+                $('#nf_notify_section').slideUp("slow");
+                $('#nf_single_user').slideDown("slow");
+            } else {
+                $('#nf_notify_section').slideDown("slow");
+                $('#nf_single_user').slideUp("slow");
+            }
+
+        });
+    });
+    /*function nf_toggle(id) {
         e = document.getElementById(id);
         if (e.style.display == 'block')
             e.style.display = 'none';
         else
             e.style.display = 'block';
-    }
+    }*/
     /* ]]> */
 </script>
 
@@ -14,20 +36,24 @@
 <form id="nf_form" action="[[~[[*id]]]]" method="post">
     <input type="hidden" name="submitVar" id="submitVar" value="submitVar"/>
     <input type="hidden" name="pageAlias" value="[[+pageAlias]]"/>
+    <div id="nf_notify_section">
     <label for="nf_notify">
         <input type="checkbox" id="nf_notify" name="nf_notify" [[+nf_notify_checked]]/> [[%nf.notify_subscribers? &namespace=`notify`
         &topic=`form`]]
-    </label> <br/><br/>
-
+    </label>
+    </div>
+    <br/>
+    <div id="nf_send_single_section">
     <label for="nf_send_test_email">
         <input type="checkbox" id="nf_send_test_email" name="nf_send_test_email" [[+nf_send_test_email_checked]]
-OnClick="nf_toggle('nf_single_user');"/> [[%nf.send_test_email?
+/> [[%nf.send_test_email?
         &namespace=`notify` &topic=`form`]] </label><br/><br/>
 <div id="nf_single_user">
     <label for="nf_test_email_address">[[%nf.email_address_for_test? &namespace=`notify` &topic=`form`]]<br/>
         <input type="text" size="50" id="nf_test_email_address" name="nf_test_email_address" value="[[+nf_test_email_address]]"/>
     </label> <br/><br/>
 </div>
+    </div>
 
     <label for="nf_email_subject">[[%nf.email_subject? &namespace=`notify` &topic=`form`]]<br/>
         <input type="text" size="50" id="nf_email_subject" name="nf_email_subject" value="[[+nf_email_subject]]"/>
@@ -74,10 +100,31 @@ OnClick="nf_toggle('nf_single_user');"/> [[%nf.send_test_email?
             <input type="text" size="110" maxlength="140" id="nf_tweet_text" name="nf_tweet_text" value="[[+nf_tweet_text]]"/>
         </label>
     </fieldset>
+    <div id="pb_progressOuter">
+        <br />
+        <div id="pb_progressbar" ></div>
+
+        <div id="pb_textMessages">
+            <span>Progress: </span>
+
+            <div style="display:inline;" id="pb_percent"></div>
+            <span style="display:inline;">&#x0025;</span>
+            <br/>
+            <span></span>
+
+            <div id="pb_text1"><span></span></div>
+            <br/>
+            <span>Sending email to: </span>
+
+            <div style="display:inline;" id="pb_text2"><span></span></div>
+            <br/>
 
 
-    <br/><br/>
-    <input type="submit" value="Submit"/>
+        </div>
+    </div>
+
+    <br/>
+    <input id="pb_button" onClick="start();" type="button" value="Submit"/>
 
 
     <br/><br/>

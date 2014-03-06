@@ -42,3 +42,43 @@ iframe {
     display:none;
     padding-left: 30px;
 }
+
+/* Progress Bar CSS */
+#pb_progressOuter {
+    margin: auto;
+    width: 50%;
+    display: none;
+}
+
+#pb_progressbar {
+    width:50%;
+    height:20px;
+    color:blue;
+    /* margin:auto;*/
+    /* width: 496px; */
+    /* height: 23px; */
+}
+
+#pb_textMessages {
+    text-align: left;
+    margin: auto;
+    border: 3px lavender solid;
+    padding: 10px;
+
+}
+
+#pb_buttonDiv {
+    text-align: center;
+}
+
+#pb_text1 {
+    display: inline;
+}
+
+#pb_text2 {
+    display: inline;
+}
+
+#pb_percent {
+    display: inline;
+}

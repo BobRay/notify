@@ -85,18 +85,6 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
-  'groups' => 
-  array (
-    'name' => 'groups',
-    'desc' => 'nf.groups_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'Subscribers',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
   'groupListChunkName' => 
   array (
     'name' => 'groupListChunkName',
@@ -106,6 +94,18 @@ $properties = array (
     array (
     ),
     'value' => 'sbsGroupListTpl',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
+  'groups' => 
+  array (
+    'name' => 'groups',
+    'desc' => 'nf.groups_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'Subscribers',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -478,6 +478,18 @@ $properties = array (
     array (
     ),
     'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
+  'testMode' => 
+  array (
+    'name' => 'testMode',
+    'desc' => 'nf_testMode_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => true,
     'lexicon' => 'notify:properties',
     'area' => '',
   ),

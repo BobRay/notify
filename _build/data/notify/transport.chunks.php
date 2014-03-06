@@ -127,4 +127,24 @@ $chunks[10]->fromArray(array (
 ), '', true, true);
 $chunks[10]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfunsubscribetpl.chunk.html'));
 
+$chunks[11] = $modx->newObject('modChunk');
+$chunks[11]->fromArray(array (
+  'id' => 11,
+  'property_preprocess' => false,
+  'name' => 'NfProgressbarJs',
+  'description' => 'JS code for Notify progress bar',
+  'properties' => NULL,
+), '', true, true);
+$chunks[11]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfprogressbarjs.chunk.html'));
+
+$chunks[12] = $modx->newObject('modChunk');
+$chunks[12]->fromArray(array (
+  'id' => 12,
+  'property_preprocess' => false,
+  'name' => 'NfStatus',
+  'description' => 'Status chunk for Notify progress bar',
+  'properties' => NULL,
+), '', true, true);
+$chunks[12]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfstatus.chunk.html'));
+
 return $chunks;

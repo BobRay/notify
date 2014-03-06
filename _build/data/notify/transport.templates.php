@@ -33,7 +33,9 @@ $templates[1]->fromArray(array (
   'description' => 'Template for Notify Resource',
   'icon' => '',
   'template_type' => 0,
-  'properties' => NULL,
+  'properties' => 
+  array (
+  ),
 ), '', true, true);
 $templates[1]->setContent(file_get_contents($sources['source_core'] . '/elements/templates/notifytemplate.template.html'));
 

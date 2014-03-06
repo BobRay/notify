@@ -102,6 +102,7 @@ class Notify
     protected $userFields = array();
     protected $debug;
     protected $maxLogs = 5;
+    protected $testMode;
 
 
     /**
@@ -122,6 +123,9 @@ class Notify
     }
 
     public function init() {
+        $this->initJS();
+
+        $this->testMode = $this->modx->getOption('testMode', $this->props, false);
         $this->useMandrill = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->useMandrill = empty($this->useMandrill)
             ? false
@@ -192,8 +196,13 @@ class Notify
             : NULL;
 
         $this->debug = $this->modx->getOption('debug', $this->props, false);
-
+        $this->saveConfig();
         set_time_limit(0);
+    }
+
+    public function saveConfig() {
+        $config = $this->modx->toJSON($this->props);
+        $_SESSION['nf_config'] = $config;
     }
 
     /**
@@ -648,7 +657,9 @@ class Notify
         $text = $this->html2text->get_text();
         $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text );
         $this->modx->mail->address('to', $fields['email'], $fields['name']);
-        $success = $this->modx->mail->send();
+
+        $success = $this->testMode? true: $this->modx->mail->send();
+
         if (! $success) {
             $this->setError($this->modx->mail->mailer->ErrorInfo);
             $this->badSends++;
@@ -673,7 +684,6 @@ class Notify
     public function sendBulkEmail($singleEmail = null) {
         $singleUser = $singleEmail !== null;
         $fp = null;
-
         if ($this->useMandrill) {
             require_once $this->modx->getOption('mandrillx.core.path', null,  MODX_CORE_PATH) . 'components/mandrillx/model/mandrillx/mandrillx.class.php';
 
@@ -769,10 +779,21 @@ class Notify
         if ($this->debug) {
             echo "<br>Total Count: " . $totalCount;
         }
+        if ($totalCount % $this->batchSize) {
+            $batches = floor($totalCount / $this->batchSize) + 1;
+        } else {
+            $batches = $totalCount / $this->batchSize;
+        }
         $totalSent = 0;
         $i = 0;
         $offset = 0;
+        $jsInitialized = false;
+        $batchNumber = 1;
+        $stepSize = ceil(100 / $batches);
+        $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
+        $this->update(0, "Pending", '', $statusChunk);
         while ($offset < $totalCount) {
+            sleep(4); // xxx
             $i++;
 
             $c->limit($this->batchSize, $offset);
@@ -789,6 +810,8 @@ class Notify
                 echo($msg);
             }
             $sentCount = 0;
+            $percent = $stepSize * $batchNumber;
+            $this->update($percent, $batchNumber, '', $statusChunk);
             foreach ($users as $user) {
                 /** @var $user modUser */
                 $username = $user->get('username');
@@ -798,6 +821,7 @@ class Notify
                     }
                 }
                 /* Now we have a user to send to */
+                $this->update($percent, $batchNumber, $username, $statusChunk);
                 $fields = array();
                 $fields['username'] = $username;
                 $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $user->Profile);
@@ -854,7 +878,8 @@ class Notify
                     ' ' . $sentCount);
             }
             if ($this->useMandrill) {
-                $results = $this->mx->sendMessage();
+
+                $results = $this->testMode? array() : $this->mx->sendMessage();
                 $this->mx->clearUsers();
                 if ($this->mx->hasError()) {
                     $errors = $this->mx->getErrors();
@@ -891,6 +916,144 @@ class Notify
         }
         return true;
     }
+    protected function initJS() {
+        /* The next three settings are System Settings, not properties,
+ * but they can be overridden in the properties of the snippet
+ * tags if you need more than one progress bar on the site.
+ * Be sure to set them in both the ProgressBar and PB_Process
+ * snippet tags. */
+
+        header("X-XSS-Protection: 0");
+        $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
+
+        /* set these System Settings if they didn't get set during the install */
+        if (empty($nf_status_resource_id)) {
+            $r = $this->modx->getObject('modResource', array('alias' => 'notify-status'));
+            $s = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            $s->set('value', $r->get('id'));
+            $s->save();
+            $nf_status_resource_id = $r->get('id');
+           /* $r = $this->modx->getObject('modResource', array('alias' => 'pb-process'));
+            $s = $this->modx->getObject('modSystemSetting', array('key' => 'pb_process_resource_id'));
+            $s->set('value', $r->get('id'));
+            $s->save();
+            $pb_process_resource_id = $r->get('id');*/
+            $r = $this->modx->getObject('modChunk', array('name' => 'PB_Status'));
+            $s = $this->modx->getObject('modSystemSetting', array('key' => 'pb_status_chunk_id'));
+            $s->set('value', $r->get('id'));
+            $s->save();
+            $pb_status_chunk_id = $r->get('id');
+            unset($r, $s);
+            $cm = $this->modx->getCacheManager();
+            $cm->refresh();
+        }
+        if (empty($nf_status_resource_id)) {
+            $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id', $this->props);
+            if (empty($nf_status_resource_id)) {
+                $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
+            }
+        }
+
+
+        // $pb_process_resource_id = $this->modx->getOption('pb_process_resource_id', $this->props);
+
+        /*if (empty($pb_process_resource_id)) {
+            $pb_process_resource_id = $this->modx->getOption('pb_process_resource_id');
+        }*/
+
+
+
+
+        /* check the other settings */
+        if (empty($nf_status_resource_id)) {
+            die('pb_status_resource_id System Setting is not set');
+        }
+
+        /* Make sure pb_status_resource_id points to a real resource */
+        $nf_status_url = $this->modx->makeUrl((integer) $nf_status_resource_id, "", "", "full");
+        if (empty($nf_status_url)) {
+            die('nf_status_resource_id is set to a nonexistent resource');
+        }
+
+        /*if (empty($pb_process_resource_id)) {
+            die('pb_process_resource_id System Setting is not set');
+        }*/
+        /* This can be set in the ProgressBar snippet tag to override
+           the default (800). The value is in milliseconds (1000 = 1 sec.)*/
+        $nf_interval = $this->modx->getOption('nf_set_interval', $this->props);
+        $nf_interval = empty($nf_interval)
+            ? 800
+            : $nf_interval;
+
+        /* make sure pb_process_resource_id points to a real resource */
+        /*$pb_process_url = $this->modx->makeUrl((integer) $pb_process_resource_id, "", "", "full");
+        if (empty($pb_process_url)) {
+            die('pb_process_resource_id is set to a nonexistent resource');
+        }*/
+       /* /* This can be overridden in the ProgressBar snippet tag */
+        /*$pb_css = $this->modx->getOption('pb_css_url', $this->props);
+        $pb_css = empty($pb_css)
+            ? MODX_ASSETS_URL . 'components/progressbar/css/progressbar.css'
+            : $pb_css;
+
+        $this->modx->regClientCss($pb_css);*/
+
+        /* You can speed things up and make them more reliable by downloading
+         * these files to assets/components/progressbar/js/ and modifying these
+         * three URLs accordingly in the properties of the ProgressBar snippet tag.
+        */
+        // $fields = array();
+        /*$fields['pb_jquery_js_path'] = !empty($this->props['jquery_js_url'])
+            ? $props['jquery_js_url']
+            : 'http://code.jquery.com/jquery-latest.js';
+
+        $fields['pb_jquery_ui_css_path'] = !empty($props['jquery_ui_css_path'])
+            ? $props['jquery_ui_css_path']
+            : 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css';
+
+        $fields['pb_jquery_ui_js_path'] = !empty($props['jquery_ui_js_path'])
+            ? $props['jquery_ui_js_path']
+            : 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js';
+
+        $headStuff = $this->modx->getChunk('ProgressBar_header', $fields);
+        if (empty($headStuff)) {
+            die('Could not get ProgressBar_header chunk');
+        }
+        $this->modx->regClientStartupHTMLBlock($headStuff);
+        unset($headStuff);*/
+
+       /* $src2 = $this->modx->getChunk('ProgressBar_js', $fields);
+        $this->modx->regClientStartupScript($src2);*/
+        unset($fields, $src2, $interval, $process_url, $status_url);
+       $headStuff = '<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>';
+        $this->modx->regClientStartupHTMLBlock($headStuff);
+
+        $fields = array(
+            /*  'pb_process_url' => '', */
+            'nf_status_url' => $nf_status_url,
+            'nf_set_interval' => 800,
+        );
+        // echo "\n<br />URL: " . $nf_status_url;
+        $src = $this->modx->getChunk('NfProgressbarJs', $fields);
+        $this->modx->regClientStartupScript($src);
+    }
+    protected function update($percent, $text1, $text2, &$pb_target) {
+
+    $msg = json_encode(array(
+        'percent' => $percent,
+        'text1'   => $text1,
+        'text2'   => $text2,
+    ));
+
+    /* use a chunk for the status "file" */
+
+    $pb_target->setContent($msg);
+    $pb_target->save();
+
+
+} /* end update function */
 
     public function removeOldestFile($dir) {
         $files = glob($dir . '/*.*');
@@ -1076,11 +1239,13 @@ class Notify
             $this->setError($this->modx->lexicon('nf.tweet_field_is_empty'));
         } else {
             $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
-            $response = $tweet->post('statuses/update', array('status' => $msg));
+            $response = $this->testMode
+                ? array()
+                : $tweet->post('statuses/update', array('status' => $msg));
             /* This will get recent tweets */
             /* $response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay')); */
 
-            if ($response == null) {
+            if ($response === null) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
             } elseif (isset($response->errors)) {
                 $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .

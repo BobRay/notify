@@ -56,6 +56,25 @@ $components = array(
      * their namespace to the lowercase package name of your extra */
 
     'newSystemSettings' => array(
+        'nf_status_resource_id' => array( // key
+             'key'         => 'nf_status_resource_id',
+             'name'        => 'Notify Status Resource ID',
+             'description' => 'ID of Notify Status Resource',
+             'namespace'   => 'notify',
+             'xtype'       => 'integer',
+             'value'       => '',
+             'area'        => '',
+        ),
+        'nf_status_resource_id' => array( // key
+            'key'         => 'nf_status_resource_id',
+            'name'        => 'Notify Status Resource ID',
+            'description' => 'ID of Notify Status Resource',
+            'namespace'   => 'notify',
+            'xtype'       => 'integer',
+            'value'       => '',
+            'area'        => '',
+        ),
+
 
     ),
 
@@ -212,6 +231,17 @@ $components = array(
                 'description' => 'Unsubscribe link chunk for Notify Extra',
                 'category'    => 'Notify',
             ),
+            'NfProgressbarJs' => array(
+                'name'        => 'NfProgressbarJs',
+                'description' => 'JS code for Notify progress bar',
+                'category'    => 'Notify',
+            ),
+            'NfStatus' => array(
+                'name'        => 'NfStatus',
+                'description' => 'Status chunk for Notify progress bar',
+                'category'    => 'Notify',
+            ),
+
         ),
         'templates' => array(
             'NotifyTemplate' => array(
@@ -323,6 +353,41 @@ $components = array(
             'hide_children_in_tree' => '0',
             'show_in_tree'          => '1',
             'properties'            => '',
+        ),
+        'NotifyStatus' => array(
+            'type'                  => 'document',
+            'contentType'           => 'text/html',
+            'pagetitle'             => 'NotifyStatus',
+            'longtitle'             => '',
+            'description'           => '',
+            'alias'                 => 'notify-status',
+            'link_attributes'       => '',
+            'published'             => '1',
+            'isfolder'              => '0',
+            'introtext'             => '',
+            'richtext'              => '0',
+            'template'              => 0,
+            'menuindex'             => '',
+            'searchable'            => '0',
+            'cacheable'             => '0',
+            'createdby'             => '1',
+            'editedby'              => '1',
+            'deleted'               => '0',
+            'deletedon'             => '0',
+            'deletedby'             => '0',
+            'menutitle'             => '',
+            'donthit'               => '0',
+            'privateweb'            => '0',
+            'privatemgr'            => '0',
+            'content_dispo'         => '0',
+            'hidemenu'              => '1',
+            'class_key'             => 'modDocument',
+            'context_key'           => 'web',
+            'content_type'          => '1',
+            'hide_children_in_tree' => '0',
+            'show_in_tree'          => '1',
+            'properties'            => '',
+            'content'               => '[[!$NfStatus]]',
         ),
     ),
 
