@@ -3,7 +3,7 @@
 /**
  * Class getTaskStatsProcessor
  */
-class NfSendProcessor extends modProcessor {
+class NfSendTweetProcessor extends modProcessor {
 
     protected $props;
     protected $errors;
@@ -15,37 +15,7 @@ class NfSendProcessor extends modProcessor {
         $config = $this->modx->fromJSON($_SESSION['nf_config']);
         $this->properties = array_merge($this->properties, $config);
         $this->testMode = $this->getProperty('testMode',false);
-        $this->setCheckbox('send_tweet');
-        $this->setCheckbox('send_bulk');
-        $this->setCheckbox('require_all_tags');
-        $this->setCheckbox('single');
-
         return true;
-    }
-    /**
-     * @param $percent int
-     * @param $text1 string
-     * @param $text2 string
-     * @param $pb_target modChunk
-     */
-    public  function update($percent, $text1, $text2, &$pb_target) {
-
-
-        $msg = $this->modx->toJSON(array(
-            'percent' => $percent,
-            'text1'   => $text1,
-            'text2'   => $text2,
-        ));
-
-            /*return $this->modx->toJSON(array(
-                'success' => true,
-                'stats'   => $stats
-            ));*/
-
-        /* use a chunk for the status "file" */
-
-        $pb_target->setContent($msg);
-        $pb_target->save();
     }
 
     public function checkPermissions() {
@@ -69,25 +39,8 @@ class NfSendProcessor extends modProcessor {
         $chunk->setContent($content);
         $chunk->save();
 
-        $sendBulk = (bool) $this->getProperty('send_bulk', false);
 
-        if ($sendBulk) {
-            $this->sendBulk();
-        }
-
-        /* sleep(3); */
-
-
-        $sendTweet = (bool)  $this->getProperty('send_tweet', false);
-
-        if ($sendTweet) {
            $this->send_tweet();
-        }
-
-        $this->errors[] = 'Dummy Error msg 1';
-        $this->errors[] = 'Dummy Error msg 2';
-        $this->successMessages[] = 'Dummy Success msg 1';
-        $this->successMessages[] = 'Dummy Success msg 2';
 
         $results["status"] = empty($this->errors)? "Yes" : "No";
         $results["errors"] = $this->errors;
@@ -95,24 +48,6 @@ class NfSendProcessor extends modProcessor {
         return $this->modx->toJSON($results);
     }
 
-    protected function sendBulk() {
-        $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
-
-        $msg1 = $this->getProperty('groups', 'No Groups');
-        $msg2 = $this->getProperty('tags', 'No Tags');
-        for ($i = 1; $i <= 120; $i++) {
-
-            $this->update($i, $msg1, $msg2, $statusChunk);
-            set_time_limit(0);
-            usleep(100000);
-        }
-        $this->update(0, 'Starting', '', $statusChunk);
-
-
-    }
-    protected function send_single() {
-
-    }
     protected function send_tweet() {
 
         require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
@@ -165,4 +100,4 @@ class NfSendProcessor extends modProcessor {
     }
 }
 
-return 'NfSendProcessor';
+return 'NfSendTweetProcessor';

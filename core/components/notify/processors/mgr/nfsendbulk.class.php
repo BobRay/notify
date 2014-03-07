@@ -76,14 +76,6 @@ class NfSendProcessor extends modProcessor {
         }
 
         /* sleep(3); */
-
-
-        $sendTweet = (bool)  $this->getProperty('send_tweet', false);
-
-        if ($sendTweet) {
-           $this->send_tweet();
-        }
-
         $this->errors[] = 'Dummy Error msg 1';
         $this->errors[] = 'Dummy Error msg 2';
         $this->successMessages[] = 'Dummy Success msg 1';
