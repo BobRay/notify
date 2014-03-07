@@ -1025,10 +1025,14 @@ class Notify
        /* $src2 = $this->modx->getChunk('ProgressBar_js', $fields);
         $this->modx->regClientStartupScript($src2);*/
         unset($fields, $src2, $interval, $process_url, $status_url);
-       $headStuff = '<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
+       $headStuff =
+'<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>';
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="/addons/assets/components/notify/css/notify.css" type="text/css" />';
         $this->modx->regClientStartupHTMLBlock($headStuff);
+
+$this->modx->regClientStartupScript(MODX_ASSETS_URL . 'mycomponents/notify/assets/components/notify/js/notify.js');
 
         $fields = array(
             /*  'pb_process_url' => '', */
@@ -1036,8 +1040,8 @@ class Notify
             'nf_set_interval' => 800,
         );
         // echo "\n<br />URL: " . $nf_status_url;
-        $src = $this->modx->getChunk('NfProgressbarJs', $fields);
-        $this->modx->regClientStartupScript($src);
+        /*$src = $this->modx->getChunk('NfProgressbarJs', $fields);
+        $this->modx->regClientStartupScript($src);*/
     }
     protected function update($percent, $text1, $text2, &$pb_target) {
 

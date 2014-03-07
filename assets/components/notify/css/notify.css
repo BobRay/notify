@@ -51,7 +51,7 @@ iframe {
 }
 
 #pb_progressbar {
-    width:50%;
+    /*width:50%;*/
     height:20px;
     color:blue;
     /* margin:auto;*/

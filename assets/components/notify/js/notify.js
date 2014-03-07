@@ -1,4 +1,4 @@
-<script type="text/javascript">
+
 /* This function is triggered when the start button is clicked. 
    Placeholders below are set in the snippet properties
 */
@@ -17,6 +17,10 @@ $(document).ready(function (event) {
        $('#nf_form').submit();
         return true;
     }
+
+    $('#nf_results').empty();
+    $('#nf_results').hide();
+
     /* One or more actions selected. Run Processor */
     /* start the notify-process snippet, ignore the return value
      * this needs to be at the top so the process snippet
@@ -24,7 +28,6 @@ $(document).ready(function (event) {
      * before the second ajax call tries to read the file
      */
 
-    /*var processUrl = "http://localhost/addons/assets/mycomponents/notify/core/components/notify/processors/send-bulk.php";*/
     var connectorUrl = "http://localhost/addons/assets/components/notify/connector.php";
     $.ajax({
         type: "POST",
@@ -41,12 +44,21 @@ $(document).ready(function (event) {
             'send_tweet': $("#nf_send_tweet").prop('checked') == true,
             'tweet_text': $("#nf_tweet_text").val()
         },
+        dataType: "json",
         cache: false,
         url: connectorUrl,
         success: function(data) {
-           /*$("#results").text("Results: " + data.successMessages);*/
-           console.log(data);
-           /*alert(data);*/
+           data['errors'].forEach(function (err, i) {
+                console.log("Error: " + err);
+               $('<br /><span class="nf_error">' + err + '</span>').appendTo("#nf_results")
+
+
+            });
+           data['successMessages'].forEach(function (msg, i) {
+               console.log("Success: " + msg);
+               $('<br /><span class="nf_success">' + msg + '</span>').appendTo("#nf_results")
+           });
+            $("#results").slideDown("slow");
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
            alert("Status: " + textStatus);
@@ -126,4 +138,3 @@ $(document).ready(function (event) {
     })
 
 });
-</script>
