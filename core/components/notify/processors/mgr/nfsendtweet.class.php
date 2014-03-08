@@ -76,8 +76,6 @@ class NfSendTweetProcessor extends modProcessor {
             $response = $this->testMode
                 ? array()
                 : $tweet->post('statuses/update', array('status' => $msg));
-            /* This will get recent tweets */
-            /* $response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay')); */
 
             if ($response === NULL) {
                 $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));

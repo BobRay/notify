@@ -37,16 +37,20 @@ $(document).ready(function (event) {
                 cache: false,
                 url: connectorUrl,
                 success: function (data) {
-                   data['errors'].forEach(function (err, i) {
-                       console.log("Error: " + err);
-                       $('<span class="nf_error">' + err + '</span><br />').appendTo("#nf_results")
+                   if (data['errors'] !== null) {
+                       data['errors'].forEach(function (err, i) {
+                           console.log("Error: " + value);
+                           $('<span class="nf_error">' + value + '</span><br />').appendTo("#nf_results")
 
 
-                   });
-                   data['successMessages'].forEach(function (msg, i) {
-                       console.log("Success: " + msg);
-                       $('<span class="nf_success">' + msg + '</span><br />').appendTo("#nf_results")
-                   });
+                       });
+                   }
+                   if (data['successMessages'] !== null) {
+                       data['successMessages'].forEach(function (msg, i) {
+                           console.log("Success: " + msg);
+                           $('<span class="nf_success">' + msg + '</span><br />').appendTo("#nf_results")
+                       });
+                   }
                    $("#nf_results").slideDown("slow");
                     var $target = $('html,body');
                     $target.animate({scrollTop: $target.height()}, 1000);
@@ -60,43 +64,82 @@ $(document).ready(function (event) {
             });
         }
 
-        /* start the notify-process snippet, ignore the return value
-         * this needs to be at the top so the process snippet
-         * can write to the file and this ajax call can complete
-         * before the second ajax call tries to read the file
-         */
+        /* Send single Email */
+        if ($("#nf_send_test_email").prop('checked') == true) {
+            $.ajax({
+                type: "POST",
+                data: {
+                   'action': 'mgr/nfsendemail',
+                   'send_bulk': false,
+                   'single_id': $("#nf_test_email_address").val(),
+                   'email_subject': $("#nf_email_subject").val(),
+                   'email_text': $("#nf_email_text").val(),
+                   'single': true
+                },
+                dataType: "json",
+                cache: false,
+                url: connectorUrl,
+                success: function (data) {
+                    if (data['errors'] !== null) {
+                       data['errors'].forEach(function (err, i) {
+                           $('<span class="nf_error">' + err + '</span><br />').appendTo("#nf_results")
+                       });
+                    }
+
+                    if (data['successMessages'] !== null) {
+                        data['successMessages'].forEach(function (msg, i) {
+                            $('<span class="nf_success">' + msg + '</span><br />').appendTo("#nf_results")
+                        });
+                    }
+
+                   $("#nf_results").slideDown("slow");
+                   var $target = $('html,body');
+                   $target.animate({scrollTop: $target.height()}, 1000);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                   alert("Status: " + textStatus);
+                   alert("Error: " + errorThrown);
+                }
+                });
+        }
+
+            /* Send bulk email (with progress bar)
+             *
+             * Start the notify-process snippet, ignore the return value
+             * this needs to be at the top so the process snippet
+             * can write to the file and this ajax call can complete
+             * before the second ajax call tries to read the file
+             */
         if ($("#nf_notify").prop('checked') == true) {
 
             $.ajax({
                 type: "POST",
                 data: {
-                    'action': 'mgr/nfsendbulk',
-                    'send_bulk' : $("#nf_notify").prop('checked') == true,
-                    'single_id': $("#nf_test_email_address").val(),
+                    'action': 'mgr/nfsendemail',
+                    'send_bulk' : true,
                     'email_subject': $("#nf_email_subject").val(),
                     'email_text': $("#nf_email_text").val(),
                     'groups': $("#nf_groups").val(),
                     'tags': $("#nf_tags").val(),
                     'require_all_tags': $("#nf_require_all_tags").prop('checked') == true,
-                    'single': $("#nf_send_test_email").prop('checked') == true,
-                    'send_tweet': $("#nf_send_tweet").prop('checked') == true,
-                    'tweet_text': $("#nf_tweet_text").val()
+                    'single': false
                 },
                 dataType: "json",
                 cache: false,
                 url: connectorUrl,
                 success: function(data) {
-                   data['errors'].forEach(function (err, i) {
-                        console.log("Error: " + err);
-                       $('<span class="nf_error">' + err + '</span><br />').appendTo("#nf_results")
-
-
-                    });
-
-                   data['successMessages'].forEach(function (msg, i) {
-                       console.log("Success: " + msg);
-                       $('<span class="nf_success">' + msg + '</span><br />').appendTo("#nf_results")
-                   });
+                    if (data['errors'] !== null) {
+                       data['errors'].forEach(function (err, i) {
+                            console.log("Error: " + err);
+                           $('<span class="nf_error">' + err + '</span><br />').appendTo("#nf_results")
+                        });
+                    }
+                    if (data['successMessages'] !== null) {
+                       data['successMessages'].forEach(function (msg, i) {
+                           console.log("Success: " + msg);
+                           $('<span class="nf_success">' + msg + '</span><br />').appendTo("#nf_results")
+                       });
+                    }
 
                    $("#nf_results").slideDown("slow");
                     var $target = $('html,body');
