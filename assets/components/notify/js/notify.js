@@ -146,6 +146,7 @@ $(document).ready(function (event) {
                     $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
+                   console.log(XMLHttpRequest);
                    alert("Status: " + textStatus);
                    alert("Error: " + errorThrown);
                 }
@@ -181,7 +182,7 @@ $(document).ready(function (event) {
                 success: function(data){
                     if (data.percent >= 100) {
                         clearInterval(timer);
-                        $("#pb_progressOuter").hide("slow");
+                        $("#pb_progressOuter").slideUp("slow");
                         $("#pb_button").show();
                         /* Clear for future runs */
                         data.percent = 0;
