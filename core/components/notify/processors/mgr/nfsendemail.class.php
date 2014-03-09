@@ -31,7 +31,7 @@ class NfSendEmailProcessor extends modProcessor {
         $this->tags = $this->getProperty('tags', '');
         $this->corePath = $this->modx->getOption('nf.core_path', NULL, MODX_CORE_PATH . 'components/notify/');
         $this->modelPath = $this->corePath . 'model/notify/';
-        $pageAlias = $this->getProperty('pageAlias', '');
+        $pageAlias = $this->getProperty('page_alias', '');
         $this->logFile = $this->corePath . 'notify-logs/' . $pageAlias . '--' . date('Y-m-d-h.i.sa');
 
         require_once $this->modelPath . 'html2text.php';
@@ -276,9 +276,7 @@ class NfSendEmailProcessor extends modProcessor {
                 echo($msg);
             }
             $sentCount = 0;
-            $percent = $stepSize * $batchNumber;
-            $this->update($percent, $batchNumber, '', $statusChunk);
-            $batchNumber++;
+
             $requireAllTags=$this->getProperty('require_all_tags', false);
             foreach ($users as $user) {
                 /** @var $user modUser */
@@ -344,6 +342,10 @@ class NfSendEmailProcessor extends modProcessor {
                 $sentCount++;
 
             }
+            $percent = $stepSize * $batchNumber;
+            $this->update($percent, 'Processing batch:' . $batchNumber,
+                'Users emailed: ' . $sentCount, $statusChunk);
+            $batchNumber++;
             sleep($batchDelay);
             set_time_limit(0);
             if ((!empty($sentCount)) && $this->debug) {
