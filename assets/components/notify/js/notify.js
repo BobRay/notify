@@ -122,6 +122,7 @@ $(document).ready(function (event) {
                     'groups': $("#nf_groups").val(),
                     'tags': $("#nf_tags").val(),
                     'require_all_tags': $("#nf_require_all_tags").prop('checked') == true,
+                    'page_alias': $("#nf_page_alias").val(),
                     'single': false
                 },
                 dataType: "json",
@@ -182,7 +183,7 @@ $(document).ready(function (event) {
                 success: function(data){
                     if (data.percent >= 100) {
                         clearInterval(timer);
-                        $("#pb_progressOuter").slideUp("slow");
+                        $("#pb_progressOuter").slideUp("fast");
                         $("#pb_button").show();
                         /* Clear for future runs */
                         data.percent = 0;
