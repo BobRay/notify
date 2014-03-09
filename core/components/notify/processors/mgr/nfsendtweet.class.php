@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class getTaskStatsProcessor
+ * Class NfSentTweetProcessor
  */
 class NfSendTweetProcessor extends modProcessor {
 
