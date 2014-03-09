@@ -1031,18 +1031,17 @@ class Notify
     <link rel="stylesheet" href="/addons/assets/components/notify/css/notify.css" type="text/css" />';
             $this->modx->regClientStartupHTMLBlock($headStuff);
 
-$path = MODX_ASSETS_URL . 'mycomponents/notify/assets/components/notify/js/notify.js';
+$path = MODX_ASSETS_PATH . 'mycomponents/notify/assets/components/notify/js/notify.js';
 $js = file_get_contents($path);
 
-        str_replace('[[+nf_status_url]]', $nf_status_url, $js);
-        str_replace('[[+nf_set_interval]]', 800, $js);
-        $fields = array(
-            /*  'pb_process_url' => '', */
+        $js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
+        $js = str_replace('[[+nf_set_interval]]', 800, $js);
+/*        $fields = array(
             'nf_status_url' => $nf_status_url,
             'nf_set_interval' => 800,
-        );
+        );*/
 
-        $this->modx->regClientStartupScript($js);
+        $this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '</script>');
         // echo "\n<br />URL: " . $nf_status_url;
         /*$src = $this->modx->getChunk('NfProgressbarJs', $fields);
         $this->modx->regClientStartupScript($src);*/
