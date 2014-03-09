@@ -127,8 +127,8 @@ class Notify
 
         $this->props['testMode'] = $this->modx->getOption('testMode', $this->props, false);
         $this->useMandrill = $this->modx->getOption('nfUseMandrill', $this->props, false);
-
         $this->props['useMandrill'] = $this->modx->getOption('nfUseMandrill', $this->props, false);
+
         $this->errors = array();
         $this->successMessages = array();
         $this->previewPage = $this->modx->getObject('modResource', array('alias' => 'notify-preview'));
@@ -150,7 +150,6 @@ class Notify
         if (empty($this->mail_from)) {
             $this->mail_from = $this->modx->getOption('emailsender');
         }
-        $this->props['mail_from'] = $this->mail_from;
         $this->props['from_email'] = $this->mail_from;
 
         $this->mail_from_name = $this->modx->getOption('mailFromName',
@@ -159,6 +158,7 @@ class Notify
             $this->mail_from_name = $this->modx->getOption('site_name', NULL);
         }
         $this->props['from_name'] = $this->mail_from_name;
+
         $this->mail_sender = $this->modx->getOption('mailSender',
             $this->props, $this->mail_from);
 
@@ -167,6 +167,7 @@ class Notify
         if (empty($this->mail_reply_to)) {
             $this->mail_reply_to = $this->mail_from;
         }
+        $this->props['reply_to'] = $this->mail_reply_to;
 
         $this->mail_subject = isset($_POST['nf_email_subject'])
             ? $_POST['nf_email_subject']
@@ -792,14 +793,14 @@ class Notify
         $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
         $this->update(0, "Pending", '', $statusChunk);
         while ($offset < $totalCount) {
-            sleep(4); // xxx
+            sleep(4);
             $i++;
 
             $c->limit($this->batchSize, $offset);
-            // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
+
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
-            // echo "<br>User Count: " . count($users);
+
             $offset += $this->batchSize;
 
             if ($this->debug) {
@@ -812,7 +813,7 @@ class Notify
             $percent = $stepSize * $batchNumber;
             $this->update($percent, $batchNumber, '', $statusChunk);
             foreach ($users as $user) {
-                /** @var $user modUser */
+
                 $username = $user->get('username');
                 if (!empty($this->tags)) {
                     if (!$this->qualifyUser($user->Profile, $username, $this->requireAllTags)) {

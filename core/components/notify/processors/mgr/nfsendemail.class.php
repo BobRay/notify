@@ -167,12 +167,12 @@ class NfSendEmailProcessor extends modProcessor {
                 $this->modx->getService('mail', 'mail.modPHPMailer');
 
 
-/*                $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
-                $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
-                $this->modx->mail->set(modMail::MAIL_SENDER, $this->mail_sender);
-                $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->mail_subject);
-                $this->modx->mail->address('reply-to', $this->mail_reply_to);
-                $this->modx->mail->setHtml(true);*/
+                $this->modx->mail->set(modMail::MAIL_FROM, $this->getProperty('from_email'));
+                $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->getProperty('from_name'));
+                $this->modx->mail->set(modMail::MAIL_SENDER, $this->getProperty('mail_from'));
+                $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->getProperty('email_subject'));
+                $this->modx->mail->address('reply-to', $this->getProperty('mail_reply_to'));
+                $this->modx->mail->setHtml(true);
         }
         if ($useMandrill) {
             $this->logFile .= "(Mandrill)";
