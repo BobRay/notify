@@ -152,7 +152,7 @@ $(document).ready(function (event) {
             });
 
 
-            var url = "http://localhost/addons/notify-status.html";
+            var url = "[[+nf_status_url]]";
 
             $("#pb_progressbar").progressbar({
                 value: 0,
@@ -219,7 +219,7 @@ $(document).ready(function (event) {
                   }
               }
            });
-           },800);
+           },[[+nf_set_interval]]);
         }
         return false;
         })

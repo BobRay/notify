@@ -125,11 +125,10 @@ class Notify
     public function init() {
         $this->initJS();
 
-        $this->testMode = $this->modx->getOption('testMode', $this->props, false);
+        $this->props['testMode'] = $this->modx->getOption('testMode', $this->props, false);
         $this->useMandrill = $this->modx->getOption('nfUseMandrill', $this->props, false);
-        $this->useMandrill = empty($this->useMandrill)
-            ? false
-            : true;
+
+        $this->props['useMandrill'] = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->errors = array();
         $this->successMessages = array();
         $this->previewPage = $this->modx->getObject('modResource', array('alias' => 'notify-preview'));
@@ -142,8 +141,8 @@ class Notify
             ? 'NfNotifyFormTpl'
             : $this->formTpl;
         $this->requireDefault = $this->modx->getOption('requireAllTagsDefault', $this->props, false);
-        $this->setTags();
-        $this->setUserGroups();
+        $this->setTags();  /* Set up JS for tags */
+        $this->setUserGroups(); /* Set up JS for user groups */
 
         /* Message Settings */
         $this->mail_from = $this->modx->getOption('mailFrom', $this->props,
@@ -1026,19 +1025,24 @@ class Notify
         $this->modx->regClientStartupScript($src2);*/
         unset($fields, $src2, $interval, $process_url, $status_url);
        $headStuff =
-'<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>
-<link rel="stylesheet" href="/addons/assets/components/notify/css/notify.css" type="text/css" />';
-        $this->modx->regClientStartupHTMLBlock($headStuff);
+    '<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/addons/assets/components/notify/css/notify.css" type="text/css" />';
+            $this->modx->regClientStartupHTMLBlock($headStuff);
 
-$this->modx->regClientStartupScript(MODX_ASSETS_URL . 'mycomponents/notify/assets/components/notify/js/notify.js');
+$path = MODX_ASSETS_URL . 'mycomponents/notify/assets/components/notify/js/notify.js';
+$js = file_get_contents($path);
 
+        str_replace('[[+nf_status_url]]', $nf_status_url, $js);
+        str_replace('[[+nf_set_interval]]', 800, $js);
         $fields = array(
             /*  'pb_process_url' => '', */
             'nf_status_url' => $nf_status_url,
             'nf_set_interval' => 800,
         );
+
+        $this->modx->regClientStartupScript($js);
         // echo "\n<br />URL: " . $nf_status_url;
         /*$src = $this->modx->getChunk('NfProgressbarJs', $fields);
         $this->modx->regClientStartupScript($src);*/
