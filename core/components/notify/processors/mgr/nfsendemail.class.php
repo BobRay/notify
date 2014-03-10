@@ -54,11 +54,6 @@ class NfSendEmailProcessor extends modProcessor {
             'text2'   => $text2,
         ));
 
-            /*return $this->modx->toJSON(array(
-                'success' => true,
-                'stats'   => $stats
-            ));*/
-
         /* use a chunk for the status "file" */
 
         $pb_target->setContent($msg);
@@ -254,7 +249,7 @@ class NfSendEmailProcessor extends modProcessor {
         $i = 0;
         $offset = 0;
         $batchNumber = 1;
-        $stepSize = ceil(100 / $batches);
+        $stepSize = floor(100 / $batches);
         $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
         $this->update(0, "Pending", '', $statusChunk);
 
@@ -287,7 +282,6 @@ class NfSendEmailProcessor extends modProcessor {
                     }
                 }
                 /* Now we have a user to send to */
-                /*$this->update($percent, $batchNumber, '', $statusChunk);*/
                 $fields = array();
                 $fields['username'] = $username;
                 $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $user->Profile);
@@ -374,6 +368,11 @@ class NfSendEmailProcessor extends modProcessor {
 
 
         }
+        $this->update(99, '','', $statusChunk);
+        sleep(1);
+        $this->update(100, 'Finished', '', $statusChunk);
+        sleep(1);
+
         if ((!$this->hasErrors()) && $totalSent) {
             $msg = $this->modx->lexicon('nf.email_to_subscribers_sent_successfully');
             $msg = str_replace('[[+nf_number]]', $totalSent, $msg);
@@ -394,25 +393,6 @@ class NfSendEmailProcessor extends modProcessor {
             }
             fclose($fp);
         }
-
-
-        /*if (!empty($singleId)) {
-            $this->setSuccess('Sent Single Email to ' . $singleId);
-            return;
-        }
-        $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
-
-        $msg1 = $this->getProperty('groups', 'No Groups');
-        $msg2 = $this->getProperty('tags', 'No Tags');
-        for ($i = 1; $i <= 120; $i++) {
-
-            $this->update($i, $msg1, $msg2, $statusChunk);
-            set_time_limit(0);
-            usleep(100000);
-        }
-        $this->update(0, 'Starting', '', $statusChunk);
-
-        $this->setSuccess('Email Sent Successfully to 23 Users');*/
 
         $this->update(0, 'Starting', '', $statusChunk);
         return true;
