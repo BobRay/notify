@@ -53,11 +53,11 @@ iframe {
 }
 
 #pb_progressbar {
-    /*width:50%;*/
     height:20px;
     box-shadow: 7px 0px 7px #aaa;
-    -webkit-box-shadow: 7px 0px 7px #aaa;
+    -webkit-box-shadow: 7px 7px 7px #aaa;
     border-radius: 10px;
+    margin-bottom:10px;
 }
 
 .ui-progressbar-value {
@@ -69,19 +69,20 @@ iframe {
     background: -webkit-linear-gradient(bottom, teal, #FFF, teal);
     box-shadow: 7px 7px 7px #aaa;
     -webkit-box-shadow: 7px 7px 7px #aaa;
-    margin-bottom:7px;
+    margin-bottom:10px;
     border-radius: 10px;
 
 }
 
 #pb_textMessages {
     text-align: left;
+    font-size:12pt;
     margin: auto;
     border: 1px black solid;
     box-shadow: 7px 7px 7px #aaa;
     -webkit-box-shadow: 7px 7px 7px #aaa;
     border-radius: 10px;
-    padding: 10px;
+    padding: 20px;
 
 }
 

@@ -338,7 +338,7 @@ class NfSendEmailProcessor extends modProcessor {
             }
             $percent = $stepSize * $batchNumber;
             $this->update($percent, 'Processing batch:' . $batchNumber,
-                'Users emailed: ' . $sentCount, $statusChunk);
+                'Users emailed in this batch: ' . $sentCount, $statusChunk);
             $batchNumber++;
             sleep($batchDelay);
             set_time_limit(0);
