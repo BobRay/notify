@@ -28,6 +28,7 @@ form#nf_form {
 iframe {
     width:600px;
     height:400px;
+    background-color: #fdfdfd;
 }
 
 .nf_error {
@@ -81,4 +82,21 @@ iframe {
 
 #pb_percent {
     display: inline;
+}
+
+#nf_results {
+    display:none;
+    padding:20px;
+    margin: auto;
+    width: 50%;
+    background-color: #dddddd;
+    text-align: center;
+    border:1px solid black;
+}
+
+#nf_results h3 {
+    color:darkblue;
+    margin:0 0 10px 0;
+    padding:0;
+    -webkit-margin-after: 5px;
 }
