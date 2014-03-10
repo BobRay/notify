@@ -4,7 +4,7 @@ body {
     padding:30px;
     background-color: #f3f3f3;
     font-family:Arial, sans-serif;
-    font-size:18px;
+    font-size:14pt;
 }
 fieldset {
     padding:40px;
@@ -60,6 +60,10 @@ iframe {
     /* height: 23px; */
 }
 
+.ui-progressbar-value {
+    background: teal;
+}
+
 #pb_textMessages {
     text-align: left;
     margin: auto;
@@ -68,8 +72,19 @@ iframe {
 
 }
 
-#pb_buttonDiv {
+#pb_button {
     text-align: center;
+    height:2em;
+    width:30%;
+    cursor: pointer;
+    padding: 5px 20px;
+    margin-left:18em;
+    margin-bottom: 10px;
+    font-size:14pt;
+}
+
+#pb_button:hover {
+    background-color: #d3d3d3 ;
 }
 
 #pb_text1 {

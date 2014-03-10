@@ -161,7 +161,7 @@ $(document).ready(function (event) {
                 max: 100
             });
 
-            $("#pb_button").hide();
+            $("#pb_button").slideUp("slow");
             $("#pb_progressOuter").slideDown("slow");
             var $target = $('html,body');
             $target.animate({scrollTop: $target.height()}, 1000);
@@ -183,8 +183,8 @@ $(document).ready(function (event) {
                 success: function(data){
                     if (data.percent >= 100) {
                         clearInterval(timer);
-                        $("#pb_progressOuter").slideUp("fast");
-                        $("#pb_button").show();
+                        $("#pb_progressOuter").slideUp("slow");
+                        $("#pb_button").slideDown("slow");
                         /* Clear for future runs */
                         data.percent = 0;
                         data.text1="";
