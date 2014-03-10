@@ -49,28 +49,38 @@ iframe {
     margin: auto;
     width: 50%;
     display: none;
+    border-radius: 10px;
 }
 
 #pb_progressbar {
     /*width:50%;*/
     height:20px;
-    color:blue;
-    /* margin:auto;*/
-    /* width: 496px; */
-    /* height: 23px; */
+    box-shadow: 7px 0px 7px #aaa;
+    -webkit-box-shadow: 7px 0px 7px #aaa;
+    border-radius: 10px;
 }
 
 .ui-progressbar-value {
-    background: teal;
-    -webkit-box-shadow: 0px 4px 4px -4px rgba(255, 255, 255, 0.4), 0px -3px 3px -3px rgba(255, 255, 255, 0.25), inset 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
-    box-shadow: 0px 4px 4px -4px rgba(255, 255, 255, 0.4), 0px -3px 3px -3px rgba(255, 255, 255, 0.25), inset 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
+    /*background: teal;*/
+    background: linear-gradient(bottom, teal, #FFF, teal);
+    background: -moz-linear-gradient(bottom, teal, #FFF, teal);
+    background: -ms-linear-gradient(bottom, teal, #FFF, teal);
+    background: -o-linear-gradient(bottom, teal, #FFF, teal);
+    background: -webkit-linear-gradient(bottom, teal, #FFF, teal);
+    box-shadow: 7px 7px 7px #aaa;
+    -webkit-box-shadow: 7px 7px 7px #aaa;
+    margin-bottom:7px;
+    border-radius: 10px;
 
 }
 
 #pb_textMessages {
     text-align: left;
     margin: auto;
-    border: 3px lavender solid;
+    border: 1px black solid;
+    box-shadow: 7px 7px 7px #aaa;
+    -webkit-box-shadow: 7px 7px 7px #aaa;
+    border-radius: 10px;
     padding: 10px;
 
 }
@@ -110,10 +120,13 @@ iframe {
     background-color: #dddddd;
     text-align: center;
     border:1px solid black;
+    box-shadow: 7px 7px 7px #aaa;
+    -webkit-box-shadow: 7px 7px 7px #aaa;
+    border-radius: 10px;
 }
 
 #nf_results h3 {
-    color:darkblue;
+    color:black;
     margin:0 0 10px 0;
     padding:0;
     -webkit-margin-after: 5px;
