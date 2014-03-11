@@ -149,8 +149,8 @@ class html2text
         '/<script[^>]*>.*?<\/script>/i',         // <script>s -- which strip_tags supposedly has problems with
         '/<style[^>]*>.*?<\/style>/i',           // <style>s -- which strip_tags supposedly has problems with
         //'/<!-- .* -->/',                         // Comments -- which strip_tags might have problem a with
-        '/<h[123][^>]*>(.*?)<\/h[123]>/ie',      // H1 - H3
-        '/<h[456][^>]*>(.*?)<\/h[456]>/ie',      // H4 - H6
+        /*'/<h[123][^>]*>(.*?)<\/h[123]>/ie',      // H1 - H3
+        '/<h[456][^>]*>(.*?)<\/h[456]>/ie',      // H4 - H6*/
         '/<p[^>]*>/i',                           // <P>
         '/<br[^>]*>/i',                          // <br>
         '/<b[^>]*>(.*?)<\/b>/ie',                // <b>
@@ -201,8 +201,8 @@ class html2text
         '',                                     // <script>s -- which strip_tags supposedly has problems with
         '',                                     // <style>s -- which strip_tags supposedly has problems with
         //'',                                     // Comments -- which strip_tags might have problem a with
-        "strtoupper(\"\n\n\\1\n\n\")",          // H1 - H3
-        "ucwords(\"\n\n\\1\n\n\")",             // H4 - H6
+        /*"strtoupper(\"\n\n\\1\n\n\")",          // H1 - H3
+        "ucwords(\"\n\n\\1\n\n\")",             // H4 - H6*/
         "\n\n\t",                               // <P>
         "\n",                                   // <br>
         'strtoupper("\\1")',                    // <b>
@@ -463,7 +463,8 @@ class html2text
     function _build_link_list( $link, $display )
     {
         if ( substr($link, 0, 7) == 'http://' || substr($link, 0, 8) == 'https://' ||
-             substr($link, 0, 7) == 'mailto:' ) {
+             substr($link, 0, 7) == 'mailto:' || substr($link, 0, 7) == 'HTTP://' || substr($link, 0, 7) == 'HTTPS://' ) {
+
             $this->_link_count++;
             $this->_link_list .= "[" . $this->_link_count . "] $link\n";
             $additional = ' [' . $this->_link_count . ']';
