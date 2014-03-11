@@ -984,8 +984,14 @@ class Notify
 $path = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH . 'components/notify/') . 'js/notify.js';
 $js = file_get_contents($path);
 
+
+$nf_connector_url = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL . 'components/notify/') . 'connector.php';
+
 $js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
 $js = str_replace('[[+nf_set_interval]]', 800, $js);
+$js = str_replace('[[+nf_connector_url]]', $nf_connector_url, $js);
+
+
 
 $this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '</script>');
 }

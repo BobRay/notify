@@ -19,8 +19,8 @@ $(document).ready(function (event) {
         $('#nf_results').find('br').remove();
         $('#nf_results').hide();
 
-        /** ToDo: make this generic */
-        var connectorUrl = "http://localhost/addons/assets/components/notify/connector.php";
+
+        var connectorUrl = "[[+nf_connector_url]]";
 
 
         /* One or more actions selected */
