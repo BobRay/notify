@@ -380,6 +380,10 @@ class NfSendEmailProcessor extends modProcessor {
                 $msg .= ' ' . $this->modx->lexicon('nf.using') . ' Mandrill';
             }
             $this->setSuccess($msg);
+            if ($this->testMode) {
+                $msg = $this->modx->lexicon('nf.test_mode_on~~(Test Mode is on, no messages or Tweets sent)');
+                $this->setSuccess($msg);
+            }
         }
         if ($totalSent == 0) {
             $this->setError($this->modx->lexicon('nf.no_messages_sent'));
