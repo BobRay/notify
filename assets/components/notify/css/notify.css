@@ -114,6 +114,7 @@ iframe {
 }
 
 #nf_results {
+    font-size: 12pt;
     display:none;
     padding:20px;
     margin: auto;
