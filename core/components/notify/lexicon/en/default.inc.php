@@ -75,4 +75,4 @@ $_lang['nf.finished'] = 'Finished';
 $_lang['nf.successful_send_to'] = 'Successful send to';
 $_lang['nf.user_tags'] = 'User Tags';
 $_lang['nf.error_sending_to'] = 'Error sending to';
-$_lang['nf.test_mode_on'] = '(Test Mode is on, no messages or Tweets sent)';
+$_lang['nf.test_mode_on'] = '(testMode is on, no messages or Tweets sent)';
