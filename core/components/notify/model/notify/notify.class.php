@@ -274,44 +274,9 @@ class Notify
                     }
                 }
                 $this->emailText = $_POST['nf_email_text'];
-                // $this->fullUrls();
+                $this->fullUrls();
                 $this->imgAttributes();
                 $this->updatePreviewPage($this->emailText);
-
-
-                /* **************************** */
-                /* This section should only execute for people with
-                 * JavaScript turned off
-                 * */
-
-
-                /* perform requested actions */
-                if ($this->sendBulkEmail || $this->sendTestEmail) {
-
-                    require_once('html2text.php');
-                    $this->html2text = new html2text();
-
-                    $this->initEmail();
-                    $this->initializeMailer();
-
-                    if ($this->sendBulkEmail) {
-
-                        $this->sendBulkEmail();
-                    }
-
-                    if ($this->sendTestEmail) {
-
-                        $testEmailAddress = isset($_POST['nf_test_email_address'])
-                            ? $_POST['nf_test_email_address']
-                            : '';
-                        $this->tags = '';
-                        $this->groups = '';
-                        $this->sendBulkEmail($testEmailAddress);
-                    }
-                }
-                if ($this->sendTweet) {
-                    $this->tweet();
-                }
 
                 return $this->modx->getChunk($this->formTpl);
 
@@ -381,7 +346,7 @@ class Notify
             $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
         } else {
             /* convert any relative URLS in email text */
-            /*$this->fullUrls();*/
+            $this->fullUrls();
             /* Fix image attributes */
             $this->imgAttributes();
             /* Inject unsubscribe link */
@@ -429,7 +394,6 @@ class Notify
         $tpl = str_ireplace('{{UNSUBSCRIBE_URL}}', '{{+UNSUBSCRIBE_URL}}', $tpl);
         if (stristr($content, '</body>')) {
             /* inject link just above the closing body tag */
-            // $html = $content;
             $content = str_replace('</body>', "\n" . $tpl . "\n" . '</body>', $content);
         } else {
             /* append link to the end if there is no body tag */
@@ -558,49 +522,6 @@ class Notify
         return $msg . "\n</p>";
     }
 
-    /**
-     * Returns the text for the Tweet
-     *
-     * @return string
-     */
-    public function getTweetText() {
-        return $this->tweetText;
-    }
-
-    /**
-     * Returns the current email text
-     *
-     * @return string
-     */
-    public function getEmailText() {
-        return $this->emailText;
-    }
-
-    /**
-     * Initialize variables used for mailing
-     */
-    protected function  initEmail() {
-        $this->sortBy = $this->modx->getOption('sortBy',$this->props);
-        $this->sortBy = empty($this->sortBy)? 'username' : $this->sortBy;
-        $this->sortByAlias = $this->modx->getOption('sortByAlias',$this->props);
-        $this->sortByAlias = empty ($this->sortByAlias)? 'modUser' : $this->sortByAlias;
-        $this->userClass = $this->modx->getOption('userClass',$this->props);
-        $this->userClass = empty($this->userClass)? 'modUser' : $this->userClass;
-        $this->profileAlias = $this->modx->getOption('profileAlias',$this->props,'Profile');
-        $this->profileAlias = empty($this->profileAlias)? 'Profile' : $this->profileAlias;
-        $this->profileClass = $this->modx->getOption('profileClass',$this->props,'modUserProfile');
-        $this->profileClass = empty($this->profileClass)? 'modUserProfile' : $this->profileClass;
-        $this->logFile = $this->corePath . 'notify-logs/' . $this->pageAlias . '--'. date('Y-m-d-h.i.sa');
-
-        $this->tags = isset($_POST['nf_tags'])? $_POST['nf_tags']: '';
-
-        $this->groups = isset($_POST['nf_groups'])? $_POST['nf_groups']: '';
-
-        $this->batchSize = (integer) $this->modx->getOption('batchSize', $this->props, 25);
-        $this->batchDelay = (integer) $this->modx->getOption('batchDelay', $this->props, 1);
-        $this->itemDelay = (float) $this->modx->getOption('itemDelay', $this->props, .51);
-
-    }
 
 
     /**
@@ -615,63 +536,8 @@ class Notify
 
     }
 
-    /**
-     * Initialize the modx Mailer
-     */
-    public function initializeMailer() {
-        set_time_limit(0);
-        $this->modx->getService('mail', 'mail.modPHPMailer');
 
 
-        $this->modx->mail->set(modMail::MAIL_FROM, $this->mail_from);
-        $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mail_from_name);
-        $this->modx->mail->set(modMail::MAIL_SENDER, $this->mail_sender);
-        $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->mail_subject);
-        $this->modx->mail->address('reply-to', $this->mail_reply_to);
-        $this->modx->mail->setHtml(true);
-    }
-
-
-    /**
-     * Sends an individual email - not used if sending via Mandrill
-     *
-
-     * @param $fields array - fields for user placeholders.
-     * @return bool - true on success; false on failure to mail.
-     */
-    public function sendMail($fields) {
-
-        $content  = $this->emailText;
-
-        /* Get Fields used in Tpl */
-        $fieldsUsed = $this->userFields;
-
-        foreach ($fields as $key => $value) {
-            if (is_array($value)) {
-                continue;
-            }
-            if (in_array($key, $fieldsUsed)) {}
-            if (! is_array($value)) {
-                $content = str_replace('{{+' . $key . '}}', $value, $content);
-            }
-        }
-
-        $this->modx->mail->set(modMail::MAIL_BODY, $content);
-        $this->html2text->set_html($content);
-        $text = $this->html2text->get_text();
-        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text );
-        $this->modx->mail->address('to', $fields['email'], $fields['name']);
-
-        $success = $this->testMode? true: $this->modx->mail->send();
-
-        if (! $success) {
-            $this->setError($this->modx->mail->mailer->ErrorInfo);
-            $this->badSends++;
-        }
-        $this->modx->mail->mailer->ClearAddresses();
-        return $success;
-
-    }
     public function getUserFields() {
         $content = $this->emailText;
 
@@ -686,250 +552,13 @@ class Notify
     }
 
 
-    /**
-     * Send Email - This should only execute for people
-     * with JavaScript turned off
-     * @param null $singleEmail - email to one person if this is set
-     * @return bool
-     */
-    public function sendBulkEmail($singleEmail = null) {
-        $singleUser = $singleEmail !== null;
-        $fp = null;
-        if ($this->useMandrill) {
-            require_once $this->modx->getOption('mandrillx.core.path', null,  MODX_CORE_PATH) . 'components/mandrillx/model/mandrillx/mandrillx.class.php';
-
-            $apiKey = $this->modx->getOption('mandrill_api_key');
-            if (empty($apiKey)) {
-                $this->setError($this->modx->lexicon('nf.no_mandrill_api_key'));
-                return false;
-            } else {
-                $this->props['html'] = $this->emailText;
-                $this->html2text->set_html($this->emailText);
-                $text = $this->html2text->get_text();
-                $this->props['text'] = $text;
-                unset($text);
-                $this->mx = new MandrillX($this->modx, $apiKey, $this->props);
-                if (! $this->mx instanceof MandrillX) {
-                    $this->setError($this->modx->lexicon('nf.no_mandrill'));
-                    return false;
-                }
-
-                $this->mx->init();
-                $this->userFields = $this->mx->getUserPlaceholders();
-            }
-        } else {
-            $this->userFields = $this->getUserFields();
-        }
-        if ($this->useMandrill) {
-            $this->logFile .= "(Mandrill)";
-        }
-        $fp = fopen($this->logFile, 'w');
-            
-        if (!$fp) {
-            $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
-        } else {
-            fwrite($fp, "MESSAGE\n*****************************\n" .
-                $this->emailText .
-                "\n*****************************\n\n");
-
-        }
-
-
-        $groups = empty($this->groups)
-            ? array()
-            : explode(',', $this->groups);
-
-        foreach ($groups as $key => $group) {
-            $group = trim($group);
-            if (!is_numeric($group)) {
-                $grp = $this->modx->getObject('modUserGroup', array('name' => $group));
-                $groups[$key] = $grp
-                    ? $grp->get('id')
-                    : '';
-                unset($grp);
-            } else {
-                $groups[$key] = $group;
-            }
-        }
-
-        $userClass = $this->userClass;
-
-        $c = $this->modx->newQuery($userClass);
-        $c->select($this->modx->getSelectColumns($userClass, $userClass, "", array(
-            'id',
-            'username',
-            'active',
-        )));
-        $c->sortby($this->modx->escape('username'), 'ASC');
-        if ($singleUser) {
-            if ($u = $this->modx->getObject('modUser', array('username' => $singleEmail))) {
-                $c->where(array('username' => $singleEmail));
-                unset($u);
-            } elseif ($p = $this->modx->getObject('modUserProfile', array('email' => $singleEmail))) {
-                $c->where(array('id' => $p->get('internalKey') ));
-                unset($p);
-            } else {
-                $this->setError($this->modx->lexicon('nf.user_not_found'));
-                return false;
-            }
-
-        } else if (!empty($groups)) {
-            $c->where(array(
-                'UserGroupMembers.user_group:IN' => $groups,
-                'active'                         => '1',
-            ));
-            $c->leftJoin('modUserGroupMember', 'UserGroupMembers');
-        } else {
-            $c->where(array(
-                'active' => '1',
-            ));
-        }
-
-        $c->prepare();
-        $totalCount = $this->modx->getCount('modUser', $c);
-        if ($this->debug) {
-            echo "<br>Total Count: " . $totalCount;
-        }
-        if ($totalCount % $this->batchSize) {
-            $batches = floor($totalCount / $this->batchSize) + 1;
-        } else {
-            $batches = $totalCount / $this->batchSize;
-        }
-        $totalSent = 0;
-        $i = 0;
-        $offset = 0;
-        $jsInitialized = false;
-        $batchNumber = 1;
-        $stepSize = ceil(100 / $batches);
-        $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
-        $this->update(0, "Pending", '', $statusChunk);
-        while ($offset < $totalCount) {
-            sleep(4);
-            $i++;
-
-            $c->limit($this->batchSize, $offset);
-
-            $c->prepare();
-            $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
-
-            $offset += $this->batchSize;
-
-            if ($this->debug) {
-            $msg = "\n\n<br />" . $i . "  Count: " . count($users) .
-                "\n<br />Offset: " . $offset . "\n<br />BatchSize: " .
-                $this->batchSize;
-                echo($msg);
-            }
-            $sentCount = 0;
-            $percent = $stepSize * $batchNumber;
-            $this->update($percent, $batchNumber, '', $statusChunk);
-            foreach ($users as $user) {
-
-                $username = $user->get('username');
-                if (!empty($this->tags)) {
-                    if (!$this->qualifyUser($user->Profile, $username, $this->requireAllTags)) {
-                        continue;
-                    }
-                }
-
-                $this->update($percent, $batchNumber, $username, $statusChunk);
-                $fields = array();
-                $fields['username'] = $username;
-                $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $user->Profile);
-                $fields = array_merge($user->Profile->toArray(), $fields);
-                if ($this->modx->getOption('useExtendedFields', $this->props, false)) {
-                    $extended = $user->Profile->get('extended');
-                    $fields = array_merge($extended, $fields);
-                }
-                $fields['tags'] = $this->tags;
-                if (isset($user->Extra) && (!empty($user->Extra))) {
-                    $fields = array_merge($user->Extra->toArray(), $fields);
-                }
-
-                $fields['name'] = empty($fields['fullname'])? $fields['username'] : $fields['fullname'];
-
-                $fields['firstname'] = isset($fields['firstname']) && (!empty($fields['firstname']))
-                    ? $fields['firstname']
-                    : substr($fields['name'], 0, strpos($fields['name'], ' '));
-                $fields['firstname'] = !empty($fields['firstname'])? $fields['firstname'] : $username;
-
-                if ($this->useMandrill) {
-                    $this->addUsertoMandrill($fields);
-                } else {
-                    if ($this->sendMail($fields)) {
-                        if ($fp) {
-                            fwrite($fp, 'Successful send to: ' . $fields['email'] . ' (' .
-                                $fields['name'] . ') User Tags: ' .
-                                $fields['userTags'] . "\n");
-                        }
-                    } else {
-                        if ($fp) {
-                            fwrite($fp, 'Error sending to: ' .
-                                $fields['email'] . ' (' .
-                                $fields['name'] . ') ' .
-                                "\n");
-                        }
-                    }
-                    sleep($this->itemDelay);
-                }
-                if ($this->debug) {
-                    echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
-                }
-                $sentCount++;
-
-            }
-            sleep($this->batchDelay);
-            set_time_limit(0);
-            if ((!empty($sentCount)) && $this->debug) {
-
-                $this->setSuccess($this->modx->lexicon('nf.sending_batch_of') .
-                    ' ' . $sentCount);
-            }
-            if ($this->useMandrill) {
-
-                $results = $this->testMode? array() : $this->mx->sendMessage();
-                $this->mx->clearUsers();
-                if ($this->mx->hasError()) {
-                    $errors = $this->mx->getErrors();
-                    $this->successMessages = array();
-                    foreach($errors as $error) {
-                        $this->setError($error);
-                    }
-                }
-                if ($this->debug) {
-                    echo "\n<pre>" . print_r($results, true) . "</pre>\n";
-                }
-            }
-            $totalSent += $sentCount;
-
-
-        }
-        if ((! $this->hasErrors()) && $totalSent) {
-            $msg = $this->modx->lexicon('nf.email_to_subscribers_sent_successfully');
-            $msg = str_replace('[[+nf_number]]', $totalSent, $msg);
-            if ($this->useMandrill) {
-                $msg .= ' ' . $this->modx->lexicon('nf.using') .  ' Mandrill';
-            }
-            $this->setSuccess($msg);
-        }
-        if ($totalSent == 0) {
-            $this->setError($this->modx->lexicon('nf.no_messages_sent'));
-        }
-        if ($fp !== null) {
-            $dir = $this->corePath . 'notify-logs';
-            if ($this->maxLogs != '0') {
-                $this->removeOldestFile($dir);
-            }
-            fclose($fp);
-        }
-        return true;
-    }
     protected function initJS() {
+        header("X-XSS-Protection: 0");
+
         /* The next three settings are System Settings, not properties,
          * but they can be overridden in the properties of the snippet
          * tag. */
 
-        header("X-XSS-Protection: 0");
         $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
 
         /* set these System Settings if they didn't get set during the install */
@@ -981,178 +610,23 @@ class Notify
     <link rel="stylesheet" href="' . $cssUrl . '" type="text/css" />';
             $this->modx->regClientStartupHTMLBlock($headStuff);
 
-$path = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH . 'components/notify/') . 'js/notify.js';
-$js = file_get_contents($path);
+    $path = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH .
+            'components/notify/') . 'js/notify.js';
+    $js = file_get_contents($path);
 
 
-$nf_connector_url = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL . 'components/notify/') . 'connector.php';
+    $nf_connector_url = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL .
+            'components/notify/') . 'connector.php';
 
-$js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
-$js = str_replace('[[+nf_set_interval]]', 800, $js);
-$js = str_replace('[[+nf_connector_url]]', $nf_connector_url, $js);
+    $js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
+    $js = str_replace('[[+nf_set_interval]]', 800, $js);
+    $js = str_replace('[[+nf_connector_url]]', $nf_connector_url, $js);
 
 
 
-$this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '</script>');
+    $this->modx->regClientStartupScript('<script type="text/javascript">' .
+        $js . '</script>');
 }
-
-   /* Only here for people with JS turned off */
-   public function removeOldestFile($dir) {
-        $files = glob($dir . '/*.*');
-
-        if (count($files) > $this->maxLogs) {
-            array_multisort(
-                array_map('filemtime', $files),
-                SORT_NUMERIC,
-                SORT_ASC,
-                $files
-            );
-
-            unlink($files[0]);
-        }
-    }
-
-    /**
-     * For users with JS turned off
-     * See if User should receive email based on
-     * tags selected in form
-     *
-     * @param $profile modUserProfile - User Profile object
-     * @param $username string
-     * @param bool $requireAll
-     * @return bool - True if use should receive email
-     */
-    public function qualifyUser($profile, $username, $requireAll = false) {
-
-        /* Get User's Tags */
-        $userTags = NULL;
-        if (!$profile) {
-            $this->setError($this->modx->lexicon('nf.no_profile_for') . ': ' . $username);
-        } else {
-            if ($this->modx->getOption('sbs_use_comment_field', NULL, NULL) == 'No') {
-                $field = $this->modx->getOption('sbs_extended_field');
-                if (empty($field)) {
-                    $this->setError($this->modx->lexicon('nf.sbs_extended_field_not_set'));
-                } else {
-                    $extended = $profile->get('extended');
-                    $userTags = $extended[$field];
-                }
-            } else {
-                $userTags = $profile->get('comment');
-            }
-        }
-        $hasTag = false;
-        if (!empty($userTags)) {
-            $tags = explode(',', $this->tags);
-
-            foreach ($tags as $tag) {
-                $tag = trim($tag);
-                $hasTag = false;
-                if ((!empty($tag)) && stristr($userTags, $tag)) {
-                    $hasTag = true;
-                    if (!$requireAll) {
-                        break;
-                    }
-                }
-                if ((!$hasTag) && $requireAll) {
-                    /* needs all tags and doesn't have this one, skip to next user */
-                    $hasTag = false;
-                    break;
-                }
-            }
-        }
-
-        return $hasTag;
-    }
-
-    /**
-     * Add user's info to the Mandrill Message array
-     * @param $fields array - user fields with values
-     */
-    protected function addUserToMandrill($fields) {
-        if ($this->debug) {
-            echo $this->modx->lexicon('nf.send_user_mandrill') .
-                ': ' . $fields['username'];
-        }
-        if ($this->mx) {
-            $this->mx->addUser($fields);
-        }
-
-    }
-
-
-    /**
-     * Should only execute if JS is turned off
-     *
-     * Sends a Tweet from the form via Twitter API
-     */
-    public function tweet() {
-
-        require_once(MODX_CORE_PATH . 'components/notify/model/notify/twitteroauth.php');
-        $consumer_key = $this->modx->getOption('twitterConsumerKey',$this->props, null);
-        if (! $consumer_key) {
-            $this->setError($this->modx->lexicon('nf.twitter_consumer_key_not_set'));
-        }
-        $consumer_secret = $this->modx->getOption('twitterConsumerSecret',$this->props, null);
-        if (! $consumer_secret) {
-            $this->setError($this->modx->lexicon('nf.twitter_consumer_secret_not_set'));
-        }
-        $oauth_token = $this->modx->getOption('twitterOauthToken',$this->props, null);
-        if (! $oauth_token) {
-            $this->setError($this->modx->lexicon('nf.twitter_access_token_not_set'));
-        }        
-        $oauth_secret = $this->modx->getOption('twitterOauthSecret',$this->props, null);
-        if (! $oauth_secret) {
-            $this->setError($this->modx->lexicon('nf.twitter_access_token_secret_not_set'));
-        }        
-        $msg = $this->tweetText;
-        if (empty($msg)) {
-            $this->setError($this->modx->lexicon('nf.tweet_field_is_empty'));
-        } else {
-            $tweet = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_secret);
-            $response = $this->testMode
-                ? array()
-                : $tweet->post('statuses/update', array('status' => $msg));
-            /* This will get recent tweets */
-            /* $response = $tweet->get('statuses/user_timeline', array('screen_name' => 'BobRay')); */
-
-            if ($response === null) {
-                $this->setError($this->modx->lexicon('nf.unknown_error_using_twitter_api'));
-            } elseif (isset($response->errors)) {
-                $this->setError('<p>' . $this->modx->lexicon('nf.twitter_said_there_was_an_error') .
-                    ': ' . $response->errors[0]->message . '</p><br />');
-            } else {
-                $this->setSuccess($this->modx->lexicon('nf.tweet_sent_successfully'));
-            }
-        }
-    }
-
-
-    /**
-     * Writes debugging code to 'debug' chunk
-     *
-     * @param $message string - message to write
-     * @param bool $clear - if set, chunk will be cleared before adding this message
-     */
-    public function my_debug($message, $clear = false)
-    {
-        /* @var $chunk modChunk */
-        $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
-
-        if (!$chunk) {
-            $chunk = $this->modx->newObject('modChunk', array('name' => 'Debug'));
-            $chunk->save();
-            $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
-        }
-        if ($clear) {
-            $content = '';
-        } else {
-            $content = $chunk->getContent();
-        }
-        $content .= "\n" . $message . "\n";
-        $chunk->setContent($content);
-        $chunk->save();
-    }
 
 
     /**
@@ -1188,8 +662,6 @@ $this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '<
         /* handle base-relative URLs */
         $html = preg_replace('@\<([^>]*) (href|src)="(?!http|mailto|sip|tel|callto|sms|ftp|sftp|gtalk|skype)(([^\:"])*|([^"]*:[^/"].*))"@i', '<\1 \2="' . $base . '\3"', $html);
 
-
-
         $this->emailText = $html;
     }
 
@@ -1213,8 +685,12 @@ $this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '<
 
     }
 
-    /* ToDo: Set user groups with JS like the tags */
 
+    /**
+     * Create JS to add user groups with buttons
+     * 
+     * Gets group list from groupList Tpl chunk
+     */
     public function setUserGroups(){
         $groups = '';
         $groupChunkName = $this->modx->getOption('groupListChunkName', $this->props, 'sbsGroupListTpl');
@@ -1240,7 +716,7 @@ function nf_insert_group(group) {
     groupArray.sort();
     text = groupArray.join(",");
     document.getElementById("nf_groups").value = text;
-return false;
+    return false;
     }
 </script>';
 
@@ -1250,13 +726,15 @@ return false;
             natcasesort($groupArray);
             $i = 0;
             foreach ($groupArray as $t) {
-                /* $t = strtolower($t); */
+
                 $pos = strpos($t, '==');
                 $group = $pos
                     ? substr($t, $pos + 2)
                     : $t;
                 $group = trim($group);
-                $groups .= '<button name="button' . $i . '" id="button' . $i . '" type="button" class="nf_group" onclick="nf_insert_group(' . "'" . $group . "'" . ');"' . '">' . $group . "</button>\n";
+                $groups .= '<button name="button' . $i . '" id="button' . $i .
+                    '" type="button" class="nf_group" onclick="nf_insert_group(' .
+                    "'" . $group . "'" . ');"' . '">' . $group . "</button>\n";
                 $i++;
             }
             $groups .= '</p>';
