@@ -41,3 +41,4 @@ $_lang['nf.send_tweet'] = 'Send Tweet';
 $_lang['nf.text_for_tweet'] = 'Text for Tweet';
 $_lang['nf.require_all_tags'] = 'Require All Tags';
 $_lang['nf.results'] = 'Results';
+$_lang['nf.progress'] = 'Progress';
