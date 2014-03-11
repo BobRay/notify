@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Class getTaskStatsProcessor
+ * Class NfSendEmailProcessor
+ *
+ * (for LexiconHelper)
+ * $modx->lexicon->load('notify:default');
  */
 class NfSendEmailProcessor extends modProcessor {
 
@@ -63,23 +66,24 @@ class NfSendEmailProcessor extends modProcessor {
     public function checkPermissions() {
         $valid =  $this->modx->hasPermission('view_user');
         if (! $valid) {
-            $this->setError($this->modx->lexicon('nf.no_view_user_permission~~User does not have view_user permission'));
+            $this->setError($this->modx->lexicon('nf.no_view_user_permission'));
         }
         return $valid;
     }
 
     public function process($scriptProperties = array()) {
 
+        if($this->debug) {
+            $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
 
-        $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
-
-        if (isset($this->properties)) {
-            $content =  print_r($this->properties, true);
-        } else {
-            $content = 'No Props';
+            if (isset($this->properties)) {
+                $content =  print_r($this->properties, true);
+            } else {
+                $content = 'No Props';
+            }
+            $chunk->setContent($content);
+            $chunk->save();
         }
-        $chunk->setContent($content);
-        $chunk->save();
 
         $sendBulk = (bool) $this->getProperty('send_bulk', false);
         $sendSingle = (bool) $this->getProperty('single', false);
@@ -91,7 +95,7 @@ class NfSendEmailProcessor extends modProcessor {
         if ($sendSingle) {
             $singleId = $this->getProperty('single_id', 'admin');
             if (empty($singleId)) {
-                $this->setError('No email or ID for single email');
+                $this->setError($this->modx->lexicon('nf._no_single_id'));
             } else {
                 $this->sendBulk($singleId);
             }
@@ -241,6 +245,9 @@ class NfSendEmailProcessor extends modProcessor {
 
         $c->prepare();
         $totalCount = $this->modx->getCount('modUser', $c);
+        if (! $totalCount) {
+            $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
+        }
         if ($this->debug) {
             echo "<br>Total Count: " . $totalCount;
         }
@@ -255,8 +262,10 @@ class NfSendEmailProcessor extends modProcessor {
         $batchNumber = 1;
         $stepSize = floor(100 / $batches);
         $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
-        $this->update(0, "Pending", '', $statusChunk);
-
+        $this->update(0, "", '', $statusChunk);
+        $processMsg1 = $this->modx->lexicon('nf.processing_batch');
+        $processMsg2 = $this->modx->lexicon('nf.users_emailed_in_batch');
+        $finishedMsg = $this->modx->lexicon('nf.finished');
         while ($offset < $totalCount) {
             // sleep(4);  ???
             $i++;
@@ -321,16 +330,22 @@ class NfSendEmailProcessor extends modProcessor {
                     /* Note: testMode is handled in sendMail */
                     if ($this->sendMail($fields)) {
                         if ($fp) {
-                            fwrite($fp, 'Successful send to: ' . $fields['email'] . ' (' .
-                                $fields['name'] . ') User Tags: ' .
-                                $fields['userTags'] . "\n");
+                            $msg = $this->modx->lexicon('nf.successful_send_to') .
+                                ': (' . $fields['name'] . ') ';
+                            if (!empty($fields['userTags'])) {
+                                $msg .= $this->modx->lexicon('nf.user_tags') .
+                                ': ' . $fields['userTags'] . ') ';
+                            }
+                            $msg .= "\n";
+                            fwrite($fp, $msg);
                         }
                     } else {
                         if ($fp) {
-                            fwrite($fp, 'Error sending to: ' .
+                            $msg = $this->modx->lexicon('nf.error_sending_to') .
                                 $fields['email'] . ' (' .
                                 $fields['name'] . ') ' .
-                                "\n");
+                                "\n";
+                            fwrite($fp, $msg);
                         }
                     }
                     sleep($itemDelay);
@@ -343,8 +358,9 @@ class NfSendEmailProcessor extends modProcessor {
 
             }
             $percent = $stepSize * $batchNumber;
-            $this->update($percent, 'Processing batch:' . $batchNumber,
-                'Users emailed in this batch: ' . $sentCount, $statusChunk);
+
+            $this->update($percent, $processMsg1 . $batchNumber,
+                $processMsg2 . $sentCount, $statusChunk);
             $batchNumber++;
             sleep($batchDelay);
             set_time_limit(0);
@@ -367,7 +383,7 @@ class NfSendEmailProcessor extends modProcessor {
                     }
                 }
                 if ($this->debug) {
-                    echo "\n<pre>" . print_r($results, true) . "</pre>\n";
+                    echo "\n<br />" . $this->modx->lexicon('nf.full_response') . "\n<br /><pre>" . print_r($results, true) . "</pre>\n";
                 }
             }
             $totalSent += $sentCount;
@@ -376,7 +392,7 @@ class NfSendEmailProcessor extends modProcessor {
         }
         $this->update(99, '','', $statusChunk);
         sleep(1);
-        $this->update(100, 'Finished', '', $statusChunk);
+        $this->update(100, $finishedMsg, '', $statusChunk);
         sleep(1);
 
         if ((!$this->hasErrors()) && $totalSent) {
@@ -387,7 +403,7 @@ class NfSendEmailProcessor extends modProcessor {
             }
             $this->setSuccess($msg);
             if ($this->testMode) {
-                $msg = $this->modx->lexicon('nf.test_mode_on~~(Test Mode is on, no messages or Tweets sent)');
+                $msg = $this->modx->lexicon('nf.test_mode_on');
                 $this->setSuccess($msg);
             }
         }

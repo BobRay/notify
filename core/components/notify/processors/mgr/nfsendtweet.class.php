@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Class NfSentTweetProcessor
+ * Class NfSendTweetProcessor
+ *
+ * (for LexiconHelper)
+ * $modx->lexicon->load('notify:default');
  */
 class NfSendTweetProcessor extends modProcessor {
 
@@ -9,19 +12,21 @@ class NfSendTweetProcessor extends modProcessor {
     protected $errors;
     protected $successMessages;
     protected $testMode;
+    protected $debug;
 
 
     public function initialize() {
         $config = $this->modx->fromJSON($_SESSION['nf_config']);
         $this->properties = array_merge($this->properties, $config);
         $this->testMode = $this->getProperty('testMode',false);
+        $this->debug = $this->getProperty('debug', false);
         return true;
     }
 
     public function checkPermissions() {
         $valid =  $this->modx->hasPermission('view_user');
         if (! $valid) {
-            $this->setError($this->modx->lexicon('nf.no_view_user_permission~~User does not have view_user permission'));
+            $this->setError($this->modx->lexicon('nf.no_view_user_permission'));
         }
         return $valid;
     }
@@ -29,18 +34,20 @@ class NfSendTweetProcessor extends modProcessor {
     public function process($scriptProperties = array()) {
 
 
-        $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
+        if ($this->debug) {
+            $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
 
-        if (isset($this->properties)) {
-            $content =  print_r($this->properties, true);
-        } else {
-            $content = 'No Props';
+            if (isset($this->properties)) {
+                $content = 'Properties: ' . print_r($this->properties, true);
+            } else {
+                $content = 'No Props';
+            }
+            $chunk->setContent($content);
+            $chunk->save();
         }
-        $chunk->setContent($content);
-        $chunk->save();
 
 
-           $this->send_tweet();
+        $this->send_tweet();
 
         $results["status"] = empty($this->errors)? "Yes" : "No";
         $results["errors"] = $this->errors;

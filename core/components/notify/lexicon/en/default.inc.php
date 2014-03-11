@@ -36,15 +36,9 @@ $_lang['nf.could_not_get_resource'] = 'Could not get resource';
 $_lang['nf.could_not_find_email_tpl_chunk'] = 'Could not find email Tpl chunk';
 $_lang['nf.could_not_find_tweet_tpl_chunk'] = 'Could not find tweet Tpl chunk';
 $_lang['nf.no_recipients_to_send_to'] = 'No recipients to send to';
-$_lang['nf.bulk_emails_not_sent'] = 'Bulk emails not sent';
 $_lang['nf.could_not_open_log_file'] = 'Could not open log file (make sure log directory exists)';
 $_lang['nf.no_profile_for'] = 'No profile for user';
 $_lang['nf.sbs_extended_field_not_set'] = 'sbs_extended_field property not set';
-$_lang['nf.has_no_email_address'] = 'has no email address';
-$_lang['nf.test_email_address_empty'] = 'Test email address is empty';
-$_lang['nf.test_email_not_sent'] = 'Test email not sent';
-$_lang['nf.mail_error_sending_test_email'] = 'Error sending test email';
-$_lang['nf.test_email_sent_successfully'] = 'Test email sent successfully';
 $_lang['nf.twitter_consumer_key_not_set'] = 'Twitter consumer key is not set';
 $_lang['nf.twitter_consumer_secret_not_set'] = 'Twitter consumer secret is not set';
 $_lang['nf.twitter_access_token_not_set'] = 'Twitter access token is not set';
@@ -66,3 +60,19 @@ $_lang['nf.user_not_found'] = 'User Not Found';
 $_lang['nf.sending_batch_of'] = 'Sending Batch of';
 $_lang['nf.no_messages_sent'] = 'No Messages Sent';
 $_lang['nf.send_user_mandrill'] = 'Sending to user (Mandrill)';
+
+
+/* Used in transport.settings.php */
+$_lang['setting_nf_status_resource_id'] = 'Notify Status Resource ID';
+$_lang['setting_nf_status_resource_id_desc'] = 'ID of Notify Status Resource';
+
+/* Used in nfsendemail.class.php */
+$_lang['nf.no_view_user_permission'] = 'User does not have view_user permission';
+$_lang['nf._no_single_id'] = 'No email or ID for single email';
+$_lang['nf.processing_batch'] = 'Processing Batch: ';
+$_lang['nf.users_emailed_in_batch'] = 'Users emailed in this batch: ';
+$_lang['nf.finished'] = 'Finished';
+$_lang['nf.successful_send_to'] = 'Successful send to';
+$_lang['nf.user_tags'] = 'User Tags';
+$_lang['nf.error_sending_to'] = 'Error sending to';
+$_lang['nf.test_mode_on'] = '(Test Mode is on, no messages or Tweets sent)';
