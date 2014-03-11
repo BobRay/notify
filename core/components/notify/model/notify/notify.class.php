@@ -280,23 +280,27 @@ class Notify
 
 
                 /* **************************** */
+                /* This section should only execute for people with
+                 * JavaScript turned off
+                 * */
+
 
                 /* perform requested actions */
                 if ($this->sendBulkEmail || $this->sendTestEmail) {
 
                     require_once('html2text.php');
                     $this->html2text = new html2text();
-                    /* Set preview in case user forgot */
+
                     $this->initEmail();
                     $this->initializeMailer();
 
                     if ($this->sendBulkEmail) {
-                        /* send bulk email */
+
                         $this->sendBulkEmail();
                     }
 
                     if ($this->sendTestEmail) {
-                        /* send test email */
+
                         $testEmailAddress = isset($_POST['nf_test_email_address'])
                             ? $_POST['nf_test_email_address']
                             : '';
@@ -534,7 +538,7 @@ class Notify
     }
 
     /**
-     * Adds a success message to the array of success messages to print at the top of the form
+     * Adds a success message to the array of success messages to print in the results
      *
      * @param $msg string - success message to add
      */
@@ -681,6 +685,13 @@ class Notify
         return $fieldsUsed;
     }
 
+
+    /**
+     * Send Email - This should only execute for people
+     * with JavaScript turned off
+     * @param null $singleEmail - email to one person if this is set
+     * @return bool
+     */
     public function sendBulkEmail($singleEmail = null) {
         $singleUser = $singleEmail !== null;
         $fp = null;
@@ -820,7 +831,7 @@ class Notify
                         continue;
                     }
                 }
-                /* Now we have a user to send to */
+
                 $this->update($percent, $batchNumber, $username, $statusChunk);
                 $fields = array();
                 $fields['username'] = $username;
@@ -837,15 +848,12 @@ class Notify
 
                 $fields['name'] = empty($fields['fullname'])? $fields['username'] : $fields['fullname'];
 
-                /* If firstname field is not set, extract it from fullname */
                 $fields['firstname'] = isset($fields['firstname']) && (!empty($fields['firstname']))
                     ? $fields['firstname']
                     : substr($fields['name'], 0, strpos($fields['name'], ' '));
                 $fields['firstname'] = !empty($fields['firstname'])? $fields['firstname'] : $username;
-                /* Send the email */
+
                 if ($this->useMandrill) {
-                    /* This will not trigger an error because the message
-                       is not sent here */
                     $this->addUsertoMandrill($fields);
                 } else {
                     if ($this->sendMail($fields)) {
@@ -918,10 +926,8 @@ class Notify
     }
     protected function initJS() {
         /* The next three settings are System Settings, not properties,
- * but they can be overridden in the properties of the snippet
- * tags if you need more than one progress bar on the site.
- * Be sure to set them in both the ProgressBar and PB_Process
- * snippet tags. */
+         * but they can be overridden in the properties of the snippet
+         * tag. */
 
         header("X-XSS-Protection: 0");
         $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
@@ -933,11 +939,6 @@ class Notify
             $s->set('value', $r->get('id'));
             $s->save();
             $nf_status_resource_id = $r->get('id');
-           /* $r = $this->modx->getObject('modResource', array('alias' => 'pb-process'));
-            $s = $this->modx->getObject('modSystemSetting', array('key' => 'pb_process_resource_id'));
-            $s->set('value', $r->get('id'));
-            $s->save();
-            $pb_process_resource_id = $r->get('id');*/
             $r = $this->modx->getObject('modChunk', array('name' => 'PB_Status'));
             $s = $this->modx->getObject('modSystemSetting', array('key' => 'pb_status_chunk_id'));
             $s->set('value', $r->get('id'));
@@ -954,16 +955,6 @@ class Notify
             }
         }
 
-
-        // $pb_process_resource_id = $this->modx->getOption('pb_process_resource_id', $this->props);
-
-        /*if (empty($pb_process_resource_id)) {
-            $pb_process_resource_id = $this->modx->getOption('pb_process_resource_id');
-        }*/
-
-
-
-
         /* check the other settings */
         if (empty($nf_status_resource_id)) {
             die('pb_status_resource_id System Setting is not set');
@@ -975,56 +966,13 @@ class Notify
             die('nf_status_resource_id is set to a nonexistent resource');
         }
 
-        /*if (empty($pb_process_resource_id)) {
-            die('pb_process_resource_id System Setting is not set');
-        }*/
-        /* This can be set in the ProgressBar snippet tag to override
+        /* This can be set in the Notify snippet tag to override
            the default (800). The value is in milliseconds (1000 = 1 sec.)*/
         $nf_interval = $this->modx->getOption('nf_set_interval', $this->props);
         $nf_interval = empty($nf_interval)
             ? 800
             : $nf_interval;
 
-        /* make sure pb_process_resource_id points to a real resource */
-        /*$pb_process_url = $this->modx->makeUrl((integer) $pb_process_resource_id, "", "", "full");
-        if (empty($pb_process_url)) {
-            die('pb_process_resource_id is set to a nonexistent resource');
-        }*/
-       /* /* This can be overridden in the ProgressBar snippet tag */
-        /*$pb_css = $this->modx->getOption('pb_css_url', $this->props);
-        $pb_css = empty($pb_css)
-            ? MODX_ASSETS_URL . 'components/progressbar/css/progressbar.css'
-            : $pb_css;
-
-        $this->modx->regClientCss($pb_css);*/
-
-        /* You can speed things up and make them more reliable by downloading
-         * these files to assets/components/progressbar/js/ and modifying these
-         * three URLs accordingly in the properties of the ProgressBar snippet tag.
-        */
-        // $fields = array();
-        /*$fields['pb_jquery_js_path'] = !empty($this->props['jquery_js_url'])
-            ? $props['jquery_js_url']
-            : 'http://code.jquery.com/jquery-latest.js';
-
-        $fields['pb_jquery_ui_css_path'] = !empty($props['jquery_ui_css_path'])
-            ? $props['jquery_ui_css_path']
-            : 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css';
-
-        $fields['pb_jquery_ui_js_path'] = !empty($props['jquery_ui_js_path'])
-            ? $props['jquery_ui_js_path']
-            : 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js';
-
-        $headStuff = $this->modx->getChunk('ProgressBar_header', $fields);
-        if (empty($headStuff)) {
-            die('Could not get ProgressBar_header chunk');
-        }
-        $this->modx->regClientStartupHTMLBlock($headStuff);
-        unset($headStuff);*/
-
-       /* $src2 = $this->modx->getChunk('ProgressBar_js', $fields);
-        $this->modx->regClientStartupScript($src2);*/
-        unset($fields, $src2, $interval, $process_url, $status_url);
        $headStuff =
     '<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
@@ -1032,38 +980,17 @@ class Notify
     <link rel="stylesheet" href="/addons/assets/components/notify/css/notify.css" type="text/css" />';
             $this->modx->regClientStartupHTMLBlock($headStuff);
 
-$path = MODX_ASSETS_PATH . 'mycomponents/notify/assets/components/notify/js/notify.js';
+$path = $this->modx->getOption('nf.assets_path', null, MODX_ASSETS_PATH . 'components/notify/') . 'js/notify.js';
 $js = file_get_contents($path);
 
-        $js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
-        $js = str_replace('[[+nf_set_interval]]', 800, $js);
-/*        $fields = array(
-            'nf_status_url' => $nf_status_url,
-            'nf_set_interval' => 800,
-        );*/
+$js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
+$js = str_replace('[[+nf_set_interval]]', 800, $js);
 
-        $this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '</script>');
-        // echo "\n<br />URL: " . $nf_status_url;
-        /*$src = $this->modx->getChunk('NfProgressbarJs', $fields);
-        $this->modx->regClientStartupScript($src);*/
-    }
-    protected function update($percent, $text1, $text2, &$pb_target) {
+$this->modx->regClientStartupScript('<script type="text/javascript">' . $js . '</script>');
+}
 
-    $msg = json_encode(array(
-        'percent' => $percent,
-        'text1'   => $text1,
-        'text2'   => $text2,
-    ));
-
-    /* use a chunk for the status "file" */
-
-    $pb_target->setContent($msg);
-    $pb_target->save();
-
-
-} /* end update function */
-
-    public function removeOldestFile($dir) {
+   /* Only here for people with JS turned off */
+   public function removeOldestFile($dir) {
         $files = glob($dir . '/*.*');
 
         if (count($files) > $this->maxLogs) {
@@ -1079,6 +1006,7 @@ $js = file_get_contents($path);
     }
 
     /**
+     * For users with JS turned off
      * See if User should receive email based on
      * tags selected in form
      *
@@ -1145,82 +1073,10 @@ $js = file_get_contents($path);
 
     }
 
-    /**
-     * Adds users to $this->recipients array 
-     * 
-     * @param $users array of modUserObjects
-     * @param $userGroupName string - name of user group being processed
-     */
-    protected function addUsers($users, $userGroupName) {
-        foreach ($users as $user) {
-            /* @var $user modUser */
-
-            $username = $user->get('username');
-            $profile = $user->getOne($this->profileAlias);
-            $userTags = null;
-            if (! $profile) {
-                $this->setError($this->modx->lexicon('nf.no_profile_for') . ': ' . $username);
-            } else {
-                if ( $this->modx->getOption('sbs_use_comment_field', null, null) == 'No') {
-                    $field = $this->modx->getOption('sbs_extended_field');
-                    if (empty($field)) {
-                        $this->setError($this->modx->lexicon('nf.sbs_extended_field_not_set'));
-                    } else {
-                        $extended = $profile->get('extended');
-                        $userTags = $extended[$field];
-                    }
-                } else {
-                    $userTags = $profile->get('comment');
-                }
-                $email = $profile->get('email');
-                $fullName = $profile->get('fullname');
-            }
-
-            /* fall back to username if fullname is empty */
-            $fullName = empty($fullName) ? $username : $fullName;
-
-            /* process tags if Tags TV is set */
-            if (!empty ($this->tags)) {
-                $tags = explode(',',$this->tags);
-                $hasTag = false;
-
-                foreach ($tags as $tag) {
-                    $tag = trim($tag);
-
-                    if ( (!empty($tag)) && stristr($userTags,$tag)) {
-                        $hasTag = true;
-                    }
-                    if ( (!$hasTag) && $this->requireAllTags) {
-                        /* needs all tags and doesn't have this one, skip to next user */
-                        continue 2;
-                    }
-                }
-                if (! $hasTag) {
-                    continue;
-                }
-            }
-
-            if (! empty($email)) {
-                /* add user data to recipient array */
-
-                /* Either no tags are in use or this user has a tag.
-                 * Add user to recipient array */
-                $this->recipients[] = array(
-                    'group' => $userGroupName,
-                    'email' => $email,
-                    'fullName' => $fullName,
-                    'userTags' => $userTags,
-                    'profileId' => $profile->get('id'),
-                    'username' => $username,
-                );
-            } else {
-                $this->setError($username . ' ' .  $this->modx->lexicon('nf.has_no_email_address'));
-            }
-        }
-    }
-
 
     /**
+     * Should only execute if JS is turned off
+     *
      * Sends a Tweet from the form via Twitter API
      */
     public function tweet() {
@@ -1300,7 +1156,7 @@ $js = file_get_contents($path);
         $base = $this->modx->getOption('site_url');
         $splitBase = explode('//', $base);
         $domain = $splitBase[1];
-        $domain = rtrim($domain,'/ ');
+        $domain = rtrim($domain,'/\\ ');
         $html = $this->emailText;
 
         /* remove space around = sign */
