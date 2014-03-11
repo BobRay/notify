@@ -112,6 +112,10 @@ class NfSendEmailProcessor extends modProcessor {
         $batchSize = $this->getProperty('batchSize', 25);
         $batchDelay = $this->getProperty('batchDelay', 1);
         $itemDelay = (float) $this->getProperty('itemDelay', .51);
+        $profileAlias = $this->getProperty('profileAlias', 'Profile');
+        $profileAlias = empty($profileAlias) ? 'Profile' : $profileAlias;
+        $profileClass = $this->getProperty('profileClass', 'modUserProfile');
+        $profileClass = empty($profileClass) ? 'modUserProfile' : $profileClass;
         $useMandrill = $this->getProperty('useMandrill', false);
         $emailText = $this->emailText;
         if (empty($emailText)) {
@@ -215,7 +219,7 @@ class NfSendEmailProcessor extends modProcessor {
             if ($u = $this->modx->getObject('modUser', array('username' => $singleId))) {
                 $c->where(array('username' => $singleId));
                 unset($u);
-            } elseif ($p = $this->modx->getObject('modUserProfile', array('email' => $singleId))) {
+            } elseif ($p = $this->modx->getObject($profileClass, array('email' => $singleId))) {
                 $c->where(array('id' => $p->get('internalKey')));
                 unset($p);
             } else {
@@ -260,7 +264,7 @@ class NfSendEmailProcessor extends modProcessor {
             $c->limit($batchSize, $offset);
             // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
-            $users = $this->modx->getCollectionGraph($userClass, '{"Profile":{}', $c);
+            $users = $this->modx->getCollectionGraph($userClass, '{"' . $profileAlias . '":{}', $c);
             // echo "<br>User Count: " . count($users);
             $offset += $batchSize;
 
@@ -271,23 +275,25 @@ class NfSendEmailProcessor extends modProcessor {
                 echo($msg);
             }
             $sentCount = 0;
-
+            
             $requireAllTags=$this->getProperty('require_all_tags', false);
             foreach ($users as $user) {
                 /** @var $user modUser */
+                /** @var $profile modUserProfile */
+                $profile = $user->$profileAlias;
                 $username = $user->get('username');
                 if (!empty($this->tags)) {
-                    if (!$this->qualifyUser($user->Profile, $username, $requireAllTags)) {
+                    if (!$this->qualifyUser($profile, $username, $requireAllTags)) {
                         continue;
                     }
                 }
                 /* Now we have a user to send to */
                 $fields = array();
                 $fields['username'] = $username;
-                $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $user->Profile);
-                $fields = array_merge($user->Profile->toArray(), $fields);
+                $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
+                $fields = array_merge($profile->toArray(), $fields);
                 if ($this->modx->getOption('useExtendedFields', $this->properties, false)) {
-                    $extended = $user->Profile->get('extended');
+                    $extended = $profile->get('extended');
                     $fields = array_merge($extended, $fields);
                 }
                 $fields['tags'] = $this->tags;
@@ -331,7 +337,7 @@ class NfSendEmailProcessor extends modProcessor {
 
                 }
                 if ($this->debug) {
-                    echo "\n" . $user->get('username') . ' -- ' . $user->Profile->get('email');
+                    echo "\n" . $user->get('username') . ' -- ' . $profile->get('email');
                 }
                 $sentCount++;
 

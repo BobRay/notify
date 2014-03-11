@@ -381,7 +381,7 @@ class Notify
             $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
         } else {
             /* convert any relative URLS in email text */
-            $this->fullUrls();
+            /*$this->fullUrls();*/
             /* Fix image attributes */
             $this->imgAttributes();
             /* Inject unsubscribe link */
