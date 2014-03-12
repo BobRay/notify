@@ -142,7 +142,7 @@ $chunks[12]->fromArray(array (
   'id' => 12,
   'property_preprocess' => false,
   'name' => 'NfStatus',
-  'description' => 'Status chunk for Notify progress bar',
+  'description' => 'Status chunk for Notify progress bar. DO NOT RENAME!',
   'properties' => 
   array (
   ),
