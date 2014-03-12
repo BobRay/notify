@@ -143,7 +143,9 @@ $chunks[12]->fromArray(array (
   'property_preprocess' => false,
   'name' => 'NfStatus',
   'description' => 'Status chunk for Notify progress bar',
-  'properties' => NULL,
+  'properties' => 
+  array (
+  ),
 ), '', true, true);
 $chunks[12]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfstatus.chunk.html'));
 
