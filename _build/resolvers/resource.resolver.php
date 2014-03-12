@@ -56,8 +56,13 @@ if($object->xpdo) {
                 ),
                 1 =>  array (
                   'pagetitle' => 'NotifyPreview',
-                  'parent' => 0,
+                  'parent' => 'Notify',
                   'template' => 'NotifyTemplate',
+                ),
+                2 =>  array (
+                  'pagetitle' => 'NotifyStatus',
+                  'parent' => 'Notify',
+                  'template' => 0,
                 ),
             );
 

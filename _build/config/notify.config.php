@@ -286,7 +286,7 @@ $components = array(
     /* Array of Resource pagetitles for your Extra; All other fields optional.
        You can set any resource field here */
     'resources' => array(
-        'Notify' => array( /* minimal notify */
+        'Notify' => array(
             'type'                  => 'document',
             'contentType'           => 'text/html',
             'pagetitle'             => 'Notify',
@@ -320,7 +320,8 @@ $components = array(
             'show_in_tree'          => '1',
             'properties'            => '',
         ),
-        'NotifyPreview' => array( /* notify with other fields */
+        'NotifyPreview' => array(
+            'parent'                => 'Notify',
             'type'                  => 'document',
             'contentType'           => 'text/html',
             'pagetitle'             => 'NotifyPreview',
@@ -355,6 +356,7 @@ $components = array(
             'properties'            => '',
         ),
         'NotifyStatus' => array(
+            'parent' => 'Notify',
             'type'                  => 'document',
             'contentType'           => 'text/html',
             'pagetitle'             => 'NotifyStatus',
@@ -615,6 +617,7 @@ $components = array(
     'exportResources' => array(
         'Notify',
         'NotifyPreview',
+        'NotifyStatus'
     ),
     /* Array of resoure parent IDs to get children of. */
     'parents' => array(),
