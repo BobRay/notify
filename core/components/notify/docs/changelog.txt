@@ -2,7 +2,10 @@ Changelog for Notify
 
 Notify 1.2.1
 --------------
-Add Mandrill Capability, &nfUseMandrill property
+Progress bar for bulk sends
+Add Option to send with Mandrill email service
+Much faster sends
+Make unsubscribe URL optional
 Add &maxLogs property to limit number of logs kept
 Handle TV placeholders - thanks to support from Aaron Baxter
 Add &includeTVs, &includeTVList, and &processTVs properties
