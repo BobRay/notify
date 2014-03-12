@@ -223,245 +223,267 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 <h3>Notify Properties</h3>
 
 <table class="properties">
-    <tr><th>Property</th><th>Description</th><th>Default</th></tr>
+<tr>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default</th>
+</tr>
 
-    <tr>
-        <td>urlShorteningService</td>
-        <td>Service used to shorten all URLs in text and Tweet</td>
-        <td>none</td>
-    </tr>
-    <tr>
-        <td>groups</td>
-        <td>Comma-separated list of User Groups to send to (no spaces). The Subscribers group will be set in the form, but if you delete it and submit with the Groups field empty, email will be sent to all users on the site</td>
-        <td>Subscribers</td>
-    </tr>
-    <tr>
-        <td>tags</td>
-        <td>(optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive the email</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>notifyFacebook</td>
-        <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>twitterConsumerKey</td>
-        <td>Twitter Consumer Key</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>twitterConsumerSecret</td>
-        <td>Twitter Consumer Secret</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>twitterOauthToken</td>
-        <td>Twitter Access Token</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>twitterOauthSecret</td>
-        <td>Twitter Access Token Secret</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>bitlyApiKey</td>
-        <td>bit.ly API key (required)</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>bitlyUsername</td>
-        <td>bit.ly username (required)</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>googleApiKey</td>
-        <td>Google API key</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>suprApiKey</td>
-        <td>StumbleUpon API key (optional)</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>suprUsername</td>
-        <td>Stumble Upon Username (optional)</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>tinyurlApiKey</td>
-        <td>TinyUrl API key (optional)</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>tinyurlUsername</td>
-        <td>TinyUrl username (optional)</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>mailFrom</td>
-        <td>(optional) MAIL_FROM setting for email</td>
-        <td>emailsender System Setting</td>
-    </tr>
-    <tr>
-        <td>mailFromName</td>
-        <td>(optional) MAIL_FROM_NAME setting for email</td>
-        <td>site_name System Setting</td>
-    </tr>
-    <tr>
-        <td>mailSender</td>
-        <td>(optional) EMAIL_SENDER setting for email</td>
-        <td>emailsender System Setting</td>
-    </tr>
-    <tr>
-        <td>mailReplyTo</td>
-        <td>(optional) REPLY_TO setting for email</td>
-        <td>emailsender System Setting</td>
-    </tr>
-    <tr>
-        <td>nfFormTpl</td>
-        <td>Name of chunk to use for the Notify form</td>
-        <td>NfNotifyFormTpl</td>
-    </tr>
-    <tr>
-        <td>nfEmailTplNew</td>
-        <td>Name of chunk to use for the new resource Notify email</td>
-        <td>NfSubscriberEmailTplNew</td>
-    </tr>
-    <tr>
-        <td>nfEmailTplExisting</td>
-        <td>Name of chunk to use for updated resource Notify email</td>
-        <td>NfSubscriberEmailTplExisting</td>
-    </tr>
-    <tr>
-        <td>nfEmailTplCustom</td>
-        <td>Name of chunk to use for custom Notify email Tpl</td>
-        <td>NfSubscriberEmailTplCustom</td>
-    </tr>
-    <tr>
-        <td>nfTweetTplNew</td>
-        <td>Name of chunk to use for the new resource Tweet text</td>
-        <td>nfTweetTplNew</td>
-    </tr>
-    <tr>
-        <td>nfTweetTplExisting</td>
-        <td>Name of chunk to use for the updated resource Tweet text</td>
-        <td>nfTweetTplExisting</td>
-    </tr>
-    <tr>
-        <td>nfTweetTplCustom</td>
-        <td>Name of chunk to use for the custom Tweet text</td>
-        <td>nfTweetTplCustom</td>
-    </tr>
-    <tr>
-        <td>nfSubjectTpl</td>
-        <td>Name of chunk to use for the Email subject</td>
-        <td>NfEmailSubjectTpl</td>
-    </tr>
-    <tr>
-        <td>nfUnsubscribeTpl</td>
-        <td>Name of chunk to use for the Unsubscribe link</td>
-        <td>NfUnsubscribeTpl</td>
-    </tr>
-
-    <tr>
-        <td>nfTestEmailAddress</td>
-        <td>(optional) Default email address for single emails</td>
-        <td>emailsender System Setting</td>
-    </tr>
-    <tr>
-        <td>sortBy</td>
-        <td>(optional) Field to sort by when selecting users</td>
-        <td>username</td>
-    </tr>
-    <tr>
-        <td>userClass</td>
-        <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
-        <td>modUser</td>
-    </tr>
-    <tr>
-        <td>sortByAlias</td>
-        <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
-        <td>modUser</td>
-    </tr>
-    <tr>
-        <td>profileAlias</td>
-        <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
-        <td>modUserProfile</td>
-    </tr>
-    <tr>
-        <td>profileClass</td>
-        <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
-        <td>modUserProfile</td>
-    </tr>
-    <tr>
-        <td>batchSize</td>
-        <td>(optional) Batch size for bulk email to subscribers</td>
-        <td>50</td>
-    </tr>
-    <tr>
-        <td>batchDelay</td>
-        <td>(optional) Delay between batches in seconds</td>
-        <td>1</td>
-    </tr>
-    <tr>
-        <td>itemDelay</td>
-        <td>(optional) Delay between individual emails in seconds</td>
-        <td>.51</td>
-    </tr>
-    <tr>
-        <td>prefListChunkName</td>
-        <td>(optional) Chunk to use for preferences (tags) list</td>
-        <td>sbsPrefListTpl</td>
-    </tr>
-    <tr>
-        <td>requireAllTagsDefault</td>
-        <td>(optional) If set, the Require All Tags checkbox will be checked by default</td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>nfUseMandrill</td>
-        <td>(optional) If set, the Mandrill service will be used to send the email</td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>includeTVs</td>
-        <td>(optional) TV values will be processed and will replace [[+placeholderName]] tags</td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>includeTVList</td>
-        <td>(optional) If set, only TVs on this comma-separated list will have placeholders set</td>
-        <td>''</td>
-    </tr>
-    <tr>
-        <td>processTVs</td>
-        <td>(optional) If set to 'No', the raw values of the TVs will be used</td>
-        <td>true</td>
-    </tr>
-    <tr>
-        <td>maxLogs</td>
-        <td>(optional) If set, limits the number of logs kept; set to 0 for unlimited logs. Note that no local logs are kept when using Mandrill</td>
-        <td>5</td>
-    </tr>
-    <tr>
-        <td>useExtendedFields</td>
-        <td>(optional) If set, placeholders will also be set for the extended fields in the User Profile</td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>debug</td>
-        <td>(optional) If set, debugging information is displayed</td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>groupListChunkName</td>
-        <td>Specifies the chunk that will be used for the buttons under the Groups input in the form.</td>
-        <td>sbsGroupListTpl</td>
-    </tr>
-
+<tr>
+    <td>batchDelay</td>
+    <td>(optional) Delay between batches in seconds</td>
+    <td>1</td>
+</tr>
+<tr>
+    <td>batchSize</td>
+    <td>(optional) Batch size for bulk email to subscribers</td>
+    <td>25</td>
+</tr>
+<tr>
+    <td>bitlyApiKey</td>
+    <td>bit.ly API key (required)</td>
+    <td></td>
+</tr>
+<tr>
+    <td>bitlyUsername</td>
+    <td>bit.ly username (required)</td>
+    <td></td>
+</tr>
+<tr>
+    <td>debug</td>
+    <td>Set to Yes to output debugging information</td>
+    <td></td>
+</tr>
+<tr>
+    <td>googleApiKey</td>
+    <td>Google API key</td>
+    <td></td>
+</tr>
+<tr>
+    <td>groupListChunkName</td>
+    <td>Specifies the chunk that will be used for the buttons under the Groups input in the form</td>
+    <td>sbsGroupListTpl</td>
+</tr>
+<tr>
+    <td>groups</td>
+    <td>Comma-separated list of User Groups to send to (no spaces). The Subscribers group will be set in the form, but if you delete it and
+        submit with the Groups field empty, email will be sent to all users on the site
+    </td>
+    <td>Subscribers</td>
+</tr>
+<tr>
+    <td>includeTVList</td>
+    <td>Comma-separated list of TV names. Only TVs on the list will have their placeholders set</td>
+    <td></td>
+</tr>
+<tr>
+    <td>includeTVs</td>
+    <td>If set, placeholders will be set for Resource TVs</td>
+    <td>No</td>
+</tr>
+<tr>
+    <td>itemDelay</td>
+    <td>(optional) Delay between individual emails in seconds</td>
+    <td>.51</td>
+</tr>
+<tr>
+    <td>mailFrom</td>
+    <td>(optional) MAIL_FROM setting for email</td>
+    <td>emailsender System Setting</td>
+</tr>
+<tr>
+    <td>mailFromName</td>
+    <td>(optional) MAIL_FROM_NAME setting for email</td>
+    <td>site_name System Setting</td>
+</tr>
+<tr>
+    <td>mailReplyTo</td>
+    <td>(optional) REPLY_TO setting for email</td>
+    <td>emailsender System Setting</td>
+</tr>
+<tr>
+    <td>mailSender</td>
+    <td>(optional) EMAIL_SENDER setting for email</td>
+    <td>emailsender System Setting</td>
+</tr>
+<tr>
+    <td>maxLogs</td>
+    <td>Set this to limit the number of email logs kept. The oldest one will be deleted. Set to 0 for unlimited logs</td>
+    <td>5</td>
+</tr>
+<tr>
+    <td>nfEmailTplCustom</td>
+    <td>Name of chunk to use for custom Notify email Tpl</td>
+    <td>NfSubscriberEmailTplCustom</td>
+</tr>
+<tr>
+    <td>nfEmailTplExisting</td>
+    <td>Name of chunk to use for updated resource Notify email</td>
+    <td>NfSubscriberEmailTplExisting</td>
+</tr>
+<tr>
+    <td>nfEmailTplNew</td>
+    <td>Name of chunk to use for the new resource Notify email</td>
+    <td>NfSubscriberEmailTplNew</td>
+</tr>
+<tr>
+    <td>nfFormTpl</td>
+    <td>Name of chunk to use for the Notify form</td>
+    <td>NfNotifyFormTpl</td>
+</tr>
+<tr>
+    <td>nfSubjectTpl</td>
+    <td>Name of chunk to use for the Email subject</td>
+    <td>NfEmailSubjectTpl</td>
+</tr>
+<tr>
+    <td>nfTestEmailAddress</td>
+    <td>(optional) Email address for test email</td>
+    <td>emailsender System Setting</td>
+</tr>
+<tr>
+    <td>nfTweetTplCustom</td>
+    <td>Name of chunk to use for the custom Tweet text</td>
+    <td>nfTweetTplCustom</td>
+</tr>
+<tr>
+    <td>nfTweetTplExisting</td>
+    <td>Name of chunk to use for the updated resource Tweet text</td>
+    <td>nfTweetTplExisting</td>
+</tr>
+<tr>
+    <td>nfTweetTplNew</td>
+    <td>Name of chunk to use for the new resource Tweet text</td>
+    <td>nfTweetTplNew</td>
+</tr>
+<tr>
+    <td>nfUnsubscribeTpl</td>
+    <td>Name of chunk to use for Unsubscribe link</td>
+    <td>NfUnsubscribeTpl</td>
+</tr>
+<tr>
+    <td>nfUseMandrill</td>
+    <td>Use Mandrill service to send email</td>
+    <td></td>
+</tr>
+<tr>
+    <td>notifyFacebook</td>
+    <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App</td>
+    <td></td>
+</tr>
+<tr>
+    <td>prefListChunkName</td>
+    <td>(optional) Chunk to use for preferences (tags) list</td>
+    <td>sbsPrefListTpl</td>
+</tr>
+<tr>
+    <td>processTVs</td>
+    <td>If set to No, the raw values of the TVs will used</td>
+    <td>1</td>
+</tr>
+<tr>
+    <td>profileAlias</td>
+    <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
+    <td>Profile</td>
+</tr>
+<tr>
+    <td>profileClass</td>
+    <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
+    <td>modUserProfile</td>
+</tr>
+<tr>
+    <td>requireAllTagsDefault</td>
+    <td>(optional) sets the default value of the Require All Tags checkbox; if set, only users who have all tags will receive email</td>
+    <td>No</td>
+</tr>
+<tr>
+    <td>sortBy</td>
+    <td>(optional) Field to sort by when selecting users</td>
+    <td>username</td>
+</tr>
+<tr>
+    <td>sortByAlias</td>
+    <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
+    <td>modUser</td>
+</tr>
+<tr>
+    <td>subaccount</td>
+    <td>Name of the Mandrill subaccount to send through if using Mandrill. Subaccount must exist or send will fail</td>
+    <td>test</td>
+</tr>
+<tr>
+    <td>suprApiKey</td>
+    <td>StumbleUpon API key (optional)</td>
+    <td></td>
+</tr>
+<tr>
+    <td>suprUsername</td>
+    <td>Stumble Upon Username (optional)</td>
+    <td></td>
+</tr>
+<tr>
+    <td>tags</td>
+    <td>(optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive
+        the email
+    </td>
+    <td></td>
+</tr>
+<tr>
+    <td>testMode</td>
+    <td>Test mode -- Notify functions normally, but no emails are sent.
+    </td>
+    <td>1</td>
+</tr>
+<tr>
+    <td>tinyurlApiKey</td>
+    <td>TinyUrl API key (optional)</td>
+    <td></td>
+</tr>
+<tr>
+    <td>tinyurlUsername</td>
+    <td>TinyUrl username (optional)</td>
+    <td></td>
+</tr>
+<tr>
+    <td>twitterConsumerKey</td>
+    <td>Twitter Consumer Key</td>
+    <td></td>
+</tr>
+<tr>
+    <td>twitterConsumerSecret</td>
+    <td>Twitter Consumer Secret</td>
+    <td></td>
+</tr>
+<tr>
+    <td>twitterOauthSecret</td>
+    <td>Twitter Access Token Secret</td>
+    <td></td>
+</tr>
+<tr>
+    <td>twitterOauthToken</td>
+    <td>Twitter Access Token</td>
+    <td></td>
+</tr>
+<tr>
+    <td>urlShorteningService</td>
+    <td>Service used to shorten all URLs in text and Tweet</td>
+    <td>none</td>
+</tr>
+<tr>
+    <td>useExtendedFields</td>
+    <td>If set, placeholders will be set from the extended fields of the User Profile</td>
+    <td>No</td>
+</tr>
+<tr>
+    <td>userClass</td>
+    <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
+    <td>modUser</td>
+</tr>
+<tr>
+    <td>injectUnsubscribeUrl</td>
+    <td>If set, adds an unsubscribe/manange preferences link to every email</td>
+    <td>1</td>
+</tr>
 </table>
 
 <p>&nbsp;</p>
