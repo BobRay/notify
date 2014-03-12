@@ -359,6 +359,8 @@ class NfSendEmailProcessor extends modProcessor {
             }
             $percent = $stepSize * $batchNumber;
 
+            $percent = ($percent >= 100)? 99: $percent;
+
             $this->update($percent, $processMsg1 . ' ' . $batchNumber,
                 $processMsg2 . ' ' . $sentCount, $statusChunk);
             $batchNumber++;
