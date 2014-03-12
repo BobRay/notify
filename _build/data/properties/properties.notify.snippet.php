@@ -133,6 +133,18 @@ $properties = array (
     'lexicon' => 'Notify:Properties',
     'area' => '',
   ),
+  'injectUnsubscribeUrl' => 
+  array (
+    'name' => 'injectUnsubscribeUrl',
+    'desc' => 'nf_inject_unsubscribe_url_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '1',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'itemDelay' => 
   array (
     'name' => 'itemDelay',
@@ -489,7 +501,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => true,
+    'value' => false,
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -640,18 +652,6 @@ $properties = array (
     array (
     ),
     'value' => 'modUser',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'injectUnsubscribeUrl' => 
-  array (
-    'name' => 'injectUnsubscribeUrl',
-    'desc' => 'nf_inject_unsubscribe_url_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '1',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
