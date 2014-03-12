@@ -537,21 +537,6 @@ class Notify
     }
 
 
-
-    public function getUserFields() {
-        $content = $this->emailText;
-
-        /* Get Fields used in Tpl */
-        $fieldsUsed = array();
-        $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
-        preg_match_all($pattern, $content, $matches);
-        if (isset($matches[1]) && (!empty($matches[1]))) {
-            $fieldsUsed = $matches[1];
-        }
-        return $fieldsUsed;
-    }
-
-
     protected function initJS() {
         header("X-XSS-Protection: 0");
 
