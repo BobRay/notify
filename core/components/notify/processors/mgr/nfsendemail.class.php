@@ -19,6 +19,7 @@ class NfSendEmailProcessor extends modProcessor {
     protected $corePath;
     protected $modelPath;
     protected $html2text;
+    protected $injectUnsubscribeUrl;
 
 
     public function initialize() {
@@ -26,6 +27,7 @@ class NfSendEmailProcessor extends modProcessor {
         $this->properties = array_merge($config, $this->properties);
         $this->testMode = $this->getProperty('testMode',false);
         $this->debug = $this->getProperty('debug', false);
+        $this->injectUnsubscribeUrl = $this->getProperty('injectUnsubscribeUrl', true);
         $this->setCheckbox('send_tweet');
         $this->setCheckbox('send_bulk');
         $this->setCheckbox('require_all_tags');
@@ -125,14 +127,16 @@ class NfSendEmailProcessor extends modProcessor {
         if (empty($emailText)) {
             $this->setError('No Email Text');
         }
-        $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
-        $unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
-        $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
-            $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
-            'components/subscribe/');
-        require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
-        $unSub = new Unsubscribe($this->modx, $this->properties);
-        $unSub->init();
+        if ($this->injectUnsubscribeUrl) {
+            $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
+            $unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
+            $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
+                $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
+                'components/subscribe/');
+            require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
+            $unSub = new Unsubscribe($this->modx, $this->properties);
+            $unSub->init();
+        }
 
         if ($useMandrill) {
             /** @var $mx MandrillX */
@@ -299,7 +303,9 @@ class NfSendEmailProcessor extends modProcessor {
                 /* Now we have a user to send to */
                 $fields = array();
                 $fields['username'] = $username;
-                $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
+                if ($this->injectUnsubscribeUrl) {
+                    $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
+                }
                 $fields = array_merge($profile->toArray(), $fields);
                 if ($this->modx->getOption('useExtendedFields', $this->properties, false)) {
                     $extended = $profile->get('extended');

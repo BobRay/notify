@@ -643,6 +643,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
+  'injectUnsubscribeUrl' => 
+  array (
+    'name' => 'injectUnsubscribeUrl',
+    'desc' => 'nf_inject_unsubscribe_url_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '1',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
 );
 
 return $properties;

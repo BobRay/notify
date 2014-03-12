@@ -103,6 +103,7 @@ class Notify
     protected $debug;
     protected $maxLogs = 5;
     protected $testMode;
+    protected $injectUnsubscribeUrl;
 
 
     /**
@@ -128,7 +129,8 @@ class Notify
         $this->props['testMode'] = $this->modx->getOption('testMode', $this->props, false);
         $this->useMandrill = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->props['useMandrill'] = $this->modx->getOption('nfUseMandrill', $this->props, false);
-
+        $this->props['injectUnsubscribeUrl'] = $this->modx->getOption('injectUnsubscribeUrl', $this->props, true);
+        $this->injectUnsubscribeUrl = $this->props['injectUnsubscribeUrl'];
         $this->errors = array();
         $this->successMessages = array();
         $this->previewPage = $this->modx->getObject('modResource', array('alias' => 'notify-preview'));
@@ -179,17 +181,19 @@ class Notify
         $this->maxLogs = $this->modx->getOption('maxLogs', $this->props, 5);
 
         /* Unsubscribe settings */
-        $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
-        $this->unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
-        $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
-            $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
-            'components/subscribe/');
-        require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
-        $unSubTpl = $this->modx->getOption('nfUnsubscribeTpl',
-            $this->props, 'NfUnsubscribeTpl');
-        $this->unSub = new Unsubscribe($this->modx, $this->props);
-        $this->unSub->init();
-        $this->unSubTpl = $this->modx->getChunk($unSubTpl);
+        if ($this->injectUnsubscribeUrl) {
+            $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
+            $this->unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
+            $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
+                $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
+                'components/subscribe/');
+            require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
+            $unSubTpl = $this->modx->getOption('nfUnsubscribeTpl',
+                $this->props, 'NfUnsubscribeTpl');
+            $this->unSub = new Unsubscribe($this->modx, $this->props);
+            $this->unSub->init();
+            $this->unSubTpl = $this->modx->getChunk($unSubTpl);
+        }
         $profile = $this->modx->user->getOne('Profile');
         $this->profile = $profile
             ? $profile
@@ -350,7 +354,9 @@ class Notify
             /* Fix image attributes */
             $this->imgAttributes();
             /* Inject unsubscribe link */
-            $this->emailText = $this->injectUnsubscribe($this->emailText);
+            if ($this->injectUnsubscribeUrl) {
+                $this->emailText = $this->injectUnsubscribe($this->emailText);
+            }
             /* Convert all {{-style placeholders to lowercase */
             $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
             preg_match_all($pattern, $this->emailText, $matches);
