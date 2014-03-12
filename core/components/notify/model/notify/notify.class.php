@@ -34,48 +34,86 @@
  * @package notify
  *
  */
+/* Properties (note: some of these are passed through to the processors)
+
+ * @property &batchDelay textfield -- (optional) Delay between batches in seconds; Default: 1.
+ * @property &batchSize textfield -- (optional) Batch size for bulk email to subscribers; Default: 50.
+ * @property &bitlyApiKey textfield -- bit.ly API key (required); Default: (empty)..
+ * @property &bitlyUsername textfield -- bit.ly username (required); Default: (empty)..
+ * @property &debug combo-boolean -- Set to Yes to output debugging information; Default: (empty)..
+ * @property &googleApiKey textfield -- Google API key; Default: (empty)..
+ * @property &groupListChunkName textfield -- Specifies the chunk that will be used for the buttons under the Groups input in the form; Default: sbsGroupListTpl.
+ * @property &groups textfield -- Comma-separated list of User Groups to send to (no spaces). The Subscribers group will be set in the form, but if you delete it and submit with the Groups field empty, email will be sent to all users on the site; Default: (empty)..
+ * @property &includeTVList textfield -- Comma-separated list of TV names. Only TVs on the list will have their placeholders set; Default: (empty)..
+ * @property &includeTVs combo-boolean -- If set, placeholders will be set for Resource TVs; Default: No.
+ * @property &itemDelay textfield -- (optional) Delay between individual emails in seconds; Default: .51.
+ * @property &mailFrom textfield -- (optional) MAIL_FROM setting for email; Default: emailsender System Setting.
+ * @property &mailFromName textfield -- (optional) MAIL_FROM_NAME setting for email; Default: site_name System Setting.
+ * @property &mailReplyTo textfield -- (optional) REPLY_TO setting for email; Default: emailsender System Setting.
+ * @property &mailSender textfield -- (optional) EMAIL_SENDER setting for email; Default: emailsender System Setting.
+ * @property &maxLogs textfield -- Set this to limit the number of email logs kept. The oldest one will be deleted. Set to 0 for unlimited logs; Default: 5.
+ * @property &nfEmailTplCustom textfield -- Name of chunk to use for custom Notify email Tpl; Default: NfSubscriberEmailTplCustom.
+ * @property &nfEmailTplExisting textfield -- Name of chunk to use for updated resource Notify email; Default: NfSubscriberEmailTplExisting.
+ * @property &nfEmailTplNew textfield -- Name of chunk to use for the new resource Notify email; Default: NfSubscriberEmailTplNew.
+ * @property &nfFormTpl textfield -- Name of chunk to use for the Notify form; Default: NfNotifyFormTpl.
+ * @property &nfSubjectTpl textfield -- Name of chunk to use for the Email subject; Default: NfEmailSubjectTpl.
+ * @property &nfTestEmailAddress textfield -- (optional) Email address for test email; Default: emailsender System Setting.
+ * @property &nfTweetTplCustom textfield -- Name of chunk to use for the custom Tweet text; Default: nfTweetTplCustom.
+ * @property &nfTweetTplExisting textfield -- Name of chunk to use for the updated resource Tweet text; Default: nfTweetTplExisting.
+ * @property &nfTweetTplNew textfield -- Name of chunk to use for the new resource Tweet text; Default: nfTweetTplNew.
+ * @property &nfUnsubscribeTpl textfield -- Name of chunk to use for Unsubscribe link; Default: (empty)..
+ * @property &nfUseMandrill combo-boolean -- Use Mandrill service to send email; Default: (empty)..
+ * @property &notifyFacebook combo-boolean -- Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App; Default: (empty)..
+ * @property &prefListChunkName textfield -- (optional) Chunk to use for preferences (tags) list; Default: sbsPrefListTpl.
+ * @property &processTVs combo-boolean -- If set to No, the raw values of the TVs will used; Default: Yes.
+ * @property &profileAlias textfield -- (optional) class of the user profile object. Only necessary if you have subclassed the user profile object; Default: modUserProfile.
+ * @property &profileClass textfield -- (optional) class of the user profile object. Only necessary if you have subclassed the user profile object; Default: modUser.
+ * @property &requireAllTagsDefault combo-boolean -- (optional) sets the default value of the Require All Tags checkbox; if set, only users who have all tags will receive email; Default: No.
+ * @property &sortBy textfield -- (optional) Field to sort by when selecting users; Default: username.
+ * @property &sortByAlias textfield -- (optional) class of the user object. Only necessary if you have subclassed the user object; Default: modUser.
+ * @property &subaccount textfield -- Name of the Mandrill subaccount to send through if using Mandrill. Subaccount must exist or send will fail; Default: test.
+ * @property &suprApiKey textfield -- StumbleUpon API key (optional); Default: (empty)..
+ * @property &suprUsername textfield -- Stumble Upon Username (optional); Default: (empty)..
+ * @property &tags textfield -- (optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive the email; Default: (empty)..
+ * @property &testMode combo-boolean -- Test mode -- Notify functions normally, but no emails are sent.
+; Default: (empty)..
+ * @property &tinyurlApiKey textfield -- TinyUrl API key (optional); Default: (empty)..
+ * @property &tinyurlUsername textfield -- TinyUrl username (optional); Default: (empty)..
+ * @property &twitterConsumerKey textfield -- Twitter Consumer Key; Default: (empty)..
+ * @property &twitterConsumerSecret textfield -- Twitter Consumer Secret; Default: (empty)..
+ * @property &twitterOauthSecret textfield -- Twitter Access Token Secret; Default: (empty)..
+ * @property &twitterOauthToken textfield -- Twitter Access Token; Default: (empty)..
+ * @property &urlShorteningService list -- Service used to shorten all URLs in text and Tweet; Default: (empty)..
+ * @property &useExtendedFields combo-boolean -- If set, placeholders will be set from the extended fields of the User Profile; Default: No.
+ * @property &userClass textfield -- (optional) class of the user object. Only necessary if you have subclassed the user object; Default: modUser.
+ * @property &injectUnsubscribeUrl textfield -- If set, adds an unsubscribe/manange preferences link to every email; Default: Yes. Be aware that if you send bulk emails, such a link is required by USA law.
+
+ */
+
 
 class Notify
 {
 
     /** @var $modx modX */
     /** @var $resource modResource */
-    protected $resource;
-    protected $resourceId;
-    protected $modx;
-    protected $props;
-    protected $mail_from;
-    protected $mail_from_name;
-    protected $mail_sender;
-    protected $mail_reply_to;
-    protected $mail_subject;
-    protected $groups;
-    protected $batchSize;
-    protected $batchDelay;
-    protected $itemDelay;
-    protected $logFile;
-    protected $userClass;
-    protected $profileAlias;
-    protected $profileClass;
-    protected $sortBy;
-    protected $sortByAlias;
-    protected $tags;
-    /** @var $recipients array */
-    protected $recipients = array();
+    protected $resource = null;
+    protected $modx = null;
+    protected $props = array();
+    protected $mail_from = '';
+    protected $mail_from_name = '';
+    protected $mail_sender = '';
+    protected $mail_reply_to = '';
+    protected $mail_subject = '';
+
     protected $emailText;
     protected $emailTpl;
     protected $tweetTpl;
     protected $tweetText;
-    protected $replace;
     /** @var $successMessages array */
     protected $successMessages;
     /** @var $errors array */
     protected $errors;
     protected $pageId;
-    protected $pageAlias;
-    protected $sendBulkEmail;
-    protected $sendTestEmail;
-    protected $sendTweet;
     /** @var $previewPage modResource */
     protected $previewPage;
     protected $formTpl;
@@ -92,10 +130,7 @@ class Notify
     protected $profile;
     /** @var $html2text html2text */
     protected $html2text;
-    protected $requireAllTags;
     protected $requireDefault;
-    protected $badSends = 0;
-    protected $useMandrill = false;
     /** @var $mx MandrillX */
     protected $mx = null;
     /** @var $userFields array - array of user placeholders used in message */
@@ -127,10 +162,9 @@ class Notify
         $this->initJS();
 
         $this->props['testMode'] = $this->modx->getOption('testMode', $this->props, false);
-        $this->useMandrill = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->props['useMandrill'] = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->props['injectUnsubscribeUrl'] = $this->modx->getOption('injectUnsubscribeUrl', $this->props, true);
-        $this->injectUnsubscribeUrl = $this->props['injectUnsubscribeUrl'];
+        $this->injectUnsubscribeUrl = $this->modx->getOption('injectUnsubscribeUrl', $this->props, true);
         $this->errors = array();
         $this->successMessages = array();
         $this->previewPage = $this->modx->getObject('modResource', array('alias' => 'notify-preview'));
@@ -194,10 +228,10 @@ class Notify
             $this->unSub->init();
             $this->unSubTpl = $this->modx->getChunk($unSubTpl);
         }
-        $profile = $this->modx->user->getOne('Profile');
+        /*$profile = $this->modx->user->getOne('Profile');
         $this->profile = $profile
             ? $profile
-            : NULL;
+            : NULL;*/
 
         $this->debug = $this->modx->getOption('debug', $this->props, false);
         $this->saveConfig();
@@ -240,26 +274,26 @@ class Notify
                 break;
             /* *********************************************** */
             case 'handleSubmission':
-                $this->requireAllTags = isset($_POST['nf_require_all_tags']) &&
+                $requireAllTags = isset($_POST['nf_require_all_tags']) &&
                     (!empty($_POST['nf_require_all_tags']));
-                $this->pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
-                $this->modx->setPlaceholder('pageAlias',$this->pageAlias);
-                $this->sendTestEmail = isset($_POST['nf_send_test_email']);
-                $this->sendBulkEmail = isset($_POST['nf_notify']);
-                $this->sendTweet = isset($_POST['nf_send_tweet']);
+                $pageAlias = isset($_POST['pageAlias'])? $_POST['pageAlias']: 0;
+                $this->modx->setPlaceholder('pageAlias',$pageAlias);
+                $sendTestEmail = isset($_POST['nf_send_test_email']);
+                $sendBulkEmail = isset($_POST['nf_notify']);
+                $sendTweet = isset($_POST['nf_send_tweet']);
                 $this->emailText = isset($_POST['nf_email_text'])? $_POST['nf_email_text'] : '';
                 $this->tweetText = isset($_POST['nf_tweet_text'])? $_POST['nf_tweet_text'] : '';
-                if ($this->sendTestEmail) {
+                if ($sendTestEmail) {
                     $this->modx->setPlaceholder('nf_send_test_email_checked','checked="checked"');
                 }
-                if ($this->requireAllTags) {
+                if ($requireAllTags) {
                     $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"' );
                 }
                 /* set form placeholders */
-                if ($this->sendBulkEmail) {
+                if ($sendBulkEmail) {
                     $this->modx->setPlaceholder('nf_notify_checked','checked="checked"');
                 }
-                if ($this->sendTweet) {
+                if ($sendTweet) {
                     $this->modx->setPlaceholder('nf_send_tweet_checked','checked="checked"');
                 }
                 $postFields= array(
@@ -546,8 +580,8 @@ class Notify
     protected function initJS() {
         header("X-XSS-Protection: 0");
 
-        /* The next three settings are System Settings, not properties,
-         * but they can be overridden in the properties of the snippet
+        /* This is a System Settings, not a properties,
+         * but it can be overridden in the properties of the snippet
          * tag. */
 
         $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
@@ -556,17 +590,15 @@ class Notify
         if (empty($nf_status_resource_id)) {
             $r = $this->modx->getObject('modResource', array('alias' => 'notify-status'));
             $s = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
-            $s->set('value', $r->get('id'));
-            $s->save();
-            $nf_status_resource_id = $r->get('id');
-            $r = $this->modx->getObject('modChunk', array('name' => 'PB_Status'));
-            $s = $this->modx->getObject('modSystemSetting', array('key' => 'pb_status_chunk_id'));
-            $s->set('value', $r->get('id'));
-            $s->save();
-            $pb_status_chunk_id = $r->get('id');
-            unset($r, $s);
-            $cm = $this->modx->getCacheManager();
-            $cm->refresh();
+            if ($r & $s) {
+                $s->set('value', $r->get('id'));
+                $s->save();
+                $nf_status_resource_id = $r->get('id');
+                unset($r, $s);
+                $cm = $this->modx->getCacheManager();
+                $cm->refresh();
+            }
+
         }
         if (empty($nf_status_resource_id)) {
             $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id', $this->props);
@@ -577,7 +609,7 @@ class Notify
 
         /* check the other settings */
         if (empty($nf_status_resource_id)) {
-            die('pb_status_resource_id System Setting is not set');
+            die('nf_status_resource_id System Setting is not set');
         }
 
         /* Make sure pb_status_resource_id points to a real resource */
@@ -585,13 +617,6 @@ class Notify
         if (empty($nf_status_url)) {
             die('nf_status_resource_id is set to a nonexistent resource');
         }
-
-        /* This can be set in the Notify snippet tag to override
-           the default (800). The value is in milliseconds (1000 = 1 sec.)*/
-        $nf_interval = $this->modx->getOption('nf_set_interval', $this->props);
-        $nf_interval = empty($nf_interval)
-            ? 800
-            : $nf_interval;
 
         $cssUrl = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL . 'components/notify/') . 'css/notify.css';
         $headStuff =
@@ -609,8 +634,15 @@ class Notify
     $nf_connector_url = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL .
             'components/notify/') . 'connector.php';
 
+    /* This can be set in the Notify snippet tag to override
+               the default (800). The value is in milliseconds (1000 = 1 sec.)*/
+    $nf_interval = $this->modx->getOption('nf_set_interval', $this->props);
+    $nf_interval = empty($nf_interval)
+        ? 800
+        : $nf_interval;
+
     $js = str_replace('[[+nf_status_url]]', $nf_status_url, $js);
-    $js = str_replace('[[+nf_set_interval]]', 800, $js);
+    $js = str_replace('[[+nf_set_interval]]', $nf_interval, $js);
     $js = str_replace('[[+nf_connector_url]]', $nf_connector_url, $js);
 
 
