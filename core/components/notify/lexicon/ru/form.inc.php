@@ -42,3 +42,5 @@ $_lang['nf.notify_twitter'] = 'Уведомить твиттер';
 $_lang['nf.send_tweet'] = 'Послать твит';
 $_lang['nf.text_for_tweet'] = 'Сообщение для твиттера';
 $_lang['nf.require_all_tags'] = 'Все теги необходимы';
+$_lang['nf.results'] = 'Результаты';
+$_lang['nf.progress'] = 'Прогресс';
