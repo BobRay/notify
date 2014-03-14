@@ -580,13 +580,14 @@ class Notify
     protected function initJS() {
         header("X-XSS-Protection: 0");
 
-        /* This is a System Settings, not a properties,
-         * but it can be overridden in the properties of the snippet
-         * tag. */
+        /* This is a System Setting, not a property,
+         * but it can be overridden by setting it as a
+         * property in the snippet tag. */
 
-        $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
+        $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id', $this->props);
 
-        /* set these System Settings if they didn't get set during the install */
+        /* try to set the System Setting if it didn't
+         * get set during the install */
         if (empty($nf_status_resource_id)) {
             $r = $this->modx->getObject('modResource', array('alias' => 'notify-status'));
             $s = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
@@ -600,22 +601,16 @@ class Notify
             }
 
         }
+
+        /* Make sure we have it */
         if (empty($nf_status_resource_id)) {
-            $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id', $this->props);
-            if (empty($nf_status_resource_id)) {
-                $nf_status_resource_id = $this->modx->getOption('nf_status_resource_id');
-            }
+            die($this->modx->lexicon('nf_status_resource_id_not_set~~nf_status_resource_id is not set'));
         }
 
-        /* check the other settings */
-        if (empty($nf_status_resource_id)) {
-            die('nf_status_resource_id System Setting is not set');
-        }
-
-        /* Make sure pb_status_resource_id points to a real resource */
+        /* Make sure nf_status_resource_id points to a real resource */
         $nf_status_url = $this->modx->makeUrl((integer) $nf_status_resource_id, "", "", "full");
         if (empty($nf_status_url)) {
-            die('nf_status_resource_id is set to a nonexistent resource');
+            die($this->modx->lexicon('nf_status_resource_id_bad_resource~~nf_status_resource_id is set to a nonexistent resource'));
         }
 
         $cssUrl = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL . 'components/notify/') . 'css/notify.css';
