@@ -65,17 +65,6 @@ $components = array(
              'value'       => '',
              'area'        => '',
         ),
-        'nf_status_resource_id' => array( // key
-            'key'         => 'nf_status_resource_id',
-            'name'        => 'Notify Status Resource ID',
-            'description' => 'ID of Notify Status Resource',
-            'namespace'   => 'notify',
-            'xtype'       => 'integer',
-            'value'       => '',
-            'area'        => '',
-        ),
-
-
     ),
 
     /* ************************ NEW SYSTEM EVENTS ************************* */
@@ -461,6 +450,7 @@ $components = array(
      * (other resolvers may be created above for TVs and plugins).
      * Suffix 'resolver.php' will be added automatically */
     'resolvers' => array(
+        'default',
         'install.script'
     ),
 
