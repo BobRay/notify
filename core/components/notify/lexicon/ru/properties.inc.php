@@ -72,15 +72,15 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Название чанка для ссыл
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['nf_inject_unsubscribe_url_desc'] = 'If set, adds an unsubscribe/manange preferences link to every email; default: Yes. Be aware that if you send bulk emails, such a link is required by USA law.';
+$_lang['nf_testMode_desc'] = 'Test mode -- Notify functions normally, but no emails are sent.
+';
 $_lang['subaccount_property_desc'] = 'Название субаккаунта Mandrill для отправки с помощью Mandrill. Субаккаунт должен существовать иначе отправка не удастся. По-умолчанию: test';
 $_lang['include_tv_list_property_desc'] = 'Названия ТВ через запятую. Только ТВ из списка будут иметь свой набор плейсхолдеров.';
 $_lang['include_tvs_property_desc'] = 'Если установлено, то плейсхолдеры будут установлены для Resource ТВ; по-умолчанию: Нет.';
 $_lang['use_extended_fields_property_desc'] = 'Если установлено, плейсхолдеры будут установлены для разширенных полей профиля Пользователя; по-умолчанию: Нет';
 $_lang['debug_property_desc'] = 'Если Да, то будет выведенна информация об отладке';
 $_lang['maxlogs_property_desc'] = 'Устанавливает лимит количества сохраняемых email логов. Самые старые будут удалены. Установите 0 для неограниченных логов. По-умолчанию: 5';
-$_lang['nf.use_extended_fields_desc'] = 'Установите в true для установки плейсхолдеров от расширенных полей профиля Пользователя.';
-$_lang['nf.include_tvs_desc'] = 'Установите в да, если нужно показать любую ТВ.';
-$_lang['nf.include_tv_list_desc'] = 'Список ТВ через запятую для включения.';
 $_lang['nf.process_tvs_desc'] = 'Если установлено в Нет, то будут использованы необработанные значения ТВ. По-умолчанию: Да.';
 $_lang['nf.use_mandrill_desc'] = 'Использовать Mandrill сервис для отправки сообщений.';
 $_lang['nf.group_list_chunk_name_desc'] = 'Определяет чанк, который будет использоваться для кнопок под инпутом Груп в форме; по-умолчанию: sbsGroupListTpl';

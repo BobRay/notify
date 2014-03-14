@@ -25,9 +25,7 @@
  * @package notify
  * @subpackage lexicon
  */
-
 /** Translation by Viktor Matushevskyi (Viktorminator) <https://github.com/Viktorminator> */
-
 /* notify default strings */
 
 $_lang['notify'] = 'Notify';
@@ -37,17 +35,10 @@ $_lang['nf_page_id_is_empty'] = '$_POST pageId пуст';
 $_lang['nf.could_not_get_resource'] = 'Ресурс не получен';
 $_lang['nf.could_not_find_email_tpl_chunk'] = 'Не найден шаблонирующий чанк для email';
 $_lang['nf.could_not_find_tweet_tpl_chunk'] = 'Не найден шаблонирующий чанк для твиттера';
-$_lang['nf.could_not_find_user_group'] = 'Не найдена група пользователя';
 $_lang['nf.no_recipients_to_send_to'] = 'Нет получателей для отправки';
-$_lang['nf.bulk_emails_not_sent'] = 'Объёмная почта не отправляется';
 $_lang['nf.could_not_open_log_file'] = 'Не могу открыть файл логов (убедитесь, что директория логов существует)';
 $_lang['nf.no_profile_for'] = 'У пользователя нет профиля';
 $_lang['nf.sbs_extended_field_not_set'] = 'Параметр sbs_extended_field не установлен';
-$_lang['nf.has_no_email_address'] = 'Нет адреса email';
-$_lang['nf.test_email_address_empty'] = 'Адрес почты пуст';
-$_lang['nf.test_email_not_sent'] = 'Тестовое письмо не отправлено';
-$_lang['nf.mail_error_sending_test_email'] = 'Ошибка при отправке тестового письма';
-$_lang['nf.test_email_sent_successfully'] = 'Тестовое email отправлено успешно';
 $_lang['nf.twitter_consumer_key_not_set'] = 'Ключ пользователя Twitter не установлен';
 $_lang['nf.twitter_consumer_secret_not_set'] = 'Секретный ключ пользователя Twitter не установлен';
 $_lang['nf.twitter_access_token_not_set'] = 'Токен доступа Twitter не установлен';
@@ -61,6 +52,7 @@ $_lang['nf.using'] = 'с помощью';
 $_lang['nf.tweet_sent_successfully'] = 'Твит успешно отправлен';
 
 
+
 /* Used in notify.class.php */
 $_lang['nf.no_mandrill_api_key'] = 'Нет Mandrill API Ключа';
 $_lang['nf.no_mandrill'] = 'Не смог создать объект Mandrill';
@@ -68,3 +60,19 @@ $_lang['nf.user_not_found'] = 'Пользователь не найден';
 $_lang['nf.sending_batch_of'] = 'Отправляю партию';
 $_lang['nf.no_messages_sent'] = 'Сообщения не отправлены';
 $_lang['nf.send_user_mandrill'] = 'Отправляю пользователю (Mandrill)';
+
+
+/* Used in transport.settings.php */
+$_lang['setting_nf_status_resource_id'] = 'Notify Status Resource ID';
+$_lang['setting_nf_status_resource_id_desc'] = 'ID of Notify Status Resource';
+
+/* Used in nfsendemail.class.php */
+$_lang['nf.no_view_user_permission'] = 'Пользователь не имеет прав для просмотра';
+$_lang['nf._no_single_id'] = 'No email or ID for single email';
+$_lang['nf.processing_batch'] = 'Обработка партии: ';
+$_lang['nf.users_emailed_in_batch'] = 'Пользователи, которым были отправлены письма в этой партии: ';
+$_lang['nf.finished'] = 'Закончено';
+$_lang['nf.successful_send_to'] = 'Успешно послано';
+$_lang['nf.user_tags'] = 'Теги пользователя';
+$_lang['nf.error_sending_to'] = 'Ошибка отправки';
+$_lang['nf.test_mode_on'] = '(включён testMode, сообщения или твитты не были отправлены)';
