@@ -1,9 +1,9 @@
 Changelog for Notify
 
-Notify 1.2.1
+Notify 1.2.2
 --------------
-Progress bar for bulk sends
 Add Option to send with Mandrill email service
+Progress bar for bulk sends
 Much faster sends
 Make unsubscribe URL optional
 Add &maxLogs property to limit number of logs kept
