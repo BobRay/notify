@@ -137,7 +137,7 @@ $properties = array (
   array (
     'name' => 'injectUnsubscribeUrl',
     'desc' => 'nf_inject_unsubscribe_url_desc',
-    'type' => 'textfield',
+    'type' => 'combo-boolean',
     'options' => 
     array (
     ),
