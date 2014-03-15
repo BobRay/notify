@@ -36,8 +36,12 @@ if ($object->xpdo) {
         case xPDOTransport::ACTION_UPGRADE:
 
 
-            $resource = $this->modx->getObject('modResource', array('alias' => 'notify-status'));
-            $setting = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            $resource = $modx->getObject('modResource', array('alias' => 'notify-status'));
+            $setting = $modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            if ($resource) {
+                $resource->set('template', 0);
+                $resource->save();
+            }
             if ($resource && $setting) {
                 $id = $resource->get('id');
                 $setting->set('value', $id);
@@ -48,7 +52,7 @@ if ($object->xpdo) {
         case xPDOTransport::ACTION_UNINSTALL:
             $resource = $modx->getObject('modResource', array('alias' => 'notify'));
             if ($resource) $resource->remove();
-            $setting = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            $setting = $modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($setting) {
                 $setting->remove();
             }
