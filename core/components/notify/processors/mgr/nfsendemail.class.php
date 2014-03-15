@@ -178,8 +178,9 @@ class NfSendEmailProcessor extends modProcessor {
                 $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->getProperty('from_name'));
                 $this->modx->mail->set(modMail::MAIL_SENDER, $this->getProperty('mail_from'));
                 $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->getProperty('email_subject'));
-                $this->modx->mail->address('reply-to', $this->getProperty('mail_reply_to'));
-                $this->modx->mail->setHtml(true);
+                $this->modx->mail->address('reply-to', $this->getProperty('reply_to'));
+                $this->modx->mail->header('reply-to:' . $this->getProperty('reply_to') );
+                $this->modx->mail->mailer->IsHtml(true);
         }
         if ($useMandrill) {
             $this->logFile .= "(Mandrill)";
@@ -537,7 +538,6 @@ class NfSendEmailProcessor extends modProcessor {
         if (!$success) {
             $this->setError($this->modx->mail->mailer->ErrorInfo);
         }
-        $this->modx->mail->mailer->ClearAddresses();
 
         return $success;
 
