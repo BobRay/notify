@@ -591,7 +591,7 @@ class Notify
         if (empty($nf_status_resource_id)) {
             $r = $this->modx->getObject('modResource', array('alias' => 'notify-status'));
             $s = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
-            if ($r & $s) {
+            if ($r && $s) {
                 $s->set('value', $r->get('id'));
                 $s->save();
                 $nf_status_resource_id = $r->get('id');
