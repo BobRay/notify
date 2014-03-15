@@ -141,7 +141,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => '1',
+    'value' => true,
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
