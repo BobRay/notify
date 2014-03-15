@@ -68,17 +68,17 @@ Go to System | Package Management on the main menu in the MODX Manager and click
     <li>Click on the &quot;Launch Notify&quot; button</li>
 </ol>
 
-<p>That will launch the notify Form </p>
+<p>That will launch the notify Form.</p>
 
 <p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a Property Set for Notify (see below) and set their names in the Property Set.
 
-<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window. You can't, however, add MODX tags to the message. All MODX tags are processed as the Tpl chunk is retrieved, so by the time you're entering the message, it's too late. You can add user field placeholders, however, in this form {{+fieldName}}. </p>
+<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window. You can't, however, add MODX tags to the message. All MODX tags are processed as the Tpl chunk is retrieved, so by the time you're entering the message, it's too late. You can add user field placeholders, however, in this form {{+fieldName}}. The username and all fields of the User Profile will be set as user placeholders. If you use the &useExtendedFields property, any extended fields will be set as well.</p>
         
-<p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered.</p>
+<p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any MODX placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered. You can, however, use user placeholders in the form {{+fieldName}}, which will be processed when the email is sent. </p>
         
-<p>The various options are independent, so you can send a single email, send a message to subscribers, or send a Tweet without activating the other options.</p>
+<p>The various options are independent, so you can send a single email, send a message to subscribers, or send a Tweet without activating the other options. When you click on the &quot;Single Email&quot; checkbox, an input field will appear where you can enter either the email address or the user name of a user on the site.</p>
         
-<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that placeholders are not available to you if you do this.</p>
+<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that MODX placeholders are not available to you if you do this, though user placeholders are.</p>
 
 [[$CreateSnippetPropertySet? &snippetName=`Notify`]]
 
@@ -210,8 +210,7 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 
 <p>If you upgrade Notify and your Property Set is no long shown in Tools | Property Sets, it may mean that the Property Set has an obsolete category. The only solution is to use PhpMyAdmin to edit the modx_property_sets table and change the category of the Property Set to 0.</p>
 
-<p>If you following the Unsubscribe/Manager Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link, resets <fixedpre>$modx->user</fixedpre>
-, which changes the MODX session in that browser.</p>
+<p>If you follow the Unsubscribe/Manage Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link, resets <fixedpre>$modx->user</fixedpre>, which changes the MODX session in that browser.</p>
 
 <p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
 
@@ -482,8 +481,18 @@ up an account at <a href = "http://apps.facebook.com/selectivetwitter/">Selectiv
 <tr>
     <td>injectUnsubscribeUrl</td>
     <td>If set, adds an unsubscribe/manage preferences link to every email</td>
-    <td>1</td>
+    <td>Yes</td>
 </tr>
+
+<tr>
+    <td>nfTestEmailAddress</td>
+    <td>Default username or email to send single email to.</td>
+    <td></td>
+</tr>
+
+
+
+
 </table>
 
 <p>&nbsp;</p>
