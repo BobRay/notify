@@ -1,6 +1,12 @@
 Changelog for Notify
 
-Notify 1.2.2
+Notify 1.2.2-pl2
+--------------
+
+Prevent spurious alerts
+Fix bug with case of oauth.php file
+
+Notify 1.2.2-pl
 --------------
 Add Option to send with Mandrill email service
 Progress bar for bulk sends

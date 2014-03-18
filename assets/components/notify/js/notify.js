@@ -209,7 +209,7 @@ $(document).ready(function (event) {
                           alert("You are offline!! Please Check Your Network.");
                       } else {
                           if (x.status == 404) {
-                              alert("Requested URL not found");
+                             /* alert("Requested URL not found"); */
                           } else {
                               if (x.status == 500) {
                                   alert("Internal Server Error.");
