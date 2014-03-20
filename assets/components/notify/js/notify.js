@@ -39,8 +39,8 @@ $(document).ready(function (event) {
                 success: function (data) {
                    if (data['errors'] !== null) {
                        data['errors'].forEach(function (err, i) {
-                           console.log("Error: " + value);
-                           $('<span class="nf_error">' + value + '</span><br />').appendTo("#nf_results")
+                           console.log("Error: " + err);
+                           $('<span class="nf_error">' + err + '</span><br />').appendTo("#nf_results")
 
 
                        });
