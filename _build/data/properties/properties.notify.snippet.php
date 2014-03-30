@@ -297,7 +297,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => 'nfTweetTplCustom',
+    'value' => 'NfTweetTplCustom',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -309,7 +309,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => 'nfTweetTplExisting',
+    'value' => 'NfTweetTplExisting',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),
@@ -321,7 +321,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => 'nfTweetTplNew',
+    'value' => 'NfTweetTplNew',
     'lexicon' => 'notify:properties',
     'area' => '',
   ),

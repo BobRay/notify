@@ -263,10 +263,24 @@ class Notify
                     $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
                 }
 
-                $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
                 /* set Tpl name using $_POST data */
-                $this->emailTpl = 'NfSubscriberEmailTpl' . $this->tplType;
-                $this->tweetTpl = 'NfTweetTpl' . $this->tplType;
+                $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
+                $type = ucfirst($this->tplType);
+
+                $propertyName = 'nfEmailTpl' . $type;
+                $this->emailTpl = $this->modx->getOption($propertyName, $this->props, '');
+
+                if (empty($this->emailTpl)) {
+                    $this->emailTpl = 'NfSubscriberEmailTpl' . $type;
+                }
+                $propertyName =  'nfTweetTpl' . $type;
+
+                $this->tweetTpl = $this->modx->getOption($propertyName, $this->props, '');
+
+
+                if (empty($this->tweetTpl)) {
+                    $this->tweetTpl = 'NfTweetTpl' . $type;
+                }
                 if (! $this->prepareTpl()) {
                     return '';
                 }
