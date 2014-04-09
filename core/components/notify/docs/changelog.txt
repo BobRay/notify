@@ -1,7 +1,12 @@
 Changelog for Notify
 
+Notify 1.1.3-pl
+-----------------
+Fix bug with user-specified Tpl chunks
+Re-fix oauth.php file bug
+
 Notify 1.2.2-pl2
---------------
+-----------------
 
 Prevent spurious alerts
 Fix bug with case of oauth.php file
