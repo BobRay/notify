@@ -253,7 +253,7 @@ class Notify
 
             /* *********************************************** */
             case 'displayForm':  /* Not a repost */
-                $this->pageId = isset($_POST['pageId'])? $_POST['pageId'] : '';
+                $this->pageId = isset($_REQUEST['pageId'])? $_REQUEST['pageId'] : '';
 
                 if (empty($this->pageId) ) {
                     $this->setError($this->modx->lexicon('nf_page_id_is_empty'));
@@ -264,7 +264,7 @@ class Notify
                 }
 
                 /* set Tpl name using $_POST data */
-                $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
+                $this->tplType = isset($_REQUEST['pageType'])? $_REQUEST['pageType'] : '';
                 $type = ucfirst($this->tplType);
 
                 $propertyName = 'nfEmailTpl' . $type;
@@ -349,7 +349,7 @@ class Notify
             return true;
         }
 
-        $this->resource = $this->modx->getObject('modResource', $this->pageId);
+        $this->resource = $this->modx->getObject('modResource', (int) $this->pageId);
         if (!$this->resource) {
             $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
             return false;
