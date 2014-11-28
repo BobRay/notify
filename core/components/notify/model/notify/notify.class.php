@@ -263,7 +263,7 @@ class Notify
                     $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
                 }
 
-                $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
+                $this->tplType = isset($_REQUEST['pageType'])? $_REQUEST['pageType'] : '';
                 /* set Tpl name using $_POST data */
 
                 $this->emailTpl = '';
