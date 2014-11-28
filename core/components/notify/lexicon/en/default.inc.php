@@ -60,6 +60,8 @@ $_lang['nf.user_not_found'] = 'User Not Found';
 $_lang['nf.sending_batch_of'] = 'Sending Batch of';
 $_lang['nf.no_messages_sent'] = 'No Messages Sent';
 $_lang['nf.send_user_mandrill'] = 'Sending to user (Mandrill)';
+$_lang['nf_status_resource_id_not_set'] = 'nf_status_resource_id is not set';
+$_lang['nf_status_resource_id_bad_resource'] = 'nf_status_resource_id is set to a nonexistent resource';
 
 
 /* Used in transport.settings.php */

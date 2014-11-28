@@ -263,24 +263,32 @@ class Notify
                     $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
                 }
 
+                $this->tplType = isset($_POST['pageType'])? $_POST['pageType'] : '';
                 /* set Tpl name using $_POST data */
-                $this->tplType = isset($_REQUEST['pageType'])? $_REQUEST['pageType'] : '';
-                $type = ucfirst($this->tplType);
 
-                $propertyName = 'nfEmailTpl' . $type;
-                $this->emailTpl = $this->modx->getOption($propertyName, $this->props, '');
-
+                $this->emailTpl = '';
+                $this->tweetTpl = '';
+                $this->tplType = ucfirst($this->tplType);
+                /* First try 'My' prefix */
+                $chunkName = 'MyNfSubscriberEmailTpl' . $this->tplType;
+                if ($this->modx->getCount('modChunk', array('name' => $chunkName ))) {
+                    $this->emailTpl = $chunkName;
+                }
                 if (empty($this->emailTpl)) {
-                    $this->emailTpl = 'NfSubscriberEmailTpl' . $type;
+                    $temp = 'nfEmailTpl' . $this->tplType;
+                    $this->emailTpl = $this->modx->getOption($temp, $this->props,
+                        'NfSubscriberEmailTpl' . $this->tplType, true);
                 }
-                $propertyName =  'nfTweetTpl' . $type;
 
-                $this->tweetTpl = $this->modx->getOption($propertyName, $this->props, '');
-
-
+                $chunkName = 'NfTweetTpl' . $this->tplType;
+                if ($this->modx->getCount('modChunk', array('name' => 'My' . $chunkName))) {
+                    $this->tweetTpl = 'My' . $chunkName;
+                }
                 if (empty($this->tweetTpl)) {
-                    $this->tweetTpl = 'NfTweetTpl' . $type;
+                    $this->tweetTpl = $this->modx->getOption(lcfirst($chunkName), $this->props,
+                        'NfTweetTpl' . $this->tplType);
                 }
+
                 if (! $this->prepareTpl()) {
                     return '';
                 }
@@ -618,13 +626,13 @@ class Notify
 
         /* Make sure we have it */
         if (empty($nf_status_resource_id)) {
-            die($this->modx->lexicon('nf_status_resource_id_not_set~~nf_status_resource_id is not set'));
+            die($this->modx->lexicon('nf_status_resource_id_not_set'));
         }
 
         /* Make sure nf_status_resource_id points to a real resource */
         $nf_status_url = $this->modx->makeUrl((integer) $nf_status_resource_id, "", "", "full");
         if (empty($nf_status_url)) {
-            die($this->modx->lexicon('nf_status_resource_id_bad_resource~~nf_status_resource_id is set to a nonexistent resource'));
+            die($this->modx->lexicon('nf_status_resource_id_bad_resource'));
         }
 
         $cssUrl = $this->modx->getOption('nf.assets_url', NULL, MODX_ASSETS_URL . 'components/notify/') . 'css/notify.css';
