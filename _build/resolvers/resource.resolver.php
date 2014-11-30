@@ -3,7 +3,7 @@
 * Resource resolver  for Notify extra.
 * Sets template, parent, and (optionally) TV values
 *
-* Copyright 2013-2014 by Bob Ray <http://bobsguides.com>
+* Copyright 2013-2015 by Bob Ray <http://bobsguides.com>
 * Created on 02-17-2014
 *
  * Notify is free software; you can redistribute it and/or modify it under the

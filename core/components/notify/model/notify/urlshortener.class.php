@@ -2,7 +2,7 @@
 /**
  * UrlShortener
  *
- * Copyright 2012-2013 Bob Ray
+ * Copyright 2012-2015 Bob Ray
  *
  * @author Bob Ray <http://bobsguides.com>
  * 

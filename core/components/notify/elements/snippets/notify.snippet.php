@@ -2,7 +2,7 @@
 /**
  * Notify snippet
  *
- * Copyright 2012-2013 Bob Ray <http:bobsguides.com>
+ * Copyright 2012-2015 Bob Ray <http:bobsguides.com>
  *
  * @author Bob Ray <http:bobsguides.com>
  *

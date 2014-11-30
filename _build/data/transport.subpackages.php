@@ -2,7 +2,7 @@
 /**
  * Subpackage transport file for Notify extra
  *
- * Copyright 2013-2014 by Bob Ray <http://bobsguides.com>
+ * Copyright 2013-2015 by Bob Ray <http://bobsguides.com>
  * Created on 03-15-2014
  *
  * @package notify
