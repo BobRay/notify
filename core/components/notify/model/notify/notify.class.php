@@ -253,18 +253,35 @@ class Notify
 
             /* *********************************************** */
             case 'displayForm':  /* Not a repost */
-                $this->pageId = isset($_REQUEST['pageId'])? $_REQUEST['pageId'] : '';
+                /* Check $_SESSION in case launched as a service */
+                if (isset($_SESSION['nf.pageId'])) {
+                    $this->pageId = $_SESSION['nf.pageId'];
+                    unset($_SESSION['nf.pageId']);
+                    // echo "<br />pageId: " . $this->pageId;
+                } else {
+                    $this->pageId = isset($_POST['pageId']) ? $_POST['pageId'] : '';
+                }
 
                 if (empty($this->pageId) ) {
                     $this->setError($this->modx->lexicon('nf_page_id_is_empty'));
                     return '';
                 }
+
+                /* Check $_SESSION in case launched as a service */
+                if (isset($_SESSION['nf.pageType'])) {
+                    $this->tplType = $_SESSION['nf.pageType'];
+                    unset($_SESSION['nf.pageType']);
+                    // echo "<br />pageType: " . $this->tplType;
+                } else {
+                    $this->tplType = isset($_POST['pageType'])
+                        ? $_POST['pageType']
+                        : '';
+                }
+
+
                 if ($this->requireDefault) {
                     $this->modx->setPlaceholder('nf_require_checked', 'checked="checked"');
                 }
-
-                $this->tplType = isset($_REQUEST['pageType'])? $_REQUEST['pageType'] : '';
-                /* set Tpl name using $_POST data */
 
                 $this->emailTpl = '';
                 $this->tweetTpl = '';
@@ -403,7 +420,8 @@ class Notify
         $this->emailText = $this->modx->getChunk($this->emailTpl, $fields);
 
         if (empty($this->emailText)) {
-            $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk'));
+            $this->setError($this->modx->lexicon('nf.could_not_find_email_tpl_chunk') .
+                ' ' . $this->emailTpl);
         } else {
             /* convert any relative URLS in email text */
             $this->fullUrls();
@@ -430,7 +448,8 @@ class Notify
         }
         $this->tweetText = $this->modx->getChunk($this->tweetTpl, $fields);
         if (empty($this->tweetText)) {
-            $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk'));
+            $this->setError($this->modx->lexicon('nf.could_not_find_tweet_tpl_chunk') .
+                ' ' . $this->tweetTpl);
         } else {
             if ($this->shortenUrls) {
                 $this->shortenUrls($this->tweetText);
