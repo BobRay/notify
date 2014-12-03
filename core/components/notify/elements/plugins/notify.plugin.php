@@ -63,7 +63,7 @@ if (!function_exists("my_debug")) {
 $sp =& $scriptProperties;
 
 /* Act only when user is a member of the Administrator group */
-if (!$modx->user->hasSessionContext('mgr')) {
+if (!$modx->user->isMember('Administrator')) {
     return '';
 }
 

@@ -137,7 +137,7 @@ $modx->lexicon->load($language . ':notify:default');
 
 /* abort if not previewing from 'mgr' */
 if (!$modx->user->isMember('Administrator') && (php_sapi_name() !== 'cli')) {
-    return $modx->lexicon('nf.unauthorized_access');
+    return '(' . $modx->user->get('username') . ') ' . $modx->lexicon('nf.unauthorized_access');
 }
 
 $output = '';
