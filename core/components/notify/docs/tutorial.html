@@ -7,18 +7,29 @@
 <p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
 
 <h3>What's New</h3>
-<p>A number of nice features have been added in the latest version. The new version:</p>
+<h4>New in this version:</h4>
+
 <ul>
-    <li>sends email (optionally) with the Mandrill email service (see below for more info).</li>
-    <li>has Buttons to select User Groups to send to.</li>
-    <li>shows a progress bar for bulk sends</li>
-    <li>sends mail in batches to save memory (batch size is adjustable).</li>
-    <li>has much more efficient database queries for quicker sends.</li>
-    <li>sends email to a single user by email or username</li>
-    <li>allows user tags for any field of the user profile (including the 'extended' fields).</li>
-    <li>processes chunk, snippet, and setting tags in the email Tpl chunk.</li>
-    <li>allows resource and TV placeholder tags!</li>
-    <li>makes inserting the unsubscribe link optional.</li>
+    <li>Allows launch from NewsPublisher and other extras (see below)</li>
+    <li>Fixes bugs with Tpl names</li>
+    <li>Looks for chunks prefixed with 'My'</li>
+    <li>Fixes undefined variable bug in JS</li>
+    <li>Fixes bug with oauth</li>
+</ul>
+
+
+<h4>New in the Previous Version</h4>
+<ul>
+    <li>Sends email (optionally) with the Mandrill email service (see below for more info).</li>
+    <li>Has Buttons to select User Groups to send to.</li>
+    <li>Shows a progress bar for bulk sends</li>
+    <li>Sends mail in batches to save memory (batch size is adjustable).</li>
+    <li>Has much more efficient database queries for quicker sends.</li>
+    <li>Sends email to a single user by email or username</li>
+    <li>Allows user tags for any field of the user profile (including the 'extended' fields).</li>
+    <li>Processes chunk, snippet, and setting tags in the email Tpl chunk.</li>
+    <li>Allows resource and TV placeholder tags!</li>
+    <li>Makes inserting the unsubscribe link optional.</li>
 
 
 </ul>
@@ -28,14 +39,16 @@
 <div class="box">
 <h3>Upgrade Notes</h3>
 
-<p>The new version is mostly compatible with earlier versions, but in order to use the Mandrill API, there have been some changes in the Tpl chunk structure that may affect you. All user-specific placeholders, including the unsubscribe_url, now take this form: {{+username}}, {{+email}}, {{+unsubscribe_url}}. Snippet, chunk, and setting tags are standard MODX tags. All Resource Fields and and any specified TVs are now available with MODX placeholder tags:</p>
+<p>Important: If you are using the default Tpl chunks, duplicate them and add the prefix 'My' to each one <b>before installing the upgrade</b>. Notify will look first for those prefixed chunks. If it doesn't find them, it will look for the ones specified in the Tpl-related properties. The chunks prefixed with 'My' will not be altered during future upgrades, so you can use them without having to specify them in the snippet properties or in a property set. In other words, you no longer need to specify your own customized Tpl chunks in the properties. Just prefix them with 'My'. Notify will use them automatically and they will survive upgrades.</p>
+
+<p>Version 1.2.0 is mostly compatible with earlier versions, but in order to use the Mandrill API, there were been some changes in the Tpl chunk structure. All user-specific placeholders, including the unsubscribe_url, now take this form: {{+username}}, {{+email}}, {{+unsubscribe_url}}. Snippet, chunk, and setting tags are standard MODX tags. All Resource Fields and and any specified TVs are now available with MODX placeholder tags:</p>
 
 <pre><fixedpre>
 [[+pagetitle]]
 [[+TvName]]
 </fixedpre></pre>
 
-<p>User Groups can now be entered in the form with buttons like the tags. Notify uses the chunk specified in the <code>&groupListChunkName</code> property as the source of the group buttons. That property defaults to the sbsGroupListTpl chunk in the Subscribe category. The chunk should be formatted as follows:</p>
+<p>As of Version 1.2.0, User Groups can be entered in the form with buttons like the tags. Notify uses the chunk specified in the <code>&groupListChunkName</code> property as the source of the group buttons. That property defaults to the sbsGroupListTpl chunk in the Subscribe category. The chunk should be formatted as follows:</p>
 <pre><fixedpre>
 DisplayedGroupName==ActualGroupName||DisplayedOtherGroupName==ActualOtherGroupName
 </fixedpre></pre>
@@ -48,7 +61,7 @@ DisplayedGroupName==ActualGroupName||DisplayedOtherGroupName==ActualOtherGroupNa
 
 <h3>Installing Notify for MODX Revolution</h3>
 <p>
-Go to System | Package Management on the main menu in the MODX Manager and click on the "Download Extras" button. That will take you to the Revolution Repository (AKA Web Transport Facility). Put Notify in the search box and press Enter. Click on the "Download" button, and when it changes to "Downloaded," click on the button that takes you back to Package Management. Click on the "Install" button next to Notify in the grid. The Notify package should now be installed.</p>
+Go to System | Package Management on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put Notify in the search box and press Enter. Download Notify, then click on the button that takes you back to Package Management. Click on the &quot;Install&quot; button next to Notify in the grid. The Notify package should now be installed.</p>
         
 <p>During the installation, the Notify TV will be connected to the site's default template. If you need to attach it to other templates, you'll have to connect it manually by editing the TV, checking the boxes on the &quot;Template Access&quot; tab, and clicking on the &quot;Save&quot; button.</p>
         
@@ -68,9 +81,9 @@ Go to System | Package Management on the main menu in the MODX Manager and click
     <li>Click on the &quot;Launch Notify&quot; button</li>
 </ol>
 
-<p>That will launch the notify Form.</p>
+<p>That will launch the notify Form (see below for launching Notify from NewsPublisher or another snippet or plugin).</p>
 
-<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Then create a Property Set for Notify (see below) and set their names in the Property Set.
+<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Notify will look first for the Tpl chunks prefixed with 'My', then in the Tpl chunks specified in the snippet properties or in a property set.
 
 <p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window. You can't, however, add MODX tags to the message. All MODX tags are processed as the Tpl chunk is retrieved, so by the time you're entering the message, it's too late. You can add user field placeholders, however, in this form {{+fieldName}}. The username and all fields of the User Profile will be set as user placeholders. If you use the &useExtendedFields property, any extended fields will be set as well.</p>
         
@@ -152,7 +165,25 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>One last thing is necessary for using Mandrill &mdash; you have to tell Notify to use Mandrill by adding &nfUseMandrill=`1` to the snippet tag or setting that property to Yes in the property set.</p>
 
+<p>Remember that if you change any of the Notify Snippet's default properties, they will be reset to their defaults when you upgrade Notify.</p>
+
 <p>That's it. Once you've complete those steps, Notify will use Mandrill automatically for all its emails.</p>
+
+<h3>Launching Notify from NewsPublisher</h3>
+
+<p>Recent versions of NewsPublisher will launch Notify after successfully saving a new or updated resource. If the <code>&shownotify</code> property in the NewsPublisher tag is set to 1, you'll see a checkbox for launching Notify at the bottom of the NewsPublisher form. It will contain radio options for selecting the Tpl chunk used by Notify. If the <code>notifychecked</code> property is set to 1, the checkbox will be checked by default. For security, in order to run Notify, the current user needs <code>view_user</code> permission in the 'web' context and must be a member of the Administrator user group (the role doesn't matter).</p>
+
+<p>If you'd like to launch Notify from your own code in a plugin or snippet, the process is very simple. Here's some sample code:</p>
+
+<pre><fixedpre>
+$id = 12; /* Set to the ID of the page with the Notify tag */
+$pageId = 22; /* Set to the ID of the page being created or updated */
+$pageType = 'new';  /* or 'existing', 'custom', or 'blank' */
+$url = $modx->makeUrl($id, "", "", "full");
+$_SESSION['pageId'] = $pageId;
+$_SESSION['pageType'] = $pageType;
+$modx->sendRedirect($url);
+</fixedpre></pre>
 
 <h3>Notify and Articles</h3>
 
@@ -210,7 +241,7 @@ up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selecti
 
 <p>If you upgrade Notify and your Property Set is no long shown in Tools | Property Sets, it may mean that the Property Set has an obsolete category. The only solution is to use PhpMyAdmin to edit the modx_property_sets table and change the category of the Property Set to 0.</p>
 
-<p>If you follow the Unsubscribe/Manage Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link, resets <fixedpre>$modx->user</fixedpre>, which changes the MODX session in that browser.</p>
+<p>If you follow the Unsubscribe/Manage Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link resets <fixedpre>$modx->user</fixedpre>, which changes the MODX session in that browser.</p>
 
 <p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
 

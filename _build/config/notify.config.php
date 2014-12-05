@@ -16,8 +16,8 @@ $components = array(
     'packageName' => 'Notify',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'Notify project for MyComponent extra',
-    'version' => '1.2.3',
-    'release' => 'pl',
+    'version' => '1.2.4',
+    'release' => 'rc',
     'author' => 'Bob Ray',
     'email' => '<http://bobsguides.com>',
     'authorUrl' => 'http://bobsguides.com',
@@ -451,7 +451,7 @@ $components = array(
      * Suffix 'resolver.php' will be added automatically */
     'resolvers' => array(
         'default',
-        'install.script'
+        'install.script',
     ),
 
     /* (optional) Validators can abort the install after checking
@@ -459,8 +459,7 @@ $components = array(
      * prefix of suffix) or '' 'default' creates a default resolver
      *  named after the package suffix 'validator.php' will be added */
 
-    'validators' => array(
-    ),
+    'validators' => array(),
 
     /* (optional) install.options is needed if you will interact
      * with user during the install.

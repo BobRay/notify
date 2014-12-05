@@ -8,7 +8,6 @@ Use $_SESSION variables when launched as a service
 Mods to allow launching from NewsPublisher and other extras
 Fix bug with Tpl chunk names
 Fix undefined variable bug in JS
-Fix bug with oauth
 
 Notify 1.2.3-pl
 -----------------
