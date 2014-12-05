@@ -40,7 +40,7 @@ $resources[1]->fromArray(array (
   'introtext' => '',
   'richtext' => false,
   'template' => 'NotifyTemplate',
-  'menuindex' => 2,
+  'menuindex' => 4,
   'searchable' => true,
   'cacheable' => true,
   'createdby' => 1,

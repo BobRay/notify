@@ -51,7 +51,7 @@ if($object->xpdo) {
             $intersects = array (
                 0 =>  array (
                   'pagetitle' => 'Notify',
-                  'parent' => 0,
+                  'parent' => '0',
                   'template' => 'NotifyTemplate',
                 ),
                 1 =>  array (
