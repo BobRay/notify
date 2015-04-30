@@ -443,13 +443,12 @@ class NfSendEmailProcessor extends modProcessor {
      * @return bool - True if use should receive email
      */
     public function qualifyUser($profile, $username, $requireAll = false) {
-
         /* Get User's Tags */
         $userTags = NULL;
         if (!$profile) {
             $this->setError($this->modx->lexicon('nf.no_profile_for') . ': ' . $username);
         } else {
-            if ($this->modx->getOption('sbs_use_comment_field', NULL, NULL) == 'No') {
+            if ($this->modx->getOption('sbs_use_comment_field', NULL, false, true) == false) {
                 $field = $this->modx->getOption('sbs_extended_field');
                 if (empty($field)) {
                     $this->setError($this->modx->lexicon('nf.sbs_extended_field_not_set'));
