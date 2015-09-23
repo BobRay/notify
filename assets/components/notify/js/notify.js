@@ -220,7 +220,7 @@ $(document).ready(function (event) {
                                       if (e == "timeout") {
                                           alert("Request Time out.");
                                       } else {
-                                          alert("Unknown Error: " + x.responseText);
+                                         /*  alert("Unknown Error: " + x.responseText); */
                                       }
                                   }
                               }
