@@ -13,6 +13,18 @@
 
 
 $properties = array (
+  'allowedGroups' => 
+  array (
+    'name' => 'allowedGroups',
+    'desc' => 'nf_allowed_groups_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'Administrator',
+    'lexicon' => 'notify:properties',
+    'area' => '',
+  ),
   'batchDelay' => 
   array (
     'name' => 'batchDelay',

@@ -133,10 +133,9 @@ $language = !empty($sp['language'])
 
 $modx->lexicon->load($language . ':notify:default');
 
-
-
-/* abort if not previewing from 'mgr' */
-if (!$modx->user->isMember('Administrator') && (php_sapi_name() !== 'cli')) {
+$allowedGroups = $modx->getOption('allowedGroups', $scriptProperties, 'Administrator', true);
+$allowedGroups = array_map('trim',explode(',', $allowedGroups));
+if (!$modx->user->isMember($allowedGroups) && (php_sapi_name() !== 'cli')) {
     return '(' . $modx->user->get('username') . ') ' . $modx->lexicon('nf.unauthorized_access');
 }
 

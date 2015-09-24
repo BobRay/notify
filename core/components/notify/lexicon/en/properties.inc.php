@@ -72,6 +72,7 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['nf_allowed_groups_desc'] = 'Comma-separated list of groups allowed to use Notify; default:Administrator';
 $_lang['nf_inject_unsubscribe_url_desc'] = 'If set, adds an unsubscribe/manage preferences link to every email; default: Yes. Be aware that if you send bulk emails, such a link is required by USA law.';
 $_lang['nf_testMode_desc'] = 'Test mode -- Notify functions normally, but no emails are sent.
 ';
