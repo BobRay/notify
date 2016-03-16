@@ -23,7 +23,7 @@ $properties = array (
     ),
     'value' => 'Administrator',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'batchDelay' => 
   array (
@@ -35,7 +35,7 @@ $properties = array (
     ),
     'value' => '1',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'batchSize' => 
   array (
@@ -47,31 +47,7 @@ $properties = array (
     ),
     'value' => '25',
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'bitlyApiKey' => 
-  array (
-    'name' => 'bitlyApiKey',
-    'desc' => 'nf.bitly_api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'bitlyUsername' => 
-  array (
-    'name' => 'bitlyUsername',
-    'desc' => 'nf.bitly_username_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'debug' => 
   array (
@@ -83,19 +59,7 @@ $properties = array (
     ),
     'value' => false,
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'googleApiKey' => 
-  array (
-    'name' => 'googleApiKey',
-    'desc' => 'nf.google_api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'groupListChunkName' => 
   array (
@@ -107,7 +71,7 @@ $properties = array (
     ),
     'value' => 'sbsGroupListTpl',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'groups' => 
   array (
@@ -119,7 +83,7 @@ $properties = array (
     ),
     'value' => 'Subscribers',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'includeTVList' => 
   array (
@@ -131,7 +95,7 @@ $properties = array (
     ),
     'value' => '',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'includeTVs' => 
   array (
@@ -143,7 +107,7 @@ $properties = array (
     ),
     'value' => false,
     'lexicon' => 'Notify:Properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'injectUnsubscribeUrl' => 
   array (
@@ -155,7 +119,7 @@ $properties = array (
     ),
     'value' => true,
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'itemDelay' => 
   array (
@@ -167,55 +131,7 @@ $properties = array (
     ),
     'value' => '.51',
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'mailFrom' => 
-  array (
-    'name' => 'mailFrom',
-    'desc' => 'nf.mail_from_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'mailFromName' => 
-  array (
-    'name' => 'mailFromName',
-    'desc' => 'nf.mail_from_name_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'mailReplyTo' => 
-  array (
-    'name' => 'mailReplyTo',
-    'desc' => 'nf.mail_reply_to_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'mailSender' => 
-  array (
-    'name' => 'mailSender',
-    'desc' => 'nf.mail_sender_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'maxLogs' => 
   array (
@@ -227,67 +143,7 @@ $properties = array (
     ),
     'value' => '5',
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfEmailTplCustom' => 
-  array (
-    'name' => 'nfEmailTplCustom',
-    'desc' => 'nf.email_tpl_custom_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfSubscriberEmailTplCustom',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfEmailTplExisting' => 
-  array (
-    'name' => 'nfEmailTplExisting',
-    'desc' => 'nf.email_tpl_existing_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfSubscriberEmailTplExisting',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfEmailTplNew' => 
-  array (
-    'name' => 'nfEmailTplNew',
-    'desc' => 'nf.email_tpl_new_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfSubscriberEmailTplNew',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfFormTpl' => 
-  array (
-    'name' => 'nfFormTpl',
-    'desc' => 'nf.form_tpl_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfNotifyFormTpl',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfSubjectTpl' => 
-  array (
-    'name' => 'nfSubjectTpl',
-    'desc' => 'nf.subject_tpl_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfEmailSubjectTpl',
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'nfTestEmailAddress' => 
   array (
@@ -299,67 +155,7 @@ $properties = array (
     ),
     'value' => '',
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfTweetTplCustom' => 
-  array (
-    'name' => 'nfTweetTplCustom',
-    'desc' => 'nf.tweet_tpl_custom_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfTweetTplCustom',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfTweetTplExisting' => 
-  array (
-    'name' => 'nfTweetTplExisting',
-    'desc' => 'nf.tweet_tpl_existing_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfTweetTplExisting',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfTweetTplNew' => 
-  array (
-    'name' => 'nfTweetTplNew',
-    'desc' => 'nf.tweet_tpl_new_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfTweetTplNew',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfUnsubscribeTpl' => 
-  array (
-    'name' => 'nfUnsubscribeTpl',
-    'desc' => 'nf.unsubscribe_tpl_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'NfUnsubscribeTpl',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'nfUseMandrill' => 
-  array (
-    'name' => 'nfUseMandrill',
-    'desc' => 'nf.use_mandrill_desc',
-    'type' => 'combo-boolean',
-    'options' => 
-    array (
-    ),
-    'value' => false,
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'notifyFacebook' => 
   array (
@@ -371,7 +167,7 @@ $properties = array (
     ),
     'value' => false,
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'prefListChunkName' => 
   array (
@@ -383,7 +179,7 @@ $properties = array (
     ),
     'value' => 'sbsPrefListTpl',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'processTVs' => 
   array (
@@ -395,7 +191,7 @@ $properties = array (
     ),
     'value' => true,
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'profileAlias' => 
   array (
@@ -407,7 +203,7 @@ $properties = array (
     ),
     'value' => 'Profile',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'profileClass' => 
   array (
@@ -419,7 +215,7 @@ $properties = array (
     ),
     'value' => 'modUserProfile',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'requireAllTagsDefault' => 
   array (
@@ -431,7 +227,7 @@ $properties = array (
     ),
     'value' => false,
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'sortBy' => 
   array (
@@ -443,7 +239,7 @@ $properties = array (
     ),
     'value' => 'username',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'sortByAlias' => 
   array (
@@ -455,43 +251,7 @@ $properties = array (
     ),
     'value' => 'modUser',
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'subaccount' => 
-  array (
-    'name' => 'subaccount',
-    'desc' => 'subaccount_property_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'test',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'suprApiKey' => 
-  array (
-    'name' => 'suprApiKey',
-    'desc' => 'nf.supr_api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'suprUsername' => 
-  array (
-    'name' => 'suprUsername',
-    'desc' => 'nf.supr_username_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'tags' => 
   array (
@@ -503,7 +263,7 @@ $properties = array (
     ),
     'value' => '',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'testMode' => 
   array (
@@ -515,79 +275,7 @@ $properties = array (
     ),
     'value' => false,
     'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'tinyurlApiKey' => 
-  array (
-    'name' => 'tinyurlApiKey',
-    'desc' => 'nf.tinyurl_api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'tinyurlUsername' => 
-  array (
-    'name' => 'tinyurlUsername',
-    'desc' => 'nf.tinyurl_username_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'twitterConsumerKey' => 
-  array (
-    'name' => 'twitterConsumerKey',
-    'desc' => 'nf.twitter_consumer_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'twitterConsumerSecret' => 
-  array (
-    'name' => 'twitterConsumerSecret',
-    'desc' => 'nf.twitter_consumer_secret_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'twitterOauthSecret' => 
-  array (
-    'name' => 'twitterOauthSecret',
-    'desc' => 'nf.twitter_oauth_token_secret_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
-  ),
-  'twitterOauthToken' => 
-  array (
-    'name' => 'twitterOauthToken',
-    'desc' => 'nf.twitter_access_token_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'urlShorteningService' => 
   array (
@@ -598,50 +286,50 @@ $properties = array (
     array (
       0 => 
       array (
-        'value' => 'none',
         'text' => 'None (no shortening)',
+        'value' => 'none',
         'name' => 'None (no shortening)',
       ),
       1 => 
       array (
-        'value' => 'bitly',
         'text' => 'bit.ly',
+        'value' => 'bitly',
         'name' => 'bit.ly',
       ),
       2 => 
       array (
-        'value' => 'tinyurl',
         'text' => 'TinyUrl',
+        'value' => 'tinyurl',
         'name' => 'TinyUrl',
       ),
       3 => 
       array (
-        'value' => 'toly',
         'text' => 'to.ly',
+        'value' => 'toly',
         'name' => 'to.ly',
       ),
       4 => 
       array (
-        'value' => 'googl',
         'text' => 'goo.gl (Google)',
+        'value' => 'googl',
         'name' => 'goo.gl (Google)',
       ),
       5 => 
       array (
-        'value' => 'isgd',
         'text' => 'is.gd',
+        'value' => 'isgd',
         'name' => 'is.gd',
       ),
       6 => 
       array (
-        'value' => 'supr',
         'text' => 'su.pr (StumbleUpon)',
+        'value' => 'supr',
         'name' => 'su.pr (StumbleUpon)',
       ),
     ),
     'value' => 'none',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'useExtendedFields' => 
   array (
@@ -653,7 +341,7 @@ $properties = array (
     ),
     'value' => false,
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
   ),
   'userClass' => 
   array (
@@ -665,7 +353,319 @@ $properties = array (
     ),
     'value' => 'modUser',
     'lexicon' => 'notify:properties',
-    'area' => '',
+    'area' => 'Basic Settings',
+  ),
+  'mailFrom' => 
+  array (
+    'name' => 'mailFrom',
+    'desc' => 'nf.mail_from_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Email Settings',
+  ),
+  'mailFromName' => 
+  array (
+    'name' => 'mailFromName',
+    'desc' => 'nf.mail_from_name_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Email Settings',
+  ),
+  'mailReplyTo' => 
+  array (
+    'name' => 'mailReplyTo',
+    'desc' => 'nf.mail_reply_to_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Email Settings',
+  ),
+  'mailSender' => 
+  array (
+    'name' => 'mailSender',
+    'desc' => 'nf.mail_sender_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Email Settings',
+  ),
+  'nfUseMandrill' => 
+  array (
+    'name' => 'nfUseMandrill',
+    'desc' => 'nf.use_mandrill_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => 'Mandrill',
+  ),
+  'subaccount' => 
+  array (
+    'name' => 'subaccount',
+    'desc' => 'subaccount_property_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'test',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mandrill',
+  ),
+  'bitlyApiKey' => 
+  array (
+    'name' => 'bitlyApiKey',
+    'desc' => 'nf.bitly_api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'bitlyUsername' => 
+  array (
+    'name' => 'bitlyUsername',
+    'desc' => 'nf.bitly_username_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'googleApiKey' => 
+  array (
+    'name' => 'googleApiKey',
+    'desc' => 'nf.google_api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'suprApiKey' => 
+  array (
+    'name' => 'suprApiKey',
+    'desc' => 'nf.supr_api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'suprUsername' => 
+  array (
+    'name' => 'suprUsername',
+    'desc' => 'nf.supr_username_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'tinyurlApiKey' => 
+  array (
+    'name' => 'tinyurlApiKey',
+    'desc' => 'nf.tinyurl_api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'tinyurlUsername' => 
+  array (
+    'name' => 'tinyurlUsername',
+    'desc' => 'nf.tinyurl_username_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'twitterConsumerKey' => 
+  array (
+    'name' => 'twitterConsumerKey',
+    'desc' => 'nf.twitter_consumer_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'twitterConsumerSecret' => 
+  array (
+    'name' => 'twitterConsumerSecret',
+    'desc' => 'nf.twitter_consumer_secret_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'twitterOauthSecret' => 
+  array (
+    'name' => 'twitterOauthSecret',
+    'desc' => 'nf.twitter_oauth_token_secret_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'twitterOauthToken' => 
+  array (
+    'name' => 'twitterOauthToken',
+    'desc' => 'nf.twitter_access_token_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify API Keys',
+  ),
+  'nfEmailTplCustom' => 
+  array (
+    'name' => 'nfEmailTplCustom',
+    'desc' => 'nf.email_tpl_custom_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfSubscriberEmailTplCustom',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfEmailTplExisting' => 
+  array (
+    'name' => 'nfEmailTplExisting',
+    'desc' => 'nf.email_tpl_existing_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfSubscriberEmailTplExisting',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfEmailTplNew' => 
+  array (
+    'name' => 'nfEmailTplNew',
+    'desc' => 'nf.email_tpl_new_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfSubscriberEmailTplNew',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfFormTpl' => 
+  array (
+    'name' => 'nfFormTpl',
+    'desc' => 'nf.form_tpl_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfNotifyFormTpl',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfSubjectTpl' => 
+  array (
+    'name' => 'nfSubjectTpl',
+    'desc' => 'nf.subject_tpl_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfEmailSubjectTpl',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfTweetTplCustom' => 
+  array (
+    'name' => 'nfTweetTplCustom',
+    'desc' => 'nf.tweet_tpl_custom_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfTweetTplCustom',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfTweetTplExisting' => 
+  array (
+    'name' => 'nfTweetTplExisting',
+    'desc' => 'nf.tweet_tpl_existing_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfTweetTplExisting',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfTweetTplNew' => 
+  array (
+    'name' => 'nfTweetTplNew',
+    'desc' => 'nf.tweet_tpl_new_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfTweetTplNew',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
+  ),
+  'nfUnsubscribeTpl' => 
+  array (
+    'name' => 'nfUnsubscribeTpl',
+    'desc' => 'nf.unsubscribe_tpl_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => 'NfUnsubscribeTpl',
+    'lexicon' => 'notify:properties',
+    'area' => 'Notify Tpls',
   ),
 );
 
