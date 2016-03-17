@@ -403,6 +403,78 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Email Settings',
   ),
+  'mailgun.api_key' => 
+  array (
+    'name' => 'mailgun.api_key',
+    'desc' => 'mailgun.api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
+  'mailgun.domain' => 
+  array (
+    'name' => 'mailgun.domain',
+    'desc' => 'mailgun.domain_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
+  'mailgun.public_api_key' => 
+  array (
+    'name' => 'mailgun.public_api_key',
+    'desc' => 'mailgun.public_api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
+  'mailgun.sandbox_domain' => 
+  array (
+    'name' => 'mailgun.sandbox_domain',
+    'desc' => 'mailgun.sandbox_domain_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
+  'mailgun.use_mailgun' => 
+  array (
+    'name' => 'mailgun.use_mailgun',
+    'desc' => 'mailgun.use_mailgun_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
+  'mailgun.use_sandbox' => 
+  array (
+    'name' => 'mailgun.use_sandbox',
+    'desc' => 'mailgun.use_sandbox_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => true,
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
   'nfUseMandrill' => 
   array (
     'name' => 'nfUseMandrill',

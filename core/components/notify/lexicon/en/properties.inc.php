@@ -72,6 +72,12 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['mailgun.api_key_desc'] = 'Mailgun API key. Available on your Mailgun Dashboard.';
+$_lang['mailgun.domain_desc'] = 'Mailgun domain (sub-account) for sending from at Mailgun. Must be set up at Mailgun and verified. Also requires SPF and DKIM records on your server (and optionally CNAM record for tracking).';
+$_lang['mailgun.public_api_key_desc'] = 'Optional. Used only for utility to verify emails. Not necessary to send emails.';
+$_lang['mailgun.sandbox_domain_desc'] = 'Sandbox domain at Mailgun for testing. Must be set up at Mailgun.';
+$_lang['mailgun.use_mailgun_desc'] = 'Set to Yes to use Mailgun service to send email.';
+$_lang['mailgun.use_sandbox_desc'] = 'Use Mailgun Sandbox domain for testing rather than sending emails. Requires mailgun.sandbox_domain property to be set and Sandobox domain to be set up at Mailgun.';
 $_lang['nf_allowed_groups_desc'] = 'Comma-separated list of groups allowed to use Notify; default:Administrator';
 $_lang['nf_inject_unsubscribe_url_desc'] = 'If set, adds an unsubscribe/manage preferences link to every email; default: Yes. Be aware that if you send bulk emails, such a link is required by USA law.';
 $_lang['nf_testMode_desc'] = 'Test mode -- Notify functions normally, but no emails are sent.
