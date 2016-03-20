@@ -72,6 +72,7 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['mailgun.debug_desc'] = 'Write Mailgun debugging information to the MODX Error log.';
 $_lang['mailgun.api_key_desc'] = 'Mailgun API key. Available on your Mailgun Dashboard.';
 $_lang['mailgun.domain_desc'] = 'Mailgun domain (sub-account) for sending from at Mailgun. Must be set up at Mailgun and verified. Also requires SPF and DKIM records on your server (and optionally CNAM record for tracking).';
 $_lang['mailgun.public_api_key_desc'] = 'Optional. Used only for utility to verify emails. Not necessary to send emails.';

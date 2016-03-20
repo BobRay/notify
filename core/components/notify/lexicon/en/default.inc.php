@@ -69,6 +69,8 @@ $_lang['setting_nf_status_resource_id'] = 'Notify Status Resource ID';
 $_lang['setting_nf_status_resource_id_desc'] = 'ID of Notify Status Resource';
 
 /* Used in nfsendemail.class.php */
+$_lang['nf.no_mailgun_api_key'] = 'Mailgun API Key not set';
+$_lang['nf.no_mailgun_domain'] = 'Mailgun domain is not set';
 $_lang['nf.no_view_user_permission'] = 'User does not have view_user permission';
 $_lang['nf._no_single_id'] = 'No email or ID for single email';
 $_lang['nf.processing_batch'] = 'Processing Batch: ';

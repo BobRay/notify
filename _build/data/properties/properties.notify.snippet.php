@@ -415,6 +415,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Mailgun',
   ),
+  'mailgun.debug' => 
+  array (
+    'name' => 'mailgun.debug',
+    'desc' => 'mailgun.debug_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
   'mailgun.domain' => 
   array (
     'name' => 'mailgun.domain',
