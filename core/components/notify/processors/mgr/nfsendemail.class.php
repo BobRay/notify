@@ -23,10 +23,19 @@ class NfSendEmailProcessor extends modProcessor {
 
 
     public function initialize() {
-        $config = $this->modx->fromJSON($_SESSION['nf_config']);
+
+
+        $t = $_SESSION['nf_config'];
+
+        $config = $this->modx->fromJSON($t);
         $this->properties = array_merge($config, $this->properties);
-        $this->testMode = $this->getProperty('testMode',false);
         $this->debug = $this->getProperty('debug', false);
+
+        if ($this->debug) {
+            $this->modx->log(modx::LOG_LEVEL_ERROR, "\nProperties after merge\n" . print_r($this->properties, true));
+        }
+        unset ($t, $config);
+        $this->testMode = $this->getProperty('testMode',false);
         $this->injectUnsubscribeUrl = $this->getProperty('injectUnsubscribeUrl', true);
         $this->setCheckbox('send_tweet');
         $this->setCheckbox('send_bulk');
@@ -49,7 +58,7 @@ class NfSendEmailProcessor extends modProcessor {
      * @param $percent int - percentage complete
      * @param $text1 string - First text message
      * @param $text2 string - Second text message
-     * @param $pb_target modChunk - chunk used to record the data
+     * @param $pb_target modChunk (object) - chunk used to record the data
      */
     public  function update($percent, $text1, $text2, &$pb_target) {
 
@@ -76,15 +85,13 @@ class NfSendEmailProcessor extends modProcessor {
     public function process($scriptProperties = array()) {
 
         if($this->debug) {
-            $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
 
             if (isset($this->properties)) {
                 $content =  print_r($this->properties, true);
             } else {
                 $content = 'No Props';
             }
-            $chunk->setContent($content);
-            $chunk->save();
+            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n Content: " .$content);
         }
 
         $sendBulk = (bool) $this->getProperty('send_bulk', false);
@@ -93,6 +100,7 @@ class NfSendEmailProcessor extends modProcessor {
         if ($sendBulk) {
             $this->sendBulk();
         }
+        $singleId = null;
 
         if ($sendSingle) {
             $singleId = $this->getProperty('single_id', 'admin');
@@ -107,7 +115,8 @@ class NfSendEmailProcessor extends modProcessor {
 
         $results["status"] = empty($this->errors)? "Yes" : "No";
         $results["errors"] = $this->errors;
-        $results["successMessages"] = $this ->successMessages;
+        $results["successMessages"] = $this->successMessages;
+
         return $this->modx->toJSON($results);
     }
 
@@ -115,6 +124,7 @@ class NfSendEmailProcessor extends modProcessor {
         $singleUser = $singleId !== NULL;
         $fp = NULL;
         $mx = NULL;
+        $mg = NULL;
         $batchSize = $this->getProperty('batchSize', 25);
         $batchDelay = $this->getProperty('batchDelay', 1);
         $itemDelay = (float) $this->getProperty('itemDelay', .51);
@@ -123,6 +133,11 @@ class NfSendEmailProcessor extends modProcessor {
         $profileClass = $this->getProperty('profileClass', 'modUserProfile');
         $profileClass = empty($profileClass) ? 'modUserProfile' : $profileClass;
         $useMandrill = $this->getProperty('useMandrill', false);
+        $useMailgun = $this->modx->getOption('mailgun.use_mailgun', $this->properties,
+            $this->modx->getOption('mailgun.use_mailgun', null), true);
+        if ($useMailgun && $useMandrill) {
+            $this->setError('Cannot use both Mandrill and Mailgun');
+        }
         $emailText = $this->emailText;
         if (empty($emailText)) {
             $this->setError('No Email Text');
@@ -165,7 +180,48 @@ class NfSendEmailProcessor extends modProcessor {
                 $mx->init();
                 $this->userFields = $mx->getUserPlaceholders();
             }
-        } else {
+        } elseif ($useMailgun) {
+            /** @var $mg MailgunX */
+            require_once $this->modx->getOption('nf.core_path', NULL,
+                    MODX_CORE_PATH . 'components/notify/') .
+                'model/notify/mailgunx.class.php';
+
+            $apiKey = $this->modx->getOption('mailgun.api_key', $this->properties,
+                $this->modx->getOption('mailgun.api_key', null), true);
+            $useSandbox = $this->modx->getOption('mailgun.use_sandbox', $this->properties, false);
+            if ($useSandbox) {
+
+                $domain = $this->modx->getOption('mailgun.sandbox_domain', $this->properties,
+                    $this->modx->getOption('mailgun.sandbox_domain', null), true );
+
+            } else {
+                $domain = $this->modx->getOption('mailgun.domain', $this->properties,
+                    $this->modx->getOption('mailgun.domain', null), true);
+            }
+            if (empty($apiKey)) {
+                $this->setError($this->modx->lexicon('nf.no_mailgun_api_key'));
+                return false;
+            } elseif (empty($domain)) {
+                $this->setError($this->modx->lexicon('nf.no_mailgun_domain'));
+                return false;
+            } else {
+                $this->properties['domain'] = $domain;
+                $this->properties['html'] = $this->emailText;
+                $this->html2text->set_html($this->emailText);
+                $text = $this->html2text->get_text();
+                $this->properties['text'] = $text;
+                unset($text);
+                $mg = new MailgunX($this->modx, $apiKey, $this->properties);
+                if (!$mg instanceof MailgunX) {
+                    $this->setError($this->modx->lexicon('nf.no_mandrill'));
+
+                    return false;
+                }
+
+                $mg->init($this->properties);
+                $this->userFields = $mg->getUserPlaceholders();
+            }
+        }  else {
             $this->userFields = $this->getUserFields($emailText);
             /**
              * Initialize the modx Mailer
@@ -184,6 +240,8 @@ class NfSendEmailProcessor extends modProcessor {
         }
         if ($useMandrill) {
             $this->logFile .= "(Mandrill)";
+        } elseif ($useMailgun) {
+            $this->logFile .= "(Mailgun)";
         }
         $fp = fopen($this->logFile, 'w');
 
@@ -254,7 +312,7 @@ class NfSendEmailProcessor extends modProcessor {
             $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
         }
         if ($this->debug) {
-            echo "<br>Total Count: " . $totalCount;
+            $this->modx->log(modX::LOG_LEVEL_ERROR, "\nTotal Count: " . $totalCount);
         }
         if ($totalCount % $batchSize) {
             $batches = floor($totalCount / $batchSize) + 1;
@@ -266,12 +324,16 @@ class NfSendEmailProcessor extends modProcessor {
         $offset = 0;
         $batchNumber = 1;
         $stepSize = floor(100 / $batches);
+        /** @var $statusChunk modChunk */
         $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
         $this->update(0, "", '', $statusChunk);
         $processMsg1 = $this->modx->lexicon('nf.processing_batch');
         $processMsg2 = $this->modx->lexicon('nf.users_emailed_in_batch');
         $finishedMsg = $this->modx->lexicon('nf.finished');
         while ($offset < $totalCount) {
+            if ($useMailgun) {
+                $mg->clearUserData();
+            }
             // sleep(4);  ???
             $i++;
 
@@ -279,17 +341,17 @@ class NfSendEmailProcessor extends modProcessor {
             // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"' . $profileAlias . '":{}', $c);
-            // echo "<br>User Count: " . count($users);
+
             $offset += $batchSize;
 
             if ($this->debug) {
-                $msg = "\n\n<br />" . $i . "  Count: " . count($users) .
-                    "\n<br />Offset: " . $offset . "\n<br />BatchSize: " .
+                $msg = "\n\n" . $i . "  Count: " . count($users) .
+                    "\nOffset: " . $offset . "\nBatchSize: " .
                     $batchSize;
-                echo($msg);
+                $this->modx->log(modX::LOG_LEVEL_ERROR, $msg);
             }
             $sentCount = 0;
-            
+
             $requireAllTags=$this->getProperty('require_all_tags', false);
             foreach ($users as $user) {
                 /** @var $user modUser */
@@ -303,6 +365,7 @@ class NfSendEmailProcessor extends modProcessor {
                 }
                 /* Now we have a user to send to */
                 $fields = array();
+                $fields['userid'] = $user->get('id');
                 $fields['username'] = $username;
                 if ($this->injectUnsubscribeUrl) {
                     $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
@@ -333,6 +396,8 @@ class NfSendEmailProcessor extends modProcessor {
                     /* This will not trigger an error because the message
                        is not sent here */
                     $this->addUserToMandrill($fields, $mx);
+                } elseif ($useMailgun) {
+                    $this->addUserToMailgun($fields, $mg);
                 } else {
                     /* Note: testMode is handled in sendMail */
                     if ($this->sendMail($fields)) {
@@ -359,7 +424,7 @@ class NfSendEmailProcessor extends modProcessor {
 
                 }
                 if ($this->debug) {
-                    echo "\n" . $user->get('username') . ' -- ' . $profile->get('email');
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $user->get('username') . ' -- ' . $profile->get('email'));
                 }
                 $sentCount++;
 
@@ -392,8 +457,23 @@ class NfSendEmailProcessor extends modProcessor {
                     }
                 }
                 if ($this->debug) {
-                    echo "\n<br />" . $this->modx->lexicon('nf.full_response') . "\n<br /><pre>" . print_r($results, true) . "</pre>\n";
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $this->modx->lexicon('nf.full_response') . "\n" . print_r($results, true) . "\n");
                 }
+            } elseif ($useMailgun) {
+                $results = $this->testMode
+                    ? array()
+                    : $mg->sendBatch();
+                if ($mg->hasError()) {
+                    $errors = $mg->getErrors();
+                    $this->successMessages = array();
+                    foreach ($errors as $error) {
+                        $this->setError($error);
+                    }
+                }
+                if ($this->debug) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $this->modx->lexicon('nf.full_response') . "\n" . print_r($results, true) . "\n");
+                }
+
             }
             $totalSent += $sentCount;
 
@@ -409,6 +489,8 @@ class NfSendEmailProcessor extends modProcessor {
             $msg = str_replace('[[+nf_number]]', $totalSent, $msg);
             if ($useMandrill) {
                 $msg .= ' ' . $this->modx->lexicon('nf.using') . ' Mandrill';
+            } elseif ($useMailgun) {
+                $msg .= ' ' . $this->modx->lexicon('nf.using') . ' Mailgun';
             }
             $this->setSuccess($msg);
             if ($this->testMode) {
@@ -563,14 +645,20 @@ class NfSendEmailProcessor extends modProcessor {
      */
     protected function addUserToMandrill($fields, &$mx) {
         /** @var $mx MandrillX */
-        if ($this->debug) {
-            echo $this->modx->lexicon('nf.send_user_mandrill') .
-                ': ' . $fields['username'];
-        }
         $mx->addUser($fields);
-
-
     }
+
+    /**
+     * Add user's info to the Mailgun Message array
+     *
+     * @param $fields array - user fields with values
+     */
+    protected function addUserToMailgun($fields, &$mx) {
+        /** @var $mx MandrillX */
+        $email = $fields['email'];
+        $mx->addUser($email, $fields);
+    }
+
 
     public function setError($msg) {
         $this->errors[] = $msg;
