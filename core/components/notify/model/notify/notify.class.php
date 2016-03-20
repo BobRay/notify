@@ -502,7 +502,13 @@ class Notify
      */
     public function displayForm() {
         $testEmailAddress = $this->modx->getOption('nfTestEmailAddress', $this->props, '');
-        $testEmailAddress = empty($testEmailAddress)? $this->modx->user->get('username'): $testEmailAddress;
+        if (empty($nfTestEmailAddress)) {
+            $profile = $this->modx->user->getOne('Profile');
+            if ($profile) {
+                $testEmailAddress = $profile->get('email');
+                unset($profile);
+            }
+        }
 
         $this->modx->setPlaceholder('nf_test_email_address', $testEmailAddress);
 
