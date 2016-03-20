@@ -56,8 +56,7 @@ $(document).ready(function (event) {
                     $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                   alert("Status: " + textStatus);
-                   alert("Error: " + errorThrown);
+                   alert("Send Tweet Error: " + errorThrown);
                 }
 
 
@@ -97,8 +96,7 @@ $(document).ready(function (event) {
                    $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                   alert("Status: " + textStatus);
-                   alert("Error: " + errorThrown);
+                   alert("Send Test Email Error: " + errorThrown);
                 }
                 });
         }
@@ -147,9 +145,7 @@ $(document).ready(function (event) {
                     $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                   console.log(XMLHttpRequest);
-                   alert("Status: " + textStatus);
-                   alert("Error: " + errorThrown);
+                   alert("Batch send Error: " + errorThrown);
                 }
             });
 
