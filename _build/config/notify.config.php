@@ -501,6 +501,7 @@ $components = array(
      * Set to array() if there are no classes. */
     'classes' => array(
         'Notify' => 'notify:notify',
+        'MailgunX' => 'notify:mailgunx',
         'UrlShortener',
     ),
 
