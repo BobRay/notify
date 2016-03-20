@@ -282,6 +282,7 @@ class NfSendEmailProcessor extends modProcessor {
         )));
         $c->sortby($this->modx->escape('username'), 'ASC');
         if ($singleUser) {
+            $c->limit(1);
             /* Try to retrieve user, first by username, then  email */
             if ($u = $this->modx->getObject('modUser', array('username' => $singleId))) {
                 $c->where(array('username' => $singleId));
