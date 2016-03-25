@@ -218,7 +218,7 @@ class NfSendEmailProcessor extends modProcessor {
                     return false;
                 }
 
-                $mg->init($this->properties);
+                $mg->init();
                 $this->userFields = $mg->getUserPlaceholders();
             }
         }  else {
@@ -463,7 +463,7 @@ class NfSendEmailProcessor extends modProcessor {
             } elseif ($useMailgun) {
                 $results = $this->testMode
                     ? array()
-                    : $mg->sendBatch();
+                    : $mg->sendBatch(); // xxx
                 if ($mg->hasError()) {
                     $errors = $mg->getErrors();
                     $this->successMessages = array();
