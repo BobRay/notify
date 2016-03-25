@@ -42,6 +42,7 @@ Class MailgunX extends Mailgun {
     var $messageReplyTo = '';
     /** @var $recipientVariables array - array of keys and values for merge tags */
     var $recipientVariables = array();
+    var $testMode = false;
 
     /** @var string $domain - Mailgun Sending domain - can be set to real domain or sandbox domain in calling function */
     var $domain = '';
@@ -78,8 +79,8 @@ Class MailgunX extends Mailgun {
         $this->messageFromName = $this->modx->getOption('from_name', $this->props, '');
         $this->emailArray = $this->modx->getOption('emailArray', $this->props, array());
         $this->setUserPlaceholders($this->messageHTML);
-
         $this->recipientVariables = array();
+        $this->testMode = $this->modx->getOption('testMode', $this->props, false);
     }
 
     public function clearUserData() {
@@ -209,6 +210,10 @@ Class MailgunX extends Mailgun {
             'o:tag' => array($tag),
             'h:Reply-To' => $this->messageReplyTo,
         );
+
+        if ($this->testMode) {
+            $fields['o:testmode'] = true;
+        }
         if ($this->debug) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\nFinal Fields\n"  . print_r($fields, true));
         }
