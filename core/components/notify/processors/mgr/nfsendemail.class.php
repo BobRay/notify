@@ -137,10 +137,12 @@ class NfSendEmailProcessor extends modProcessor {
             $this->modx->getOption('mailgun.use_mailgun', null), true);
         if ($useMailgun && $useMandrill) {
             $this->setError('Cannot use both Mandrill and Mailgun');
+            return false;
         }
         $emailText = $this->emailText;
         if (empty($emailText)) {
             $this->setError('No Email Text');
+            return false;
         }
         if ($this->injectUnsubscribeUrl) {
             $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
@@ -162,7 +164,6 @@ class NfSendEmailProcessor extends modProcessor {
             $apiKey = $this->modx->getOption('mandrill_api_key');
             if (empty($apiKey)) {
                 $this->setError($this->modx->lexicon('nf.no_mandrill_api_key'));
-
                 return false;
             } else {
                 $this->properties['html'] = $this->emailText;
@@ -173,7 +174,6 @@ class NfSendEmailProcessor extends modProcessor {
                 $mx = new MandrillX($this->modx, $apiKey, $this->properties);
                 if (!$mx instanceof MandrillX) {
                     $this->setError($this->modx->lexicon('nf.no_mandrill'));
-
                     return false;
                 }
 
@@ -214,7 +214,6 @@ class NfSendEmailProcessor extends modProcessor {
                 $mg = new MailgunX($this->modx, $apiKey, $this->properties);
                 if (!$mg instanceof MailgunX) {
                     $this->setError($this->modx->lexicon('nf.no_mandrill'));
-
                     return false;
                 }
 
@@ -311,6 +310,7 @@ class NfSendEmailProcessor extends modProcessor {
         $totalCount = $this->modx->getCount('modUser', $c);
         if (! $totalCount) {
             $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
+            return false;
         }
         if ($this->debug) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, "\nTotal Count: " . $totalCount);
@@ -456,6 +456,7 @@ class NfSendEmailProcessor extends modProcessor {
                     foreach ($errors as $error) {
                         $this->setError($error);
                     }
+                    return false;
                 }
                 if ($this->debug) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $this->modx->lexicon('nf.full_response') . "\n" . print_r($results, true) . "\n");
@@ -470,6 +471,7 @@ class NfSendEmailProcessor extends modProcessor {
                     foreach ($errors as $error) {
                         $this->setError($error);
                     }
+                    return false;
                 }
                 if ($this->debug) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $this->modx->lexicon('nf.full_response') . "\n" . print_r($results, true) . "\n");
