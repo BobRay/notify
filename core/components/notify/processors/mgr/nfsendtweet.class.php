@@ -16,8 +16,10 @@ class NfSendTweetProcessor extends modProcessor {
 
 
     public function initialize() {
-        $config = $this->modx->fromJSON($_SESSION['nf_config']);
-        $this->properties = array_merge($this->properties, $config);
+        if (isset($_SESSION['nf_config'])) {
+            $config = $this->modx->fromJSON($_SESSION['nf_config']);
+            $this->properties = array_merge($this->properties, $config);
+        }
         $this->testMode = $this->getProperty('testMode',false);
         $this->debug = $this->getProperty('debug', false);
         return true;
