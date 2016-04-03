@@ -1,4 +1,6 @@
 <?php
+
+use Mailgun\Mailgun;
 /**
  * MailgunX class file for Notify extra
  *
@@ -20,26 +22,83 @@
  *
  * @package notify
  */
+if (! interface_exists('MailService')) {
 
-require_once dirname(dirname(__FILE__)) . '/mailgun/vendor/autoload.php';
+    interface MailService {
 
-use Mailgun\Mailgun;
+        /* Sets $this->modx, $this->properties, and $this->apiKey */
+        public function __construct(&$modx, $properties);
 
-Class MailgunX extends Mailgun {
+        /* Initialize data fields */
+        public function init();
+
+        /* Clears User Data between batches */
+        public function clearUserData();
+
+        /* Adds message to $this->errors */
+        public function setError($msgString);
+
+        /* Returns $this->errors */
+        public function getErrors();
+
+        /* Returns ! empty($this->errors) */
+        public function hasError();
+
+        /* Allows setting $this->domain from outside class - often unused */
+        public function setdomain($domain);
+
+        /* Allows setting userPlaceholders (interior part of merge tags) from outside - often set in the processor */
+        /**
+         * @param $phArray
+         * @return mixed
+         */
+        public function setUserPlaceholders($phArray);
+
+        /* Adds a user and the user fields in preparation for sendBatch */
+        public function addUser($fields);
+
+        /* Converts merge field tags to the form used by the mail service */
+        function prepareTpl($tplString);
+
+        /* Returns array of user placeholders (interior part of merge-tags) */
+        public function getUserPlaceholders();
+
+        /* Send a batch of emails through the service */
+        public function sendBatch();
+
+        /* Set mail fields common to all messages line from, subject, etc.) in $this->mailFields */
+        public function setMailFields($fields);
+
+        /* Sets header fields like Reply-To in $this->headerFields */
+        public function setHeaderFields($fields);
+
+        public function getProperty($k, $default = null);
+    }
+}
+
+// For future autoloader
+// require_once dirname(dirname(__FILE__)) . '/mailgun/vendor/autoload.php';
+
+
+
+Class MailgunX extends Mailgun implements MailService {
     var $debug;
     
-    var $props; /* ScriptProperties */
-    
+    var $properties; /* ScriptProperties */
+
+
     /** @var $mailgunPublicApiKey string - Used only for verifying emails, not for sending them */
     var $mailgunPublicApiKey = '';
     /** @var $emailArray array - used internally to store recipients' email addresses */
     var $emailArray = array();
-    var $messageHTML = '';
+    // var $messageHTML = '';
     var $messageText = '';
     var $messageSubject = '';
     var $messageFrom = '';
     var $messageFromName = '';
     var $messageReplyTo = '';
+    var $headerFields = array();
+    var $mailFields = array();
     /** @var $recipientVariables array - array of keys and values for merge tags */
     var $recipientVariables = array();
     var $testMode = false;
@@ -50,46 +109,66 @@ Class MailgunX extends Mailgun {
     var $userPlaceholders = array();
     /** @var  $modx modX */
     var $modx;
+    var $client = null; // instance of Mailgun class
 
     var $errors = array();
+    var $apiKey = null;
 
-
-    function __construct(&$modx, $apiKey, &$props) {
+    function __construct(&$modx, $props) {
         $this->modx =& $modx;
-        $this->props = &$props;
-        parent::__construct($apiKey);
+        $this->properties =& $props;
+        $this->apiKey = $this->modx->getOption('mailgun.api_key', $this->properties,
+            $this->modx->getOption('mailgun.api_key', null), true);
+        parent::__construct($this->apiKey);
+
     }
 
     public function init() {
 
-        $this->debug = $this->modx->getOption('mailgun.debug', $this->props, false);
+        $useSandbox = $this->modx->getOption('mailgun.use_sandbox', $this->properties, false);
+        if ($useSandbox) {
+
+            $this->domain = $this->modx->getOption('mailgun.sandbox_domain', $this->properties,
+                $this->modx->getOption('mailgun.sandbox_domain', null), true);
+
+        } else {
+            $this->domain = $this->modx->getOption('mailgun.domain', $this->properties,
+                $this->modx->getOption('mailgun.domain', null), true);
+        }
+        if (empty($this->apiKey)) {
+            $this->setError($this->modx->lexicon('nf.no_mailgun_api_key'));
+            return false;
+        } elseif (empty($this->domain)) {
+            $this->setError($this->modx->lexicon('nf.no_mailgun_domain'));
+            return false;
+        }
+
+        $this->debug = $this->modx->getOption('mailgun.debug', $this->properties, false);
         if ($this->debug) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, "\n **********  MailgunX class **********\n");
         }
-        $this->domain = $this->modx->getOption('domain', $this->props, '');
 
         $this->domain = empty($this->domain) ? MODX_HTTP_HOST : $this->domain;
-        $this->mailgunPublicApiKey = $value = $this->modx->getOption('mailgun.public_api_key', $this->props);
-        $this->messageHTML = $this->modx->getOption('html', $this->props, '');
-        $this->messageText = $this->modx->getOption('text', $this->props, '');
-        $this->messageSubject = $this->modx->getOption('mail_subject', $this->props, '');
-        $this->messageFrom = $this->modx->getOption('from_email', $this->props, '');
-        $this->messageSubject = $this->modx->getOption("mail_subject", $this->props, '');
-        $this->messageReplyTo = $this->modx->getOption('reply_to', $this->props, '');
-        $this->messageFromName = $this->modx->getOption('from_name', $this->props, '');
-        $this->emailArray = $this->modx->getOption('emailArray', $this->props, array());
-        $this->setUserPlaceholders($this->messageHTML);
+        $this->mailgunPublicApiKey = $value = $this->modx->getOption('mailgun.public_api_key', $this->properties);
+
+        $this->emailArray = $this->modx->getOption('emailArray', $this->properties, array());
+
         $this->recipientVariables = array();
-        $this->testMode = $this->modx->getOption('testMode', $this->props, false);
+        $this->testMode = $this->modx->getOption('testMode', $this->properties, false);
+        return true;
     }
 
     public function clearUserData() {
         $this->toArray = array();
         $this->recipientVariables = array();
     }
+    
+    public function setError($msg) {
+        $this->errors[] = $msg;
+    }
 
     public function hasError() {
-        return (empty($this->errors));
+        return (!empty($this->errors));
     }
 
     public function getErrors() {
@@ -108,16 +187,60 @@ Class MailgunX extends Mailgun {
 
 
     /**
-     * @param $email string - User's naked email address (<email> doesn't work)
-     * @param array $fields array() - array of user merge variables:
-     *     array(
-     *         'first' => 'Bob',
-     *         'last' => 'Ray',
-     *     );
+     * @param $pArray
      *
+     *  Sets the array of the actual placeholders used in the message (not their values).
+     *  Sent from the processor and used in addUser().
+     */
+
+    public function setUserPlaceholders($pArray){
+        $this->userPlaceholders = $pArray;
+    }
+
+    public function setHeaderFields($fields = array()) {
+
+        foreach($fields as $k => $v) {
+            $this->headerFields['h:' . $k] = $v;
+        }
+    }
+
+    /**
+     * Sets fields common to all messages - change keys to what the service expects
+     * @param $fields array
+     */
+    public function setMailFields($fields) {
+        $this->mailFields = array(
+            'from' => $this->modx->getOption('from', $fields, ''),
+            'subject' => $this->modx->getOption('subject',$fields, ''),
+            'text' => $this->modx->getOption('text', $fields, ''),
+            'html' => $this->modx->getOption('html', $fields, ''),
+        );
+
+    }
+
+
+    /**
+     *
+     * @param array $fields array() - array of email plus user merge variables:
+     *
+     *   array(
+     *      'email' => 'JoeBlow@gmail.com',
+     *      'first' => 'Joe',
+     *      'last' => 'Blow',
+     *   );
+     *
+     *   sets recipientVariables like this:
+     *     $recipientVariables['JoeBlow@gmail.com'] =
+     *         array(
+     *             'first' => 'Joe',
+     *             'last' => 'Blow',
+     *         );
+     *  Will be converted to this JSON before sent:
+     *  'recipient-variables' = '{"JoeBlow@gmail.com":{"first":"Joe","last":"Blow"}}';
      *     Must match the merge variable placeholders in the Tpl chunk
      */
-    public function addUser($email, $fields = array()) {
+    public function addUser($fields = array()) {
+        $email = $fields['email'];
         $userFields = $this->userPlaceholders;
         $userVariables = array();
 
@@ -128,8 +251,10 @@ Class MailgunX extends Mailgun {
             }
         }
 
-
+        /* Array of emails */
         $this->emailArray[] = $email;
+
+        /* Add recipient variables to $this->recipientVariables */
         if (!empty ($userVariables)) {
             $this->recipientVariables[$email] = $userVariables;
         }
@@ -148,7 +273,7 @@ Class MailgunX extends Mailgun {
      * @return string - Same text with tags converted to Mailgun-style
      *    tags: %recipient.tagName%
      */
-    public function _prepareTpl($text) {
+    public function prepareTpl($text) {
         /*$chunk = $modx->getObject('modChunk', array('name' => $tpl));
         $text = $chunk->getContent();*/
         $text = str_replace('{{+', '%recipient.', $text);
@@ -160,26 +285,6 @@ Class MailgunX extends Mailgun {
         return $text;
     }
 
-    /**
-     *  Sets the array of user placeholder names used in the tpl chunk
-     *
-     * @param $tpl
-     */
-    public function setUserPlaceholders($tpl) {
-
-        if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\n TPL in setUserPlaceholders\n" . $tpl);
-        }
-        $pattern = '#\{\{\+([a-zA-Z_\-]+?)\}\}#';
-        preg_match_all($pattern, $tpl, $matches);
-
-        $this->userPlaceholders = isset($matches[1])
-            ? $matches[1]
-            : array();
-        if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\nUser Placeholders\n" .  print_r($this->userPlaceholders, true));
-        }
-    }
 
     /**
      * Gets the array of user placeholder names used in the tpl chunk
@@ -192,24 +297,15 @@ Class MailgunX extends Mailgun {
 
 
     public function sendBatch() {
-        $this->messageHTML = $this->_prepareTpl($this->messageHTML);
-        if (empty($this->messageText) && (!empty($this->messageHTML))) {
-            $this->messageText = strip_tags(preg_replace('/<br\s?\/?>/i', "\r\n", $this->messageHTML));
-        } else {
-            $this->messageText = $this->_prepareTpl($this->messageText);
-        }
+
         $tag = str_replace(array('/', ' '), array('-', '_'), strftime('%c'));
 
-        $fields = array(
-            'to' => implode(', ', $this->emailArray),
-            'from' => $this->messageFrom,
-            'subject' => $this->messageSubject,
-            'text' => $this->messageText,
-            'html' => $this->messageHTML,
-            'recipient-variables' => $this->modx->toJSON($this->recipientVariables),
-            'o:tag' => array($tag),
-            'h:Reply-To' => $this->messageReplyTo,
-        );
+        $fields = $this->mailFields;
+        $fields['to'] = implode(', ', $this->emailArray);
+        if (! empty($this->headerFields)) {
+            $fields = array_merge($fields, $this->headerFields);
+        }
+        $fields['recipient-variables'] = $this->modx->toJSON($this->recipientVariables);
 
         if ($this->testMode) {
             $fields['o:testmode'] = true;
@@ -222,5 +318,16 @@ Class MailgunX extends Mailgun {
         $response = $this->sendMessage($this->domain, $fields);
         return $response;
 
+    }
+
+
+    /**
+     * Get a specific property.
+     * @param string $k
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getProperty($k, $default = null) {
+        return array_key_exists($k, $this->properties) ? $this->properties[$k] : $default;
     }
 }
