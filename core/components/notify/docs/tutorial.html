@@ -219,8 +219,7 @@ $modx->sendRedirect($url);
 
 <h3>Posting Updates to Facebook</h3>
         
-<p>Notify does not post directly to Facebook, but you can set
-up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selective Twitter</a> in about 30 seconds. Once you've done that, simply add the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property of the Notify snippet, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. You can remove it manually if you don't want the Tweet to go to Facebook.</p>
+<p>Notify does not post directly to Facebook, but you can set up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selective Tweets</a> in about 30 seconds. Once you've done that, simply add the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property of the Notify snippet, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. You can remove it manually if you don't want the Tweet to go to Facebook.</p>
 
 <p>You can also use the <a href="https://apps.facebook.com/twitter/">Twitter App</a> if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>
 
@@ -245,7 +244,7 @@ up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selecti
 
 <p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
 
-<p>If no emails are being sent, install the QuickEmail package to help diagnose your problem sending emails.</p>
+<p>If no emails are being sent using the modMailX service, install the QuickEmail package to help diagnose your problem sending emails.</p>
 
 <a name="propertiesTable"></a>
 
@@ -340,6 +339,11 @@ up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selecti
     <td>(optional) EMAIL_SENDER setting for email</td>
     <td>emailsender System Setting</td>
 </tr>
+    <tr>
+        <td>mailService</td>
+        <td>Which mail service to use: modMailX (MODX mail system), MailgunX, MandrillX</td>
+        <td>modMailX</td>
+    </tr>
 <tr>
     <td>maxLogs</td>
     <td>Set this to limit the number of email logs kept. The oldest one will be deleted. Set to 0 for unlimited logs</td>
@@ -402,7 +406,7 @@ up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selecti
 </tr>
 <tr>
     <td>notifyFacebook</td>
-    <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App</td>
+    <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the <a href="https://apps.facebook.com/selectivetwitter/">Facebook Selective Tweets App</a></td>
     <td></td>
 </tr>
 <tr>
