@@ -193,7 +193,7 @@ $modx->sendRedirect($url);
 
 <p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs.</p>
         
-<p>When using Mandrill, only a minimal local log is kept since there is a much better log kept for you at Mandrill with some sophisticated analytics. The log will have the date and time, resource pagetitle, and Mandrill in the filename, and only the message itself as the log content.</p>
+<p>When using Mandrill or Mailgun, only a minimal local log is kept since those services provide a much better log with some sophisticated analytics. The local log will have the date and time, resource pagetitle, and the mail service in the filename, and only the message itself as the log content.</p>
 
 <h3>Setting the Notify Properties</h3>
 

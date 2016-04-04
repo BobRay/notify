@@ -517,7 +517,7 @@ class NfSendEmailProcessor extends modProcessor {
             $maxLogs = $this->getProperty('maxLogs', 5);
             $dir = $this->corePath . 'notify-logs';
             if ($maxLogs != '0') {
-                $this->removeOldestFile($dir, $maxLogs);
+                $this->removeOldFiles($dir, $maxLogs);
             }
             fclose($fp);
         }
@@ -578,18 +578,21 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
 
-    public function removeOldestFile($dir, $maxLogs) {
+    public function removeOldFiles($dir, $maxLogs) {
         $files = glob($dir . '/*.*');
 
-        if (count($files) > $maxLogs) {
+        $over = count($files) - $maxLogs;
+
+        if ($over > 0) {
             array_multisort(
                 array_map('filemtime', $files),
                 SORT_NUMERIC,
                 SORT_ASC,
                 $files
             );
-
-            unlink($files[0]);
+            for ($i = 0; $i < $over; $i ++) {
+                unlink($files[$i]);
+            }
         }
     }
 
