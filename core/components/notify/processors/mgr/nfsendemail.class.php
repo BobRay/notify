@@ -69,10 +69,10 @@ class NfSendEmailProcessor extends modProcessor {
         $apiKey = $this->getProperty($shortName . '.api_key', '');
         $this->properties['apiKey'] = $apiKey;
         if ($this->mailServiceClass != 'modMailX' && empty($apiKey)) {
-            $this->setError('nf.missing_api_key~~Missing API key');
+            $this->setError('nf.missing_api_key');
         }
         if (! file_exists($filename)) {
-            $this->setError($this->modx->lexicon('nf.processor_nf~~Could not find mail service class at :')
+            $this->setError($this->modx->lexicon('nf.processor_nf')
                 . $filename);
             return false;
         } else {
@@ -80,7 +80,7 @@ class NfSendEmailProcessor extends modProcessor {
         }
         $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
         if (! $this->mailService instanceof $this->mailServiceClass) {
-            $this->setError($this->modx->lexicon('nf.failed_ms_instantation~~Could not instantiate Mail Service: ')
+            $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
                 . $this->mailServiceClass);
             return false;
         }
@@ -185,21 +185,21 @@ class NfSendEmailProcessor extends modProcessor {
 
 
         if (empty($fields['html'])) {
-            $this->setError(('nf.empty_message~~Message Body (emailText) is empty'));
+            $this->setError(('nf.empty_message'));
             $success = false;
         }
 
         if (empty($fields['text'])) {
-            $this->setError(('nf.empty_text~~Message Text is empty'));
+            $this->setError(('nf.empty_text'));
             $success = false;
         }
 
         if (empty($fields['subject'])) {
-            $this->setError(('nf.empty_subject~~email_subject field is empty'));
+            $this->setError(('nf.empty_subject'));
             $success = false;
         }
         if (empty($fields['from'])) {
-            $this->setError(('nf.empty_from~~email_from field is empty'));
+            $this->setError(('nf.empty_from'));
             $success = false;
         }
 

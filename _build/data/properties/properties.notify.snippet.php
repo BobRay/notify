@@ -133,6 +133,36 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Basic Settings',
   ),
+  'mailService' => 
+  array (
+    'name' => 'mailService',
+    'desc' => 'nf.mail_service_desc',
+    'type' => 'list',
+    'options' => 
+    array (
+      0 => 
+      array (
+        'text' => 'modMailX',
+        'value' => 'modMailX',
+        'name' => 'modMailX',
+      ),
+      1 => 
+      array (
+        'text' => 'MailgunX',
+        'value' => 'MailgunX',
+        'name' => 'MailgunX',
+      ),
+      2 => 
+      array (
+        'text' => 'MandrillX',
+        'value' => 'MandrillX',
+        'name' => 'MandrillX',
+      ),
+    ),
+    'value' => 'modMailX',
+    'lexicon' => 'notify:properties',
+    'area' => 'Basic Settings',
+  ),
   'maxLogs' => 
   array (
     'name' => 'maxLogs',
