@@ -433,18 +433,6 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Email Settings',
   ),
-  'mailgun.api_key' => 
-  array (
-    'name' => 'mailgun.api_key',
-    'desc' => 'mailgun.api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => 'Mailgun',
-  ),
   'mailgun.debug' => 
   array (
     'name' => 'mailgun.debug',
@@ -514,6 +502,18 @@ $properties = array (
     array (
     ),
     'value' => true,
+    'lexicon' => 'notify:properties',
+    'area' => 'Mailgun',
+  ),
+  'mailgun_api_key' => 
+  array (
+    'name' => 'mailgun_api_key',
+    'desc' => 'mailgun.api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
     'lexicon' => 'notify:properties',
     'area' => 'Mailgun',
   ),
@@ -780,6 +780,18 @@ $properties = array (
     'value' => 'NfUnsubscribeTpl',
     'lexicon' => 'notify:properties',
     'area' => 'Notify Tpls',
+  ),
+  'mandrill_api_key' => 
+  array (
+    'name' => 'mandrill_api_key',
+    'desc' => 'mandrill_api_key_desc~~Mandrill API Key',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mandrill',
   ),
 );
 
