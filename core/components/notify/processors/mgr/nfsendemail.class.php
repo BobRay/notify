@@ -15,7 +15,7 @@ class NfSendEmailProcessor extends modProcessor {
 
     protected $errors = array();
     protected $successMessages = array();
-    protected $testMode = true;
+    protected $testMode = false;
     protected $userFields = array();
     protected $emailText = '';
     protected $logFile = '';
@@ -66,18 +66,18 @@ class NfSendEmailProcessor extends modProcessor {
         $msLower = strtolower($this->mailServiceClass);
         $shortName = str_replace('x', '', $msLower );
         $filename = $this->modelPath . strtolower($this->mailServiceClass) . '.class.php';
-        $apiKey = $this->getProperty($shortName . '.api_key', '');
+        $apiKey = $this->modx->getOption($shortName . '_api_key', $this->properties ,'');
         $this->properties['apiKey'] = $apiKey;
         if ($this->mailServiceClass != 'modMailX' && empty($apiKey)) {
             $this->setError('nf.missing_api_key');
         }
-        if (! file_exists($filename)) {
+        /*if (! file_exists($filename)) {
             $this->setError($this->modx->lexicon('nf.processor_nf')
                 . $filename);
             return false;
         } else {
             include_once $filename;
-        }
+        }*/
         $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
         if (! $this->mailService instanceof $this->mailServiceClass) {
             $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
@@ -429,32 +429,6 @@ class NfSendEmailProcessor extends modProcessor {
                 
                 /* Send the email */
                 $this->mailService->addUser($fields);
-
-                    /*
-                     * Stuff for modMailX
-                     *
-                     * if ($this->sendMail($fields)) {
-                        if ($fp) {
-                            $msg = $this->modx->lexicon('nf.successful_send_to') .
-                                ': (' . $fields['name'] . ') ';
-                            if (!empty($fields['userTags'])) {
-                                $msg .= $this->modx->lexicon('nf.user_tags') .
-                                ': ' . $fields['userTags'] . ') ';
-                            }
-                            $msg .= "\n";
-                            fwrite($fp, $msg);
-                        }
-                    } else {
-                        if ($fp) {
-                            $msg = $this->modx->lexicon('nf.error_sending_to') .
-                                $fields['email'] . ' (' .
-                                $fields['name'] . ') ' .
-                                "\n";
-                            fwrite($fp, $msg);
-                        }
-                    }
-                    sleep($itemDelay);
-                    */
 
                 if ($this->debug) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $user->get('username') . ' -- ' . $profile->get('email'));
