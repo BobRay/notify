@@ -784,7 +784,7 @@ $properties = array (
   'mandrill_api_key' => 
   array (
     'name' => 'mandrill_api_key',
-    'desc' => 'mandrill_api_key_desc~~Mandrill API Key',
+    'desc' => 'mandrill_api_key_desc',
     'type' => 'textfield',
     'options' => 
     array (
