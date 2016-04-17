@@ -73,13 +73,12 @@ class NfSendEmailProcessor extends modProcessor {
         if ($this->mailServiceClass != 'modMailX' && empty($apiKey)) {
             $this->setError('nf.missing_api_key');
         }
-        /*if (! file_exists($filename)) {
+        if (! file_exists($filename)) {
             $this->setError($this->modx->lexicon('nf.processor_nf')
                 . $filename);
             return false;
-        } else {
-            include_once $filename;
-        }*/
+        }
+
         $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
         if (! $this->mailService instanceof $this->mailServiceClass) {
             $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
@@ -225,9 +224,6 @@ class NfSendEmailProcessor extends modProcessor {
     protected function sendBulk($singleId = null) {
         $singleUser = $singleId !== NULL;
         $fp = NULL;
-        $mx = NULL;
-        $mg = NULL;
-        $mailFields = array();
         $batchSize = $this->getProperty('batchSize', 25);
         $batchDelay = $this->getProperty('batchDelay', 1);
         $itemDelay = (float) $this->getProperty('itemDelay', .51);
@@ -629,28 +625,6 @@ class NfSendEmailProcessor extends modProcessor {
 
         return $fieldsUsed;
     }
-
-    /**
-     * Add user's info to the Mandrill Message array
-     *
-     * @param $fields array - user fields with values
-     */
-    /*protected function addUserToMandrill($fields, &$mx) {
-
-        $mx->addUser($fields);
-    }*/
-
-    /**
-     * Add user's info to the Mailgun Message array
-     *
-     * @param $fields array - user fields with values
-     */
-    /*protected function addUserToMailgun($fields, &$mx) {
-
-        $email = $fields['email'];
-        $mx->addUser($email, $fields);
-    }*/
-
 
     public function setError($msg) {
         $this->modx->log(modX::LOG_LEVEL_ERROR, $msg);
