@@ -10,6 +10,8 @@
 /** @var $modx modX */
 
 include_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
+include_once dirname(dirname(__DIR__)) . '/model/notify/mailservice.php';
+include_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
 
 class NfSendEmailProcessor extends modProcessor {
 
@@ -25,7 +27,7 @@ class NfSendEmailProcessor extends modProcessor {
     protected $modelPath = '';
     protected $html2text = null;
     protected $injectUnsubscribeUrl = true;
-    /** @var MailService $mailService */
+    /** @var $mailService MailService */
     public $mailService = null;
     protected $mailServiceClass = '';
 
