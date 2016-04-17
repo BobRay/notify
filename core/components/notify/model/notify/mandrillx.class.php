@@ -23,44 +23,32 @@
 
 // require_once dirname(dirname(__FILE__)) . '/mandrill/src/Mandrill.php';
 
-class MandrillX extends Mandrill{
+class MandrillX extends Mandrill implements MailService{
     /** @var $modx modX */
-    public $modx;
+    public $modx = null;
     /** @var $properties array */
-    public $properties;
+    public $properties = array();
     /** @var $message array - master array to sent to Mandrill */
-    protected $message;
+    protected $message = array();
 
-    protected $subaccount;
-    protected $headers;
-    protected $important;
-    protected $track_opens;
-    protected $track_clicks;    
-    protected $auto_html;
-    protected $auto_text;
-    protected $inline_css;
-    protected $url_strip_qs;
-    protected $preserve_recipients;
-    protected $view_content_link;
-    protected $bcc_address;
-    protected $tracking_domain;
-    protected $signing_domain;
-    protected $return_path_domain;
-    protected $merge;
-    protected $subject;
-    protected $from_email;
-    protected $errors;
-    protected $to;
-    protected $global_merge_vars;
-    protected $merge_vars;
-    protected $userPlaceholders;
-    protected $testMode;
+    protected $subaccount = '';
+    protected $preserve_recipients = 'false';
+    protected $view_content_link = '';
+    protected $bcc_address = '';
+    protected $tracking_domain = '';
+    protected $signing_domain = '';
+    protected $return_path_domain = '';
+    protected $merge = true;
+    protected $errors = array();
+    protected $to = '';
+    protected $global_merge_vars = array();
+    protected $merge_vars = array();
+    protected $userPlaceholders = array();
+    protected $testMode = false;
+    protected $headerFields = array();
 
 
-
-
-
-    function __construct(&$modx, &$props = array()) {
+    function __construct(&$modx, $props = array()) {
         /** @var $modx modX */
         $this->modx =& $modx;
         $this->properties =& $props;
@@ -75,48 +63,10 @@ class MandrillX extends Mandrill{
         $this->to = array();
         $this->global_merge_vars = array();
         $this->merge_vars = array();
-        $this->message['html'] = '';
-        $this->message['text'] = '';
-
-        $this->message['merge'] = true;
-        $subject = $this->modx->getOption('subject', $config, '');
-        $this->message['subject'] =  !empty($subject)? $subject : 'Update from ' . $this->modx->getOption('site_name');
-        $from = $this->modx->getOption('from_email', $config,'');
-        $this->message['from_email'] = !empty($from)? $from: $this->modx->getOption('emailsender');
-
-        $from_name = $this->modx->getOption('from_name', $config, '');
-        $this->message['from_name'] = !empty($from_name)
-            ? $from_name
-            : $this->modx->getOption('site_name');
-
-        /* HTML message body and Text version can be sent
-         * in the config array, but can also be set directly
-         * with setHTML() and setText();
-         */
-           
-        $html = $this->modx->getOption('html', $config, '');
-        if (! empty($html)) {
-            $this->setHTML($html);
-        }
-        $text = $this->modx->getOption('text', $config, '');
-        if (!empty($text)) {
-            $this->setText($text);
-        }
-        $this->testMode = (bool)$this->modx->getOption('testMode', $config, false);
-        $this->message['important'] = (bool) $this->modx->getOption('important', $config, false);
-        
-        /* subaccount must exist at mandrillapp.com or the send will fail; defaults to test */
-        $this->message['subaccount'] = $this->modx->getOption('subaccount', $config, 'test');
-        
-        /* reply-to header is set automatically. 
-         * Use this for any additional headers, 
-         * but be sure to include 'reply-to */
-        $headers = $this->modx->getOption('headers', $config, '');
-        $this->message['headers'] = $this->getHeaders($headers);
 
         /* All these can be set at mandrillapp.com and omitted from the properties.
-         * If set to null, the values at Mandrill will be used. signing_domain default
-         * to mandrillapp.com */
+        * If set to null, the values at Mandrill will be used. signing_domain defaults
+        * to mandrillapp.com */
         $this->message['track_opens'] = $this->modx->getOption('track_opens', $config, null);
         $this->message['track_clicks'] = $this->modx->getOption('track_clicks', $config, null);
         $this->message['auto_html'] = $this->modx->getOption('auto_html', $config, null);
@@ -129,6 +79,14 @@ class MandrillX extends Mandrill{
         $this->message['tracking_domain'] = $this->modx->getOption('tracking_domain', $config, null);
         $this->message['signing_domain'] = $this->modx->getOption('signing_domain', $config, null);
         $this->message['return_path_domain'] = $this->modx->getOption('return_path_domain', $config, null);
+
+
+        $this->message['merge'] = true;
+        $this->testMode = (bool)$this->modx->getOption('testMode', $config, false);
+        $this->message['important'] = (bool) $this->modx->getOption('important', $config, false);
+        
+        /* subaccount must exist at mandrillapp.com or the send will fail; defaults to test */
+        $this->message['subaccount'] = $this->modx->getOption('subaccount', $config, 'test');
 
     }
 
@@ -146,8 +104,6 @@ class MandrillX extends Mandrill{
      *    tags: *|tagName|*
      */
     public function prepareTpl($text) {
-        /*$chunk = $modx->getObject('modChunk', array('name' => $tpl));
-        $text = $chunk->getContent();*/
         $text = str_replace('{{+', '*|', $text);
         $text = str_replace('}}', '|*', $text);
         return $text;
@@ -162,49 +118,8 @@ class MandrillX extends Mandrill{
         $this->message['text'] = $text;
     }
 
-    /**
-     * return an array of extra headers based on $headers property:
-     * 'Reply-to:you@yourdomain.com,header2:somevalue';
-     * @param $headers
-     *
-     * if $headers is empty, returns 'Reply-To => emailsender system setting'
-     *
-     * @return array
-     */
-    protected function getHeaders($headers) {
-        $h = array();
-        if (empty($headers)) {
-            $h = array(
-              'Reply-To' => $this->modx->getOption('emailsender'),
-            );
-        } else {
-            $pairs = explode(',', $headers);
-            $hasReplyTo = false;
-            foreach($pairs as $pair) {
-                if (empty($pair)) {
-                    continue;
-                }
-                $couple = explode(':', $pair);
-                if (! isset($couple[1]))  {
-                    $this->setError($this->modx->lexicon('nf_malformed_header'));
-                    return array(); /* error - no headers */
-                } else {
-                    $h[trim($couple[0])] = trim($couple[1]);
-                    if (stristr($couple[0], 'reply-to')) {
-                        $hasReplyTo = true;
-                    }
-                }
-            }
-            /* Add reply-to if it's not there */
-            if (! $hasReplyTo) {
-                $h['Reply-To'] = $this->modx->getOption('emailsender');
-            }
 
-        }
-        return $h;
-    }
-
-    protected function setError($msg) {
+    public function setError($msg) {
         $this->errors[] = $msg;
     }
 
@@ -228,12 +143,11 @@ class MandrillX extends Mandrill{
         $this->message['to'] = $this->to;
         $this->message['merge_vars'] = $this->merge_vars;
         $this->message['global_merge_vars'] = $this->global_merge_vars;
-        /*$this->message['html'] = $this->prepareTpl($this->message['html']);
-        if( !empty($this->message['text'])) {
-            $this->message['text'] = $this->prepareTpl($this->message['text']);
-        }*/
+        $this->message['headers'] = $this->headerFields;
+
 
         /* Calls parent class send() */
+
         if (! $this->testMode) {
             $retVal = 'Error';
             try {
@@ -317,12 +231,39 @@ class MandrillX extends Mandrill{
         $this->domain = $domain;
     }
 
-    public function setMailFields() {
+    public function setMailFields($fields) {
+        $this->message['html'] = $fields['html'];
+        $this->message['text'] = $fields['text'];
+        $this->message['subject'] = !empty($fields['subject'])
+            ? $fields['subject']
+            : 'Update from ' . $this->modx->getOption('site_name');
 
+        $this->message['from_email'] = !empty($fields['from_email'])
+            ? $fields['from_email']
+            : $this->modx->getOption('emailsender');
+
+        $from_name = $fields['from_name'];
+        $this->message['from_name'] = !empty($from_name)
+            ? $from_name
+            : $this->modx->getOption('site_name');
     }
 
-    public function setHeaderFields() {
 
+    public function setHeaderFields($fields = array()) {
+
+        foreach ($fields as $k => $v) {
+            $this->headerFields[$k] = $v;
+        }
+    }
+
+    /**
+     * Get a specific property.
+     * @param string $k
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getProperty($k, $default = null) {
+        return array_key_exists($k, $this->properties) ? $this->properties[$k] : $default;
     }
 
 }
