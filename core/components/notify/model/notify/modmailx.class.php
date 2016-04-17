@@ -23,10 +23,6 @@ use Mailgun\Mailgun;
  * @package notify
  */
 
-// For future autoloader
-// require_once dirname(dirname(__FILE__)) . '/mailgun/vendor/autoload.php';
-
-
 
 Class modMailX  implements MailService {
     var $debug;
