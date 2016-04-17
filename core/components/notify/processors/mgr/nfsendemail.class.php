@@ -212,12 +212,13 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
     public function sendHeaderFields() {
-        $headers = $this->modx->fromJSON($this->getProperty('mailHeaders', array()));
-        if (empty($headers)) {
-            $headers = array(
-                'Reply-To' => $this->getProperty('mailReplyTo', ''),
-            );
+        $headers = $this->getProperty('additionalHeaders', array());
+        $temp = array_change_key_case($headers, CASE_LOWER);
+        if (!isset($temp['reply-to'])) {
+            $headers['Reply-To'] = $this->getProperty('mailReplyTo', $this->modx->getOption('emailsender'));
         }
+        unset($temp);
+        $headers = $this->modx->fromJSON($headers);
         $this->mailService->setHeaderFields($headers);
     }
 
