@@ -225,7 +225,7 @@ Class modMailX  implements MailService {
 
             if (!empty($this->headerFields)) {
                 foreach ($this->headerFields as $k => $v) {
-                    $this->modx->mail->header($v);
+                    $this->modx->mail->header($k . ':' . $v);
                 }
             }
             $html = $this->replacePlaceholders($this->mailFields['html'], $this->recipientVariables[$email]);
