@@ -158,12 +158,12 @@ Class MailgunX extends Mailgun implements MailService {
      */
     public function setMailFields($fields) {
         $this->mailFields = array(
-
             'from' => $fields['from'],
-            'subject' => $this->modx->getOption('subject',$fields, ''),
-            'text' => $this->modx->getOption('text', $fields, ''),
-            'html' => $this->modx->getOption('html', $fields, ''),
+            'subject' => $fields['subject'],
+            'text' => $fields['text'],
+            'html' => $fields['html'],
         );
+        $this->mailFields['h:Reply-To'] = $fields['reply-to'];
     }
 
 
