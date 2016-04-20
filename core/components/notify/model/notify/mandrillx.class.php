@@ -159,6 +159,9 @@ class MandrillX extends Mandrill implements MailService{
         } else {
             $retVal = 'OK';
         }
+        if (isset($this->properties['unitTest'])) {
+            echo "\n MandrillX Message: " . print_r($this->message, true) . "\n";
+        }
         return $retVal;
     }
 
@@ -188,19 +191,22 @@ class MandrillX extends Mandrill implements MailService{
      */
     public function addUser($fields) {
         $vars = array();
+        $userFields = $this->userPlaceholders;
         $this->to[] = array(
             'email' => $fields['email'],
             'name' => $fields['name'],
             'type' => 'to',
         );
         foreach($fields as $key => $value) {
-            if ($key == 'name' || $key == 'email') {
-                continue;
+            if (in_array($key, $userFields)) {
+                if ($key == 'name' || $key == 'email') {
+                    continue;
+                }
+                $vars[] = array(
+                    'name' => strtoupper($key),
+                    'content' => $value,
+                );
             }
-            $vars[] = array(
-                'name' => strtoupper($key),
-                'content' => $value,
-            );
         }
         $this->merge_vars[] = array(
             'rcpt' => $fields['email'],
@@ -238,14 +244,10 @@ class MandrillX extends Mandrill implements MailService{
             ? $fields['subject']
             : 'Update from ' . $this->modx->getOption('site_name');
 
-        $this->message['from_email'] = !empty($fields['from_email'])
-            ? $fields['from_email']
-            : $this->modx->getOption('emailsender');
+        $this->message['from_email'] = $fields['fromEmail'];
 
-        $from_name = $fields['from_name'];
-        $this->message['from_name'] = !empty($from_name)
-            ? $from_name
-            : $this->modx->getOption('site_name');
+        $from_name = $fields['fromName'];
+        $this->message['from_name'] = $from_name;
     }
 
 
