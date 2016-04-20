@@ -158,12 +158,12 @@ Class MailgunX extends Mailgun implements MailService {
      */
     public function setMailFields($fields) {
         $this->mailFields = array(
-            'from' => $this->modx->getOption('from', $fields, ''),
+
+            'from' => $fields['from'],
             'subject' => $this->modx->getOption('subject',$fields, ''),
             'text' => $this->modx->getOption('text', $fields, ''),
             'html' => $this->modx->getOption('html', $fields, ''),
         );
-
     }
 
 
@@ -262,8 +262,11 @@ Class MailgunX extends Mailgun implements MailService {
             $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\nFinal Fields\n"  . print_r($fields, true));
         }
         /* Uses parent class sendMessage() */
-
         $response = $this->sendMessage($this->domain, $fields);
+        if (isset($this->properties['unitTest'])) {
+            echo "\n MailgunX Message: " . print_r($fields, true) . "\n";
+        }
+
         return $response;
 
     }
