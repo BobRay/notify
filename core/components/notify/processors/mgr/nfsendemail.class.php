@@ -173,6 +173,7 @@ class NfSendEmailProcessor extends modProcessor {
         $success = true;
         $fromName = $this->getProperty('from_name', '');
         $fromEmail = $this->getProperty('from_email', '');
+        $fromEmail = empty($fromEmail)? $this->modx->getOption('emailsender') : $fromEmail;
         $fields['html'] = $this->emailText;
         $fields['html'] = $this->mailService->prepareTpl($fields['html']);
         require_once $this->modelPath . 'html2text.php';
