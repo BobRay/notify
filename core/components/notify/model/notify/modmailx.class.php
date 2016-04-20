@@ -132,8 +132,6 @@ Class modMailX  implements MailService {
             'fromEmail' => $this->modx->getOption('fromEmail', $fields, ''),
             'fromName' => $this->modx->getOption('fromName', $fields, ''),
             'reply-to' => $this->modx->getOption('reply-to', $fields, ''),
-            'cc' => $this->modx->getOption('cc', $fields, ''),
-            'bcc' => $this->modx->getOption('bcc', $fields, ''),
         );
     }
 
@@ -222,23 +220,7 @@ Class modMailX  implements MailService {
 
 
     public function sendBatch() {
-        static $ccSent = false;
-        static $bccSent = false;
         $mFields = $this->mailFields;
-        if (isset($mFields['cc']) && (! $ccSent)) {
-            $ccs = explode(',', $mFields['cc']);
-            foreach ($ccs as $cc) {
-                $this->modx->mail->header('Cc:'. $cc);
-            }
-            $ccSent = true;
-        }
-        if (isset($mFields['bcc']) && (!$bccSent)) {
-            $ccs = explode(',', $mFields['bcc']);
-            foreach ($ccs as $bcc) {
-                $this->modx->mail->header('Bcc:' . $bcc);
-            }
-            $bccSent = true;
-        }
 
         foreach ($this->emailArray as $email) {
 
@@ -258,8 +240,6 @@ Class modMailX  implements MailService {
             if (isset($this->properties['unitTest'])) {
                 echo "\n Reply-to: " . $rt;
                 echo "\n Reply-to-name: " . $name;
-                echo "\ncc: " . $this->mailFields['cc'];
-                echo "\nbcc: " . $this->mailFields["bcc"];
             }
             $name = empty($name) ? $mFields['fromName'] : $name;
 

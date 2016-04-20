@@ -207,14 +207,6 @@ class NfSendEmailProcessor extends modProcessor {
             $this->setError(('nf.empty_from'));
             $success = false;
         }
-        $cc = $this->getProperty('cc', '');
-        if (! empty($cc)) {
-            $fields['cc'] = $cc;
-        }
-        $bcc = $this->getProperty('bcc', '');
-        if (!empty($bcc)) {
-            $fields['bcc'] = $bcc;
-        }
 
         if ($success) {
             $this->mailService->setMailFields($fields);
