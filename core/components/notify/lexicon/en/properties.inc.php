@@ -72,6 +72,7 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 
 /* Used in properties.notify.snippet.php */
+$_lang['nf.additional_headers_desc'] = 'JSON string specifying custom headers (do not use for regular mailfields: cc, bcc, to, from, reply-to). Example: {"X-header1":"someValue","X-header2":"someOtherValue"}';
 $_lang['mandrill_api_key_desc'] = 'Mandrill API Key';
 $_lang['nf.mail_service_desc'] = 'Mail Service to use for sending mail';
 $_lang['mailgun.debug_desc'] = 'Write Mailgun debugging information to the MODX Error log.';

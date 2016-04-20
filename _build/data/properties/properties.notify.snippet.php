@@ -385,6 +385,18 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Basic Settings',
   ),
+  'additionalHeaders' => 
+  array (
+    'name' => 'additionalHeaders',
+    'desc' => 'nf.additional_headers_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Email Settings',
+  ),
   'mailFrom' => 
   array (
     'name' => 'mailFrom',
@@ -516,6 +528,18 @@ $properties = array (
     'value' => '',
     'lexicon' => 'notify:properties',
     'area' => 'Mailgun',
+  ),
+  'mandrill_api_key' => 
+  array (
+    'name' => 'mandrill_api_key',
+    'desc' => 'mandrill_api_key_desc',
+    'type' => 'textfield',
+    'options' => 
+    array (
+    ),
+    'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Mandrill',
   ),
   'nfUseMandrill' => 
   array (
@@ -780,18 +804,6 @@ $properties = array (
     'value' => 'NfUnsubscribeTpl',
     'lexicon' => 'notify:properties',
     'area' => 'Notify Tpls',
-  ),
-  'mandrill_api_key' => 
-  array (
-    'name' => 'mandrill_api_key',
-    'desc' => 'mandrill_api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => 'Mandrill',
   ),
 );
 
