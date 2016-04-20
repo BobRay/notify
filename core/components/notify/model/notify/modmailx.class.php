@@ -112,11 +112,10 @@ Class modMailX  implements MailService {
         $this->userPlaceholders = $pArray;
     }
 
+    /* Custom Headers only, do not use for: to, reply-to, cc, or bcc */
     public function setHeaderFields($fields = array()) {
-
         foreach($fields as $k => $v) {
-            $this->headerFields[] = $k . ':' . $v;
-
+            $this->headerFields[$k] = $v;
         }
     }
 
@@ -126,12 +125,15 @@ Class modMailX  implements MailService {
      */
     public function setMailFields($fields) {
         $this->mailFields = array(
-            'from' => $this->modx->getOption('from', $fields, ''),
-            'subject' => $this->modx->getOption('subject',$fields, ''),
+            'from' => $fields['from'],
+            'subject' => $fields['subject'],
             'text' => $this->modx->getOption('text', $fields, ''),
             'html' => $this->modx->getOption('html', $fields, ''),
             'fromEmail' => $this->modx->getOption('fromEmail', $fields, ''),
             'fromName' => $this->modx->getOption('fromName', $fields, ''),
+            'reply-to' => $this->modx->getOption('reply-to', $fields, ''),
+            'cc' => $this->modx->getOption('cc', $fields, ''),
+            'bcc' => $this->modx->getOption('bcc', $fields, ''),
         );
     }
 
@@ -220,22 +222,61 @@ Class modMailX  implements MailService {
 
 
     public function sendBatch() {
+        static $ccSent = false;
+        static $bccSent = false;
+        $mFields = $this->mailFields;
+        if (isset($mFields['cc']) && (! $ccSent)) {
+            $ccs = explode(',', $mFields['cc']);
+            foreach ($ccs as $cc) {
+                $this->modx->mail->header('Cc:'. $cc);
+            }
+            $ccSent = true;
+        }
+        if (isset($mFields['bcc']) && (!$bccSent)) {
+            $ccs = explode(',', $mFields['bcc']);
+            foreach ($ccs as $bcc) {
+                $this->modx->mail->header('Bcc:' . $bcc);
+            }
+            $bccSent = true;
+        }
 
         foreach ($this->emailArray as $email) {
 
+            $this->modx->mail->set(modMail::MAIL_SUBJECT, $mFields['subject']);
+            $this->modx->mail->set(modMail::MAIL_FROM, $mFields['fromEmail']);
+            $this->modx->mail->set(modMail::MAIL_FROM_NAME, $mFields['fromName']);
+            $rt = $mFields['reply-to'];
+            /* Parse reply-to in the style: Bob Ray <bob@gmail.com> */
+            $name = null;
+            if (strpos($rt, '<') !== false) {
+                $rtArray = explode('<', $rt);
+                if (count($rtArray) > 1) {
+                    $name = trim($rtArray[0]);
+                    $rt = trim($rtArray[1], ' <>');
+                }
+            }
+            if (isset($this->properties['unitTest'])) {
+                echo "\n Reply-to: " . $rt;
+                echo "\n Reply-to-name: " . $name;
+                echo "\ncc: " . $this->mailFields['cc'];
+                echo "\nbcc: " . $this->mailFields["bcc"];
+            }
+            $name = empty($name) ? $mFields['fromName'] : $name;
+
+            $this->modx->mail->address('reply-to', $rt, $name);
+            unset ($rt, $name);
             if (!empty($this->headerFields)) {
+                /* custom headers only */
                 foreach ($this->headerFields as $k => $v) {
                     $this->modx->mail->header($k . ':' . $v);
                 }
             }
-            $html = $this->replacePlaceholders($this->mailFields['html'], $this->recipientVariables[$email]);
-            $text = $this->replacePlaceholders($this->mailFields['text'], $this->recipientVariables[$email]);
+
+            $this->modx->mail->address('to', $email, $this->recipientVariables[$email]['fullname']);
+            $html = $this->replacePlaceholders($mFields['html'], $this->recipientVariables[$email]);
+            $text = $this->replacePlaceholders($mFields['text'], $this->recipientVariables[$email]);
             $this->modx->mail->set(modMail::MAIL_BODY, $html);
             $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text);
-            $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->mailFields['subject']);
-            $this->modx->mail->set(modMail::MAIL_FROM, $this->mailFields['fromEmail']);
-            $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->mailFields['fromName']);
-            $this->modx->mail->address('to', $email, $this->recipientVariables[$email]['fullname']);
 
             $success = $this->testMode
                 ? true
@@ -244,7 +285,26 @@ Class modMailX  implements MailService {
             if (!$success) {
                 $this->setError($this->modx->mail->mailer->ErrorInfo);
             }
+
             $this->modx->mail->reset();
+
+        }
+
+        if (isset($this->properties['unitTest'])) {
+            $fields = array(
+                'html' => $this->mailFields['html'],
+                'text' => $this->mailFields['text'],
+                'from_email' => $this->mailFields['fromEmail'],
+                'from_name' => $this->mailFields['fromName'],
+                'subject' => $this->mailFields['subject'],
+                'headers' => $this->headerFields,
+                'reply-to' => $this->mailFields['reply-to'],
+                'cc' => $this->mailFields['cc'],
+                'bcc' => $this->mailFields['bcc'],
+
+            );
+            echo "\nmodMailX Message: \n" . print_r($fields, true) . "\n";
+
         }
 
          return true;

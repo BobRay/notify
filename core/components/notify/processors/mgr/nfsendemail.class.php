@@ -171,7 +171,7 @@ class NfSendEmailProcessor extends modProcessor {
     public function sendMailFields() { // xxx
         $fields = array();
         $success = true;
-        $from = $this->getProperty('from_name', '');
+        $fromName = $this->getProperty('from_name', '');
         $fromEmail = $this->getProperty('from_email', '');
         $fields['html'] = $this->emailText;
         $fields['html'] = $this->mailService->prepareTpl($fields['html']);
@@ -179,11 +179,15 @@ class NfSendEmailProcessor extends modProcessor {
         $html2text = new \Html2Text\Html2Text($fields['html']);
         $fields['text'] = $html2text->getText();
         $fields['subject'] = $this->getProperty('email_subject', '');
-        $fields['from'] = $from . ' <' . $fromEmail . '>';
-        /* Used by modMailX */
-        $fields['fromEmail'] = $fromEmail;
-        $fields['fromName'] = $from;
 
+        /* Used by MailgunX */
+        $fields['from'] = $fromName . ' <' . $fromEmail . '>';
+
+        /* Used by mandrillX and modMailX */
+        $fields['fromEmail'] = $fromEmail;
+        $fields['fromName'] = $fromName;
+
+        $fields['reply-to'] = $this->getProperty('mailReplyTo', $this->modx->getOption('emailsender'));
 
         if (empty($fields['html'])) {
             $this->setError(('nf.empty_message'));
@@ -203,6 +207,14 @@ class NfSendEmailProcessor extends modProcessor {
             $this->setError(('nf.empty_from'));
             $success = false;
         }
+        $cc = $this->getProperty('cc', '');
+        if (! empty($cc)) {
+            $fields['cc'] = $cc;
+        }
+        $bcc = $this->getProperty('bcc', '');
+        if (!empty($bcc)) {
+            $fields['bcc'] = $bcc;
+        }
 
         if ($success) {
             $this->mailService->setMailFields($fields);
@@ -211,14 +223,15 @@ class NfSendEmailProcessor extends modProcessor {
         return $success;
     }
 
+    /**
+     * Extra headers only. Do not include Reply-to, cc, or bcc
+     */
     public function sendHeaderFields() {
         $headers = $this->getProperty('additionalHeaders', array());
-        $temp = array_change_key_case($headers, CASE_LOWER);
-        if (!isset($temp['reply-to'])) {
-            $headers['Reply-To'] = $this->getProperty('mailReplyTo', $this->modx->getOption('emailsender'));
+        if (!empty($headers)) {
+            $headers = $this->modx->fromJSON($headers);
         }
-        unset($temp);
-        $headers = $this->modx->fromJSON($headers);
+
         $this->mailService->setHeaderFields($headers);
     }
 
@@ -382,6 +395,7 @@ class NfSendEmailProcessor extends modProcessor {
                         continue;
                     }
                 }
+
                 /* Now we have a user to send to */
                 $fields = array();
                 $fields['userid'] = $user->get('id');
