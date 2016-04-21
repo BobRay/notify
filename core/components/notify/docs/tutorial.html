@@ -97,7 +97,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
         
 <p>The various options are independent, so you can send a single email, send a message to subscribers, or send a Tweet without activating the other options. When you click on the &quot;Single Email&quot; checkbox, an input field will appear where you can enter either the email address or the user name of a user on the site.</p>
         
-<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <fixedpre>pagetitle</fixedpre>, <fixedpre>introtext</fixedpre>, <fixedpre>description</fixedpre> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that MODX placeholders are not available to you if you do this, though user placeholders are.</p>
+<p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <code>pagetitle</code>, <code>introtext</code>, <code>description</code> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that MODX placeholders are not available to you if you do this, though user placeholders are.</p>
 
 <pre><fixedpre>
 [[$CreateSnippetPropertySet? &snippetName=`Notify`]]
@@ -123,7 +123,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <h3>Tpl Chunks</h3>
 
-<p>Important: If you are using the default Tpl chunks, duplicate them and add the prefix 'My' to each one <b>before installing the upgrade</b>. Notify will look first for those prefixed chunks. If it doesn't find them, it will look for the ones specified in the Tpl-related properties. The chunks prefixed with 'My' will not be altered during future upgrades, so you can use them without having to specify them in the snippet properties or in a property set. In other words, you no longer need to specify your own customized Tpl chunks in the properties. Just prefix them with 'My'. Notify will use them automatically and they will survive upgrades.</p>
+<p>Important: If you are using the default Tpl chunks, duplicate them and add the prefix 'My' to each one <b>before installing any Notify upgrade</b>. Notify will look first for those prefixed chunks. If it doesn't find them, it will look for the ones specified in the Tpl-related properties. The chunks prefixed with 'My' will not be altered during future upgrades, so you can use them without having to specify them in the snippet properties or in a property set. In other words, you no longer need to specify your own customized Tpl chunks in the properties. Just prefix them with 'My'. Notify will use them automatically and they will survive upgrades.</p>
 
 <p>&nbsp;</p>
 
@@ -134,21 +134,21 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 DisplayedGroupName==ActualGroupName||DisplayedOtherGroupName==ActualOtherGroupName
 </fixedpre></pre>
 
-<p>Email is only sent to active users. The <fixedpre>&groups</fixedpre> property can contain a comma-separated list (no spaces) of User Groups to send to. You can also add them to the form by clicking on the buttons below the input. The buttons come from the content of a Tpl Chunk specified in the <code>&groupListChunkName</code> property. It defaults to the SbsGroupListTpl chunk (see the format for the tags Tpl chunk in the next section). By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <fixedpre>&groups</fixedpre> property of the snippet. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
+<p>Email is only sent to active users. The <code>&groups</code> property can contain a comma-separated list (no spaces) of User Groups to send to. You can also add them to the form by clicking on the buttons below the input. The buttons come from the content of a Tpl Chunk specified in the <code>&groupListChunkName</code> property. It defaults to the SbsGroupListTpl chunk (see the format for the tags Tpl chunk in the next section). By default, Notify sends to members of the &quot;Subscribers&quot; User group, but you can change that by setting the <code>&groups</code> property of the snippet. Whatever is set will appear in the Notify form, but you can change it there. If you leave the Groups field in the Notify form blank when submitting the form, the email message will be sent to all active users on your site. </p>
 
 <p>&nbsp;</p>
 
 <h3>Tags</h3>
 <br />
 <div class="box">
-    <p>If you are using the Subscribe snippet (recommended), you can ignore most of this section and just set the Notify <fixedpre>&prefListChunkName</fixedpre> property to point to the preference list Tpl used by Subscribe. Notify will use the same tags and will handle them automatically.</p>
+    <p>If you are using the Subscribe snippet (recommended), you can ignore most of this section and just set the Notify <code>&prefListChunkName</code> property to point to the preference list Tpl used by Subscribe. Notify will use the same tags and will handle them automatically.</p>
 </div>
 
-<p>The <fixedpre>&tags</fixedpre> property is blank by default, so the email is sent to all members of User Groups specified in the <fixedpre>&groups</fixedpre> property. If you enter tags in the Tags field, only users who have those tags (interests) will receive the email.</p>
+<p>The <code>&tags</code> property is blank by default, so the email is sent to all members of User Groups specified in the <code>&groups</code> property. If you enter tags in the Tags field, only users who have those tags (interests) will receive the email.</p>
 
-<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and it will also let users manage their own interest lists. See the <a href="[[~227]]">Subscribe package documentation</a> for more information on how the tags are stored.</p>
+<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and it will also let users manage their own interest lists. See the <a href="[[~227]]" target="_blank">Subscribe package documentation</a> for more information on how the tags are stored.</p>
 
-<p>If you are using the Subscribe package, Notify will use the sbsPrefList Tpl chunk from that package (or another chunk you specify in the Notify <fixedpre>&prefListChunkName</fixedpre> property) to put tag buttons under the tags input field. Clicking on one of the buttons will toggle that tag in the &quot;Tags&quot; input field.</p>
+<p>If you are using the Subscribe package, Notify will use the sbsPrefList Tpl chunk from that package (or another chunk you specify in the Notify <code>&prefListChunkName</code> property) to put tag buttons under the tags input field. Clicking on one of the buttons will toggle that tag in the &quot;Tags&quot; input field.</p>
         
 <p>If you're not using the Subscribe package and you'd rather use an extended field of the User Profile instead of the comment field, you can create two new System Settings:</p>
 
@@ -157,9 +157,9 @@ sbs_use_comment_field   (set the value to 'No')
 sbs_extended_field   (name of the extended field you want to use)
 </fixedpre></pre>
         
-<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you. You'll also have to create a chunk to hold the list of user preferences (tags) and set the <fixedpre>&prefListChunkName</fixedpre> property to point to it. By default, the chunk used will be <fixedpre>sbsPrefListTpl</fixedpre>, which is the default chunk used for tags in the Subscribe extra. If you have created a new preference list chunk for Subscribe, be sure to set the Notify <fixedpre>&prefListChunkName</fixedpre> property to point to it.</p>
+<p>You'll have to create the extended field for each user unless the Subscribe extra has done it for you. You'll also have to create a chunk to hold the list of user preferences (tags) and set the <code>&prefListChunkName</code> property to point to it. By default, the chunk used will be <code>sbsPrefListTpl</code>, which is the default chunk used for tags in the Subscribe extra. If you have created a new preference list chunk for Subscribe, be sure to set the Notify <code>&prefListChunkName</code> property to point to it.</p>
 
-<p>The format for the Preferences List Tpl chunk is a series of <fixedpre>Caption==value</fixedpre> pairs separated by <fixedpre>||</fixedpre> symbols.</p>
+<p>The format for the Preferences List Tpl chunk is a series of <code>Caption==value</code> pairs separated by <code>||</code> symbols.</p>
 
 <p>Example:</p>
 
@@ -167,9 +167,9 @@ sbs_extended_field   (name of the extended field you want to use)
 Caption One==Option1||Caption Two==option2||Caption Three==option3
 </fixedpre></pre>
 
-<p>The &quot;caption&quot; (to the left of the <fixedpre>==</fixedpre> signs) is what is shown in the Subscribe extra Register and Manage Preferences forms. The &quot;value&quot; (to the right of the <fixedpre>==</fixedpre> signs) is what will be stored in the database. It is also be used for the tag buttons in the Notify form and is what you should use in the Notify &quot;Tags&quot; input field. Make sure that there are no spaces except in between the words of the caption and that the preferences list is all on one line in the Tpl chunk.</p>
+<p>The &quot;caption&quot; (to the left of the <code>==</code> signs) is what is shown in the Subscribe extra Register and Manage Preferences forms. The &quot;value&quot; (to the right of the <code>==</code> signs) is what will be stored in the database. It is also used for the tag buttons in the Notify form and is what you should use in the Notify &quot;Tags&quot; input field. Make sure that there are no spaces except in between the words of the caption and that the preferences list is all on one line in the Tpl chunk.</p>
 
-<p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form. The tag buttons shown are based on the tags in the chunk specified in the Notify <fixedpre>&prefListChunk</fixedpre> property.</p>
+<p>In the Notify form, clicking on a tag button will add or delete that tag from the &quot;Tags&quot; field of the form. The tag buttons shown are based on the tags in the chunk specified in the Notify <code>&prefListChunk</code> property.</p>
 
 <p>&nbsp;</p>
 
@@ -194,7 +194,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>The code can go anywhere in the form, but just below the section containing the tag buttons is a good location.</p>
 
-<p>The &quot;Require All Tags&quot; checkbox is unchecked by default. If you would like to change that, add <fixedpre>&requireAllTagsDefault=`1`</fixedpre> to the Notify snippet tag or set that property to 'Yes' in the Property Set.</p>
+<p>The &quot;Require All Tags&quot; checkbox is unchecked by default. If you would like to change that, add <code>&requireAllTagsDefault=`1`</code> to the Notify snippet tag or set that property to 'Yes' in the Property Set.</p>
 
 <p>&nbsp;</p>
 
@@ -202,7 +202,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>The MailgunX class is included in Version 1.4.0 of Notify. In order to use Mailgun, you need to go to <a href="https://mailgun.com/signup" target="_blank">Mailgun</a> and create an account. Mailgun requires you to set DKIM and SPF records and verify the domain. The method for this varies depending on the domain registrar. Follow the directions at Mailgun. If you would like to track opens and clicks, you'll also need to set a CNAME record. This is a bit of a hassle, but on the plus side, it will increase the deliverability of your emails by quite a bit and prevent them from ending up in the spam folder.</p>
 
-<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet. You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testModx property = <code>`1` to prevent the messages from being sent.</p>
+<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet. You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testModx property = </code>`1` to prevent the messages from being sent.</p>
 
 <p>Don't forget to set the <code>&mailService</code> property to <code>MailgunX</code>.</p>
 
@@ -212,7 +212,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>Mandrill is an email service and a subsidiary of MailChimp. As of April 27, 2016, Mandrill is no longer free. As of Version 1.4.0 or Notify, the MandrillX class is included in the package. There is no longer any need to install it separately. If you want to use Mandrill with Notify, you need to create a Mandrill account, get a Mandrill API Key, create a subaccount called <code>test</code> at Mandrill, set the <code>mandrill_api_key</code> System Setting, and the <code>&useMandrill</code> snippet property. All of that should take about 10-20 minutes and is described in more detail below.</p>
 
-<p>Using Mandrill with Notify is easy. Go to <a href="https://mandrillapp.com">Mandrill</a> and open a free account. Hover over the little gear icon at the upper right and select &quot;SMTP & API Credentials.&quot;. Click on the blue &quot;New API Key&quot; button. Copy the API key code and paste it either into the input when you install MandrillX, or any time later, into the <code>mandrill_api_key</code> System Setting in the Manager (find it with the search box at the upper right in System -> System Settings).</p>
+<p>Using Mandrill with Notify is easy. Go to <a href="https://mandrillapp.com" target="_blank">Mandrill</a> and open a free account. Hover over the little gear icon at the upper right and select &quot;SMTP & API Credentials.&quot;. Click on the blue &quot;New API Key&quot; button. Copy the API key code and paste it either into the input when you install MandrillX, or any time later, into the <code>mandrill_api_key</code> System Setting in the Manager (find it with the search box at the upper right in System -> System Settings).</p>
 
 <p>Before you leave Mandrillapp.com, hover over &quot;Outbound&quot; on the top menu and select &quot;Subaccounts&quot; in the dropdown menu. Click on the blue &quot;Create a Subaccount&quot; button. Call your subaccount <code>test</code> (all lowercase). This is the default subaccount used by Notify when you install it. It assumes that you don't want all your test emails in a real subaccount. Once you are up and running, you can create a new subaccount, add &subaccount=`NewSubName` to the Notify snippet tag or its property set, and (optionally) delete the &quot;test&quot; subacccount at Mandrill.</p>
 
@@ -232,7 +232,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 `{"X-header1":"someValue","X-header2":"someOtherValue"}`
 </fixedpre></pre>
 
-<p>You can use the <code>&additionalHeader</code> property for Cc and Bcc headers, but it's not recommended. Using those fields assumes that the message will be exactly the same for each user, and with some mail services, Bcc headers are not hidden as they should be. Instead, just add the users that should get copies of the message to the User Group that will get the messages.
+<p>You can use the <code>&additionalHeaders</code> property for Cc and Bcc headers, but it's not recommended. Using those fields assumes that the message will be exactly the same for each user, and with some mail services, Bcc headers are not hidden as they should be. Instead, just add the users that should get copies of the message to the User Group that will get the messages.
 </p>
 
 <p>&nbsp;</p>
@@ -265,7 +265,7 @@ $modx->sendRedirect($url);
 
 <h3>Email Log</h3>
 
-<p>For each email update, Notify writes a log file to the <fixedpre>core/components/notify/notify-logs</fixedpre> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs.</p>
+<p>For each email update, Notify writes a log file to the <code>core/components/notify/notify-logs</code> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs.</p>
         
 <p>When using Mandrill or Mailgun, only a minimal local log is kept since those services provide a much better log with some sophisticated analytics. The local log will have the date and time, resource pagetitle, and the mail service in the filename, and only the message itself as the log content.</p>
 
@@ -286,13 +286,15 @@ $modx->sendRedirect($url);
 
 <h3>Notify Template and CSS</h3>
 
-<p>If you need to modify the Notify Template, duplicate it and change the Template of the Notify page to your new Template. The Notify form CSS file is <fixedpre>assets/components/notify/css/notify.css</fixedpre>. If you would like to modify it, create a new file and change the reference in the Notify Template (after duplicating the Template and resetting the Template of the Notify page).</p>
+<p>If you need to modify the Notify Template, duplicate it and change the Template of the Notify page to your new Template. The Notify form CSS file is <code>assets/components/notify/css/notify.css</code>. If you would like to modify it, create a new file and change the reference in the Notify Template (after duplicating the Template and resetting the Template of the Notify page).</p>
 
 <p>&nbsp;</p>
 
 <h3>Posting Updates to Twitter</h3>
 
-<p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="http://dev.twitter.com/apps/new">Twitter Dev site</a> (if you don't have one already). Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify properties.</p>
+<p>In order for Notify to post updates to Twitter, you'll need to create a Twitter App at the <a href="http://dev.twitter.com/apps/new" target="_blank">Twitter Dev site</a> (if you don't have one already). Log in to Twitter before following the link.</p>
+
+<p>Follow the instructions at that URL for creating a new application. Once you have it all set up, you can go to the the URL above and select the &quot;My Applications&quot; breadcrumb at the top left. Then, click on your Twitter username and select the &quot;OAuth Tool&quot; tab. you should see the four keys you need to set the Notify properties.</p>
         
 <p>See the section above on creating a Property Set if you haven't done so already. To set the properties, edit the Notify snippet and click on the &quot;Properties&quot; tab. Then select your Property Set by clicking on the word &quot;Default&quot; just above the grid on the right. Double-click on a value to change it, and when you're done, click on the &quot;Save Property Set&quot; button (*not* the &quot;Save&quot; button). Don't forget to specify the Property Set in the Notify snippet tag as described above.</p>
         
@@ -303,24 +305,24 @@ $modx->sendRedirect($url);
 
 <h3>Posting Updates to Facebook</h3>
         
-<p>Notify does not post directly to Facebook, but you can set up an account at <a href = "https://apps.facebook.com/selectivetwitter/">Selective Tweets</a> in about 30 seconds. Once you've done that, simply add the hashtag <fixedpre>#fb</fixedpre> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <fixedpre>&notifyFacebook</fixedpre> property of the Notify snippet, the <fixedpre>#fb</fixedpre> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. You can remove it manually if you don't want the Tweet to go to Facebook.</p>
+<p>Notify does not post directly to Facebook, but you can set up an account at <a href = "https://apps.facebook.com/selectivetwitter/" target="_blank">Selective Tweets</a> in about 30 seconds. Once you've done that, simply add the hashtag <code>#fb</code> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <code>&notifyFacebook</code> property of the Notify snippet, the <code>#fb</code> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. You can remove it manually if you don't want the Tweet to go to Facebook.</p>
 
-<p>You can also use the <a href="https://apps.facebook.com/twitter/">Twitter App</a> if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>
+<p>You can also use a Twitter App if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>
 
 
 <p>&nbsp;</p>
 
 <h3>How Notify is Launched</h3>
 
-<p>There's no reason you need to know, but you might be curious about how the Notify form is launched from the TV tab of the Create/Edit Resource panel. The method is quite exotic. The Caption of the Notify TV is actually a <fixedpre><button></fixedpre> tag:</p>
+<p>There's no reason you need to know, but you might be curious about how the Notify form is launched from the TV tab of the Create/Edit Resource panel. The method is quite exotic. The Caption of the Notify TV is actually a <code>&lt;button&gt;</code> tag:</p>
 
 <pre><fixedpre>
     <button id="nf-b" onClick="nf()"> Launch Notify </button>
 </fixedpre></pre>
 
-<p>When the button is clicked, it launches the <fixedpre>nf()</fixedpre> JavaScript Function. The JavaScript source code is in the Notify plugin, which is connected to the OnDocFormPrerender event. When the Manager form is rendered, that plugin gets information about the current resource, replaces the placeholders in the JS code with the appropriate values, and injects the JS into the <fixedpre><head></fixedpre> section of the Manager form page.</p>
+<p>When the button is clicked, it launches the <code>nf()</code> JavaScript Function. The JavaScript source code is in the Notify plugin, which is connected to the OnDocFormPrerender event. When the Manager form is rendered, that plugin gets information about the current resource, replaces the placeholders in the JS code with the appropriate values, and injects the JS into the <code><head></code> section of the Manager form page.</p>
 
-<p>The JS code adds the color to the button and adds the form below the button with hidden input fields containing the page info. When the button is clicked, the JS code checks to make sure the Resource has been saved (popping up a warning if it hasn't), and if it has, submits the form to the Notify page where the information is read from the <fixedpre>$_POST</fixedpre> array. It's difficult to imagine doing this in any other CMS but MODX without touching a line of the core code.</p>
+<p>The JS code adds the color to the button and adds the form below the button with hidden input fields containing the page info. When the button is clicked, the JS code checks to make sure the Resource has been saved (popping up a warning if it hasn't), and if it has, submits the form to the Notify page where the information is read from the <code>$_POST</code> array. It's difficult to imagine doing this in any other CMS but MODX without touching a line of the core code.</p>
 
 <p>&nbsp;</p>
 
@@ -329,11 +331,30 @@ $modx->sendRedirect($url);
 
 <p>If you upgrade Notify and your Property Set is no long shown in Tools | Property Sets, it may mean that the Property Set has an obsolete category. The only solution is to use PhpMyAdmin to edit the modx_property_sets table and change the category of the Property Set to 0.</p>
 
-<p>If you follow the Unsubscribe/Manage Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link resets <fixedpre>$modx->user</fixedpre>, which changes the MODX session in that browser.</p>
+<p>If you follow the Unsubscribe/Manage Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link resets <code>$modx->user</code>, which changes the MODX session in that browser.</p>
 
 <p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
 
 <p>If no emails are being sent using the modMailX service, install the QuickEmail package to help diagnose your problem sending emails.</p>
+
+
+<p>&nbsp;</p>
+
+<h3>Adding a New MailService</h3>
+
+<p>As of Notify 1.4.0, it's much easier to add support for a new mail service such as Sendgrid, Mailgrid, or CampaignMonitor, for use with Notify. You can create a new class that extends an existing third-party API wrapper class (usually obtained from the mail service's web site) and your class will plug in to Notify.</p>
+
+<p>Include the third-party wrapper class at the top of your class file. Your class should implement the Notify MailService interface found in the <code>mailservice.php</code> file in the Notify <code>model</code> directory. Include that file also at the top of your class file. Add an <code>X</code> to the name of the parent class for your class name, and a <code>.class.php</code> suffix to the class file. Declare your class like this example that implements a hypothetical SendGrid service :</p>
+
+<pre><fixedpre>
+Class SendGridX extends SendGrid implements MailService {}
+</fixedpre></pre>
+
+<p>For your class, start with the MailgunX class file contents and modify it to match what the SendGrid, or other mailservice, expects. Then add the service name (e.g., SendGridX) to the <code>&mailService</code> property of the Notify snippet. You may not need all the methods of the MailService interface, but they all must be present, though the body of unused methods can be empty. You  may also want to add your class and the wrapper class to the <code>autoload_classmap.php</code> file in the Notify <code>vendor/composer</code> directory.</p>
+
+<p>This is not a trivial job, but it's much easier than it was before the creation of the MailService interface.</p>
+
+<p>It's also possible to bypass the API wrapper class and write your own base class to interact with the mail service API or add the necessary methods to your own class, but it's usually much easier to use an existing API wrapper as your base class.</p>
 
 <p>&nbsp;</p>
 
@@ -505,7 +526,7 @@ $modx->sendRedirect($url);
 </tr>
 <tr>
     <td>notifyFacebook</td>
-    <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the <a href="https://apps.facebook.com/selectivetwitter/">Facebook Selective Tweets App</a></td>
+    <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the <a href="https://apps.facebook.com/selectivetwitter/" target="_blank">Facebook Selective Tweets App</a></td>
     <td></td>
 </tr>
 <tr>
