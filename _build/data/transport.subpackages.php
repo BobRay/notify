@@ -28,7 +28,6 @@ if (! function_exists('stripPhpTags')) {
  * @package articles
  */
 $subpackages = array (
-  'mandrillx' => 'mandrillx-1.0.3-pl',
   'subscribe' => 'subscribe-1.2.1-pl',
 );
 $spAttr = array('vehicle_class' => 'xPDOTransportVehicle');
