@@ -240,14 +240,11 @@ class MandrillX extends Mandrill implements MailService{
     public function setMailFields($fields) {
         $this->message['html'] = $fields['html'];
         $this->message['text'] = $fields['text'];
-        $this->message['subject'] = !empty($fields['subject'])
-            ? $fields['subject']
-            : 'Update from ' . $this->modx->getOption('site_name');
-
+        $this->message['subject'] = $fields['subject'];
         $this->message['from_email'] = $fields['fromEmail'];
+        $this->message['from_name'] = $fields['fromName'];
 
-        $from_name = $fields['fromName'];
-        $this->message['from_name'] = $from_name;
+        $this->headerFields['Reply-To'] = $fields['reply-to'];
     }
 
 
