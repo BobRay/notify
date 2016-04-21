@@ -202,8 +202,7 @@ class NfSendEmailProcessor extends modProcessor {
         }
 
         if (empty($fields['subject'])) {
-            $this->setError(('nf.empty_subject'));
-            $success = false;
+            $fields['subject'] = 'Update from ' . $this->modx->getOption('site_name');
         }
         if (empty($fields['from'])) {
             $this->setError(('nf.empty_from'));
@@ -221,12 +220,14 @@ class NfSendEmailProcessor extends modProcessor {
      * Extra headers only. Do not include Reply-to, cc, or bcc
      */
     public function sendHeaderFields() {
-        $headers = $this->getProperty('additionalHeaders', array());
+        $headers = $this->modx->getOption('additionalHeaders', $this->properties, array(), true);
         if (!empty($headers)) {
             $headers = $this->modx->fromJSON($headers);
+            /* Make sure fromJSON worked */
+            if (!empty($headers)) {
+                $this->mailService->setHeaderFields($headers);
+            }
         }
-
-        $this->mailService->setHeaderFields($headers);
     }
 
     protected function sendBulk($singleId = null) {
