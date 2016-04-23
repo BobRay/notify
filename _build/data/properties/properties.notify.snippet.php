@@ -2,7 +2,7 @@
 /**
  * Properties file for Notify snippet
  *
- * Copyright 2013-2015 by Bob Ray <http://bobsguides.com>
+ * Copyright 2013-2016 by Bob Ray <http://bobsguides.com>
  * Created on 02-17-2014
  *
  * @package notify
