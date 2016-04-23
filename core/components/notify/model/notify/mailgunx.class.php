@@ -107,7 +107,7 @@ Class MailgunX extends Mailgun implements MailService {
     }
 
     public function clearUserData() {
-        $this->toArray = array();
+        $this->emailArray = array();
         $this->recipientVariables = array();
     }
     
