@@ -16,14 +16,14 @@ $components = array(
     'packageName' => 'Notify',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'Notify project for MyComponent extra',
-    'version' => '1.3.0',
+    'version' => '1.4.0',
     'release' => 'pl',
     'author' => 'Bob Ray',
     'email' => '<http://bobsguides.com>',
     'authorUrl' => 'http://bobsguides.com',
     'authorSiteName' => "Bob's Guides",
     'packageDocumentationUrl' => 'http://bobsguides.com/notify-tutorial.html',
-    'copyright' => '2013-2015',
+    'copyright' => '2013-2016',
 
     /* no need to edit this except to change format */
     'createdon' => strftime('%m-%d-%Y'),
@@ -454,6 +454,10 @@ $components = array(
         'install.script',
     ),
 
+    /* Dependencies */
+    'requires' => array(
+        'subscribe' => '>=1.2.1',
+    ),
     /* (optional) Validators can abort the install after checking
      * conditions. Array of validator names (no
      * prefix of suffix) or '' 'default' creates a default resolver
