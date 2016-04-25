@@ -103,9 +103,7 @@ $chunks[8]->fromArray(array (
   'property_preprocess' => false,
   'name' => 'NfProgressbarJs',
   'description' => 'JS code for Notify progress bar',
-  'properties' => 
-  array (
-  ),
+  'properties' => NULL,
 ), '', true, true);
 $chunks[8]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfprogressbarjs.chunk.html'));
 
