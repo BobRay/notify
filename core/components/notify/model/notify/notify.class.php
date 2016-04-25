@@ -502,7 +502,7 @@ class Notify
      */
     public function displayForm() {
         $testEmailAddress = $this->modx->getOption('nfTestEmailAddress', $this->props, '');
-        if (empty($nfTestEmailAddress)) {
+        if (empty($testEmailAddress)) {
             $profile = $this->modx->user->getOne('Profile');
             if ($profile) {
                 $testEmailAddress = $profile->get('email');
