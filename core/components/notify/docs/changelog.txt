@@ -10,6 +10,7 @@ Add mailService property
 Add additionalHeaders property
 Use Composer for Mandrill and Mailgun classes
 Implement optimized autoloader
+Fix bug with testEmailAddress
 
 Notify 1.3.0-pl
 -----------------
