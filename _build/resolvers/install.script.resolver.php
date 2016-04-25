@@ -59,6 +59,24 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
+        $ps = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties' ));
+        $sn = $modx->getObject('modSnippet', array('name' => 'Notify'));
+        if ($sn && $ps) {
+            $fields = array(
+                'property_set' => $ps->get('id'),
+                'element' => $sn->get('id'),
+                'element_class' => 'modSnippet',
+            );
+
+            $eps = $modx->getObject('modElementPropertySet', $fields );
+            if (! $eps) {
+                $eps = $modx->newObject('modElementPropertySet');
+                foreach ($fields as $k => $value) {
+                    $eps->set($k, $value);
+                }
+                $eps->save();
+            }
+        }
         $success = true;
         break;
 
