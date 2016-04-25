@@ -397,6 +397,9 @@ class NfSendEmailProcessor extends modProcessor {
                 $fields['username'] = $username;
                 if ($this->injectUnsubscribeUrl) {
                     $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
+                    if ($this->debug) {
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " . $fields['unsubscribe_url']);
+                    }
                 }
                 $fields = array_merge($profile->toArray(), $fields);
                 if ($this->modx->getOption('useExtendedFields', $this->properties, false)) {
