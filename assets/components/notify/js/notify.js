@@ -56,7 +56,7 @@ $(document).ready(function (event) {
                     $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                   alert("Send Tweet Error: " + errorThrown);
+                   console.log("Send Tweet Error: " + errorThrown);
                 }
 
 
@@ -96,7 +96,7 @@ $(document).ready(function (event) {
                    $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                   alert("Send Test Email Error: " + errorThrown);
+                   console.log("Send Test Email Error: " + errorThrown);
                 }
                 });
         }
@@ -145,7 +145,7 @@ $(document).ready(function (event) {
                     $target.animate({scrollTop: $target.height()}, 1000);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                   alert("Batch send Error: " + errorThrown);
+                   console.log("Batch send Error: " + errorThrown);
                 }
             });
 
@@ -216,7 +216,7 @@ $(document).ready(function (event) {
                                       if (e == "timeout") {
                                           alert("Request Time out.");
                                       } else {
-                                         /*  alert("Unknown Error: " + x.responseText); */
+                                          console.log("Unknown Error: " + x.responseText);
                                       }
                                   }
                               }

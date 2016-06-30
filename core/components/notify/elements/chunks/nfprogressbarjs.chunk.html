@@ -46,11 +46,11 @@ $(document).ready(function (event) {
         success: function(data) {
            /*$("#results").text("Results: " + data.successMessages);*/
            console.log(data);
-           /*alert(data);*/
+           /*console.log(data);*/
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-          alert("Status: " + textStatus);
-           alert("Error: " + errorThrown);
+          console.log("Status: " + textStatus);
+           console.log("Error: " + errorThrown);
         }
     });
 
@@ -112,7 +112,7 @@ $(document).ready(function (event) {
                               if (e == "timeout") {
                                   alert("Request Time out.");
                               } else {
-                                  alert("Unknown Error: " + x.responseText);
+                                  console.log("Unknown Error: " + x.responseText);
                               }
                           }
                       }
