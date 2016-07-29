@@ -1,5 +1,15 @@
 Changelog for Notify
 
+Notify 1.4.1-pl
+-----------------
+Change alerts to console log
+Add more debugging code
+Fix aborting before finished on some platforms
+Fix bug in groups selection
+Make multiple attempts to send a packet of emails
+Catch uncaught exceptions inside email classes
+
+
 Notify 1.4.0-pl
 -----------------
 Add support for Mailgun
