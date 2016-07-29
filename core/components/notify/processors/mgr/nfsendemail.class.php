@@ -41,10 +41,10 @@ class NfSendEmailProcessor extends modProcessor {
         $this->debug = $this->getProperty('debug', false);
 
         if ($this->debug) {
-            $this->modx->log(modx::LOG_LEVEL_ERROR, "\nProperties after merge\n" . print_r($this->properties, true));
+            $this->modx->log(modX::LOG_LEVEL_ERROR, "\nProperties after merge\n" . print_r($this->properties, true));
         }
         unset ($t, $config);
-        $this->testMode = $this->getProperty('testMode',false);
+        $this->testMode = $this->getProperty('testMode', false);
         $this->injectUnsubscribeUrl = $this->getProperty('injectUnsubscribeUrl', true);
         $this->setCheckbox('send_tweet');
         $this->setCheckbox('send_bulk');
@@ -59,39 +59,38 @@ class NfSendEmailProcessor extends modProcessor {
         $this->mailServiceClass = $this->getProperty('mailService', '');
         /* Backward Compatibility */
         if (empty($this->mailServiceClass)) {
-            if ($this->getProperty('useMandrill','')) {
+            if ($this->getProperty('useMandrill', '')) {
                 $this->mailServiceClass = 'MandrillX';
             } else {
                 $this->mailServiceClass = 'modMailX';
             }
         }
         $msLower = strtolower($this->mailServiceClass);
-        $shortName = str_replace('x', '', $msLower );
+        $shortName = str_replace('x', '', $msLower);
         $filename = $this->modelPath . strtolower($this->mailServiceClass) . '.class.php';
-        $apiKey = $this->modx->getOption($shortName . '_api_key', $this->properties ,'');
+        $apiKey = $this->modx->getOption($shortName . '_api_key', $this->properties, '');
         $this->properties['apiKey'] = $apiKey;
         if ($this->mailServiceClass != 'modMailX' && empty($apiKey)) {
             $this->setError('nf.missing_api_key');
         }
-        if (! file_exists($filename)) {
+        if (!file_exists($filename)) {
             $this->setError($this->modx->lexicon('nf.processor_nf')
                 . $filename);
             return false;
         }
 
         $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
-        if (! $this->mailService instanceof $this->mailServiceClass) {
+        if (!$this->mailService instanceof $this->mailServiceClass) {
             $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
                 . $this->mailServiceClass);
             return false;
         }
 
 
-
         $this->mailService->init();
-         if (! $this->sendMailFields()) {
-              return false;
-         }
+        if (!$this->sendMailFields()) {
+            return false;
+        }
         $this->sendHeaderFields();
         if ($this->mailService->hasError()) {
             $this->errors = array_merge($this->errors, $this->mailService->getErrors());
@@ -99,6 +98,7 @@ class NfSendEmailProcessor extends modProcessor {
         }
         return true;
     }
+
     /**
      * Update file that is read to create status bar.
      * @param $percent int - percentage complete
@@ -106,12 +106,12 @@ class NfSendEmailProcessor extends modProcessor {
      * @param $text2 string - Second text message
      * @param $pb_target modChunk (object) - chunk used to record the data
      */
-    public  function update($percent, $text1, $text2, &$pb_target) {
+    public function update($percent, $text1, $text2, &$pb_target) {
 
         $msg = $this->modx->toJSON(array(
             'percent' => $percent,
-            'text1'   => $text1,
-            'text2'   => $text2,
+            'text1' => $text1,
+            'text2' => $text2,
         ));
 
         /* use a chunk for the status "file" */
@@ -121,8 +121,8 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
     public function checkPermissions() {
-        $valid =  $this->modx->hasPermission('view_user');
-        if (! $valid) {
+        $valid = $this->modx->hasPermission('view_user');
+        if (!$valid) {
             $this->setError($this->modx->lexicon('nf.no_view_user_permission'));
         }
         return $valid;
@@ -130,18 +130,18 @@ class NfSendEmailProcessor extends modProcessor {
 
     public function process($scriptProperties = array()) {
         $retVal = true;
-        if($this->debug) {
+        if ($this->debug) {
 
             if (isset($this->properties)) {
-                $content =  print_r($this->properties, true);
+                $content = print_r($this->properties, true);
             } else {
                 $content = 'No Props';
             }
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n Content: " .$content);
+            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n Content: " . $content);
         }
 
-        $sendBulk = (bool) $this->getProperty('send_bulk', false);
-        $sendSingle = (bool) $this->getProperty('single', false);
+        $sendBulk = (bool)$this->getProperty('send_bulk', false);
+        $sendSingle = (bool)$this->getProperty('single', false);
 
         if ($sendBulk) {
             $retVal = $this->sendBulk();
@@ -161,7 +161,7 @@ class NfSendEmailProcessor extends modProcessor {
             $this->modx->log(modX::LOG_LEVEL_ERROR, print_r($this->errors, true));
         }
 
-        $results["status"] = empty($this->errors)? "Yes" : "No";
+        $results["status"] = empty($this->errors) ? "Yes" : "No";
         $results["errors"] = $this->errors;
         $results["successMessages"] = $this->successMessages;
 
@@ -172,9 +172,9 @@ class NfSendEmailProcessor extends modProcessor {
         $fields = array();
         $success = true;
         $fromName = $this->getProperty('from_name', '');
-        $fromName = empty($fromName)? $this->modx->getOption('site_name') : $fromName;
+        $fromName = empty($fromName) ? $this->modx->getOption('site_name') : $fromName;
         $fromEmail = $this->getProperty('from_email', '');
-        $fromEmail = empty($fromEmail)? $this->modx->getOption('emailsender') : $fromEmail;
+        $fromEmail = empty($fromEmail) ? $this->modx->getOption('emailsender') : $fromEmail;
         $fields['html'] = $this->emailText;
         $fields['html'] = $this->mailService->prepareTpl($fields['html']);
         require_once $this->modelPath . 'html2text.php';
@@ -235,7 +235,7 @@ class NfSendEmailProcessor extends modProcessor {
         $fp = NULL;
         $batchSize = $this->getProperty('batchSize', 25);
         $batchDelay = $this->getProperty('batchDelay', 1);
-        $itemDelay = (float) $this->getProperty('itemDelay', .51);
+        $itemDelay = (float)$this->getProperty('itemDelay', .51);
         $profileAlias = $this->getProperty('profileAlias', 'Profile');
         $profileAlias = empty($profileAlias) ? 'Profile' : $profileAlias;
         $profileClass = $this->getProperty('profileClass', 'modUserProfile');
@@ -250,7 +250,9 @@ class NfSendEmailProcessor extends modProcessor {
         /* Set up variables for unSubScribe link - user-specific part is added later.
             Link itself is a user merge variable processed in the mailService class.
         */
-        if ($this->injectUnsubscribeUrl) {
+        $unSub = null;
+        if (
+        $this->injectUnsubscribeUrl) {
             $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
             $unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
             $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
@@ -321,21 +323,23 @@ class NfSendEmailProcessor extends modProcessor {
                 return false;
             }
 
-        } else if (!empty($groups)) {
-            $c->where(array(
-                'UserGroupMembers.user_group:IN' => $groups,
-                'active'                         => '1',
-            ));
-            $c->leftJoin('modUserGroupMember', 'UserGroupMembers');
         } else {
-            $c->where(array(
-                'active' => '1',
-            ));
+            if (!empty($groups)) {
+                $c->where(array(
+                    'UserGroupMembers.user_group:IN' => $groups,
+                    'active' => '1',
+                ));
+                $c->leftJoin('modUserGroupMember', 'UserGroupMembers');
+            } else {
+                $c->where(array(
+                    'active' => '1',
+                ));
+            }
         }
 
         $c->prepare();
         $totalCount = $this->modx->getCount('modUser', $c);
-        if (! $totalCount) {
+        if (!$totalCount) {
             $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
             return false;
         }
@@ -358,20 +362,36 @@ class NfSendEmailProcessor extends modProcessor {
         $processMsg1 = $this->modx->lexicon('nf.processing_batch');
         $processMsg2 = $this->modx->lexicon('nf.users_emailed_in_batch');
         $finishedMsg = $this->modx->lexicon('nf.finished');
-        while ($offset < $totalCount) {
-            $this->mailService->clearUserData();
 
+        /* Batch loop - sends all batches */
+        while ($offset < $totalCount) {
+            if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, " ************* NEW BATCH -- Batch {$batchNumber}");
+            }
+            if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, "Clearing User Data");
+            }
+            $this->mailService->clearUserData();
+            if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, "User Data Cleared");
+            }
             // sleep(4);
             $i++;
-
+            /* Get one batch's potential users */
+            if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, "Doing Query");
+            }
             $c->limit($batchSize, $offset);
             // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"' . $profileAlias . '":{}', $c);
-
+            if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, "Query completed ");
+            }
             $offset += $batchSize;
 
             if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, "Count: " . count($users) . ' -- Offset: ' . $offset);
                 $msg = "\n\n" . $i . "  Count: " . count($users) .
                     "\nOffset: " . $offset . "\nBatchSize: " .
                     $batchSize;
@@ -379,26 +399,54 @@ class NfSendEmailProcessor extends modProcessor {
             }
             $sentCount = 0;
 
-            $requireAllTags=$this->getProperty('require_all_tags', false);
+            $requireAllTags = $this->getProperty('require_all_tags', false);
+            $userNumber = 1;
             foreach ($users as $user) {
                 /** @var $user modUser */
                 /** @var $profile modUserProfile */
                 $profile = $user->$profileAlias;
                 $username = $user->get('username');
+                if (empty($profile)) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Profile is empty -- User: ' . $userNumber . 'Username: ' . $username);
+                }
+                if (! $profile instanceof modUserProfile) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Profile is not a profile -- User: ' . $userNumber . 'Username: ' . $username);
+                }
+
+                if ($this->debug) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Qualifying users');
+                }
                 if (!empty($this->tags)) {
                     if (!$this->qualifyUser($profile, $username, $requireAllTags)) {
                         continue;
                     }
                 }
 
+                /* Make sure the profile is hydrated; prevents 500 error in $unSub->createUrl() */
+
+                $x = $profile->toArray('', true);
+                $z = $x;
+                unset($x, $z);
+
+                if ($this->debug) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'User qualified');
+                }
                 /* Now we have a user to send to */
                 $fields = array();
                 $fields['userid'] = $user->get('id');
                 $fields['username'] = $username;
+                if ($this->debug) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' . $userNumber . ' -- Username: ' . $username . ' -- UnsubURL: ' .$unSubUrl);
+                }
                 if ($this->injectUnsubscribeUrl) {
+                    if (!$unSub instanceof Unsubscribe) {
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe not an instance of Unsubscribe');
+
+                    }
                     $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
                     if ($this->debug) {
                         $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " . $fields['unsubscribe_url']);
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe injected -- User: ' . $userNumber . ' -- Username: ' . $username);
                     }
                 }
                 $fields = array_merge($profile->toArray(), $fields);
@@ -423,7 +471,7 @@ class NfSendEmailProcessor extends modProcessor {
                     ? $fields['firstname']
                     : $username;
                 $fields['first'] = $fields['firstname'];
-                
+
                 /* do last name */
 
                 if (strpos($fields['name'], ' ') !== false) {
@@ -435,36 +483,77 @@ class NfSendEmailProcessor extends modProcessor {
                         : $username;
                     $fields['last'] = $fields['lastname'];
                 }
-                
-                
-                
-                /* Send the email */
+
                 $this->mailService->addUser($fields);
 
                 if ($this->debug) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $user->get('username') . ' -- ' . $profile->get('email'));
                 }
                 $sentCount++;
+                $userNumber++;
 
             }
-            $response = $this->mailService->sendBatch();
+            if ($this->debug) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, 'All users added');
+            }
+            /* All users added, send batch */
+            $percent = $stepSize * $batchNumber;
+
+            $attempt = 1;
+            $maxAttempts = 3;
+
+            do {
+                try {
+                    $response = $this->mailService->sendBatch();
+                    $code = $response->http_response_code;
+                    if ($code == 200 || $code == 421) {
+                        if ($this->debug) {
+                            $this->modx->log(modX::LOG_LEVEL_ERROR, " Success -- Batch {$batchNumber} -- Attempt: {$attempt}");
+                        }
+                        break;
+                    } else {
+                        /* No exception, but bad code */
+                        if ($this->debug) {
+                            $this->modx->log(modX::LOG_LEVEL_ERROR, " No Exception -- bad code -- Batch {$batchNumber} -- Attempt: {$attempt} -- Code: {$code}");
+                        }
+                        if ($attempt < $maxAttempts) {
+                            throw new exception('Retrying');
+                        }
+                    }
+                } catch (Exception $e) {
+                    if ($this->debug) {
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, "Exception -- Batch {$batchNumber} " . $e->getMessage() . " Attempt: {$attempt}");
+                    }
+                    sleep(1);
+                    $attempt++;
+                    continue;
+                }
+                break;
+            } while ($attempt < $maxAttempts);
+
+
             if ($this->debug) {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $this->modx->lexicon('nf.full_response') .
                     "\n" . print_r($response, true) . "\n");
             }
 
-
-            if ($this->mailService->hasError()) {
-                $errors = $this->mailService->getErrors();
-                $this->successMessages = array();
-                foreach ($errors as $error) {
-                    $this->setError($error);
+            /* If we still don't have a 200 response, record errors */
+            if ($code !== 200 && $code !== 421) {
+                if ($this->debug) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'End of batch error -- code: ' . $code);
                 }
-                return false;
+                if ($this->mailService->hasError()) {
+                    $errors = $this->mailService->getErrors();
+                    // $this->successMessages = array();
+                    foreach ($errors as $error) {
+                        $this->setError($error);
+                    }
+
+                }
             }
             $percent = $stepSize * $batchNumber;
 
-            $percent = ($percent >= 100)? 99: $percent;
+            $percent = ($percent >= 100) ? 99 : $percent;
 
             $this->update($percent, $processMsg1 . ' ' . $batchNumber,
                 $processMsg2 . ' ' . $sentCount, $statusChunk);
@@ -479,7 +568,7 @@ class NfSendEmailProcessor extends modProcessor {
 
             $totalSent += $sentCount;
         }
-        $this->update(99, '','', $statusChunk);
+        $this->update(99, '', '', $statusChunk);
         sleep(1);
         $this->update(100, $finishedMsg, '', $statusChunk);
         sleep(1);
@@ -564,6 +653,9 @@ class NfSendEmailProcessor extends modProcessor {
 
 
     public function removeOldFiles($dir, $maxLogs) {
+        if ($this->debug) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Removing old files');
+        }
         $files = glob($dir . '/*.*');
 
         $over = count($files) - $maxLogs;
@@ -575,9 +667,15 @@ class NfSendEmailProcessor extends modProcessor {
                 SORT_ASC,
                 $files
             );
-            for ($i = 0; $i < $over; $i ++) {
+            for ($i = 0; $i < $over; $i++) {
+                if ($this->debug) {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Removing an old file');
+                }
                 unlink($files[$i]);
             }
+        }
+        if ($this->debug) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'All old files removed');
         }
     }
 
@@ -640,7 +738,7 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
     public function setError($msg) {
-        $this->modx->log(modX::LOG_LEVEL_ERROR, $msg);
+        // $this->modx->log(modX::LOG_LEVEL_ERROR, $msg);
         $this->errors[] = $msg;
     }
 
