@@ -2,9 +2,9 @@
 /**
  * RemoveNotify snippet
  *
- * Copyright 2012-2015 Bob Ray <http:bobsguides.com>
+ * Copyright 2012-2017 Bob Ray <https://bobsguides.com>
  *
- * @author Bob Ray <http:bobsguides.com>
+ * @author Bob Ray <https://bobsguides.com>
  *
  * RemoveNotify is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -24,7 +24,7 @@
 
 /* ToDo: rewrite or remove this */
 /**
- * MODx RemoveNotify plugin
+ * MODX RemoveNotify plugin
  *
  * Description: Removes all vestiges of Notify package except the files,
  * resources, and any user-created property sets

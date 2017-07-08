@@ -2,9 +2,9 @@
 /**
  * Notify plugin
  *
- * Copyright 2012-2015 Bob Ray <http:bobsguides.com>
+ * Copyright 2012-2017 Bob Ray <https://bobsguides.com>
  *
- * @author Bob Ray <http:bobsguides.com>
+ * @author Bob Ray <https://bobsguides.com>
  *
  * Notify is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -23,7 +23,7 @@
  */
 
 /**
- * MODx Notify plugin
+ * MODX Notify plugin
  *
  * Description: Creates and Sends an email to subscribers and notifies social media
  * Events: OnDocFormPrerender

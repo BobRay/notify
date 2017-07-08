@@ -3,8 +3,8 @@
 /**
  * Notify resolver script - runs on install.
  *
- * Copyright 2012-2015 Bob Ray <http://bobsguides/com>
- * @author Bob Ray <http://bobsguides/com>
+ * Copyright 2012-2017 Bob Ray <https://bobsguides/com>
+ * @author Bob Ray <https://bobsguides/com>
  * 3/27/12
  *
  * Notify is free software; you can redistribute it and/or modify it

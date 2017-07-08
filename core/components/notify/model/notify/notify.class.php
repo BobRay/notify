@@ -3,9 +3,9 @@
 /**
  * Notify
  *
- * Copyright 2012-2015 Bob Ray
+ * Copyright 2012-2017 Bob Ray
  *
- * @author Bob Ray <http://bobsguides.com>
+ * @author Bob Ray <https://bobsguides.com>
  * 
  * 
  *
@@ -27,7 +27,7 @@
 
 
 /**
- * MODx Notify class
+ * MODX Notify class
  *
  * Description: Creates and Sends an email to subscribers and notifies social media
  *
