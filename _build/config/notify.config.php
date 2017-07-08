@@ -16,14 +16,14 @@ $components = array(
     'packageName' => 'Notify',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'Notify project for MyComponent extra',
-    'version' => '1.4.0',
+    'version' => '1.4.1',
     'release' => 'pl',
     'author' => 'Bob Ray',
-    'email' => '<http://bobsguides.com>',
-    'authorUrl' => 'http://bobsguides.com',
+    'email' => '<https://bobsguides.com>',
+    'authorUrl' => 'https://bobsguides.com',
     'authorSiteName' => "Bob's Guides",
-    'packageDocumentationUrl' => 'http://bobsguides.com/notify-tutorial.html',
-    'copyright' => '2013-2016',
+    'packageDocumentationUrl' => 'https://bobsguides.com/notify-tutorial.html',
+    'copyright' => '2013-2017',
 
     /* no need to edit this except to change format */
     'createdon' => strftime('%m-%d-%Y'),
