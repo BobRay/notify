@@ -2,9 +2,9 @@
 /**
  * Notify snippet
  *
- * Copyright 2012-2017 Bob Ray <https://bobsguides.com>
+ * Copyright 2012-2015 Bob Ray <http:bobsguides.com>
  *
- * @author Bob Ray <https://bobsguides.com>
+ * @author Bob Ray <http:bobsguides.com>
  *
  * Notify is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -23,7 +23,7 @@
  */
 
 /**
- * MODX Notify snippet
+ * MODx Notify snippet
  *
  * Description: Sends updates to Subscribers, Twitter, and Facebook
  *
