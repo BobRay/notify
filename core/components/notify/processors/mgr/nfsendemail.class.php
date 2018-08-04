@@ -506,6 +506,9 @@ class NfSendEmailProcessor extends modProcessor {
                 try {
                     $response = $this->mailService->sendBatch();
                     $code = $response->http_response_code;
+                    if ($this->debug) {
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, " Response code: " . $code);
+                    }
                     if ($code == 200 || $code == 421) {
                         if ($this->debug) {
                             $this->modx->log(modX::LOG_LEVEL_ERROR, " Success -- Batch {$batchNumber} -- Attempt: {$attempt}");
