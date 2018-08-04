@@ -7,14 +7,14 @@ class Mandrill_Messages {
 
     /**
      * Send a new transactional message through Mandrill
-     * @param array $message the information on the message to send
+     * @param struct $message the information on the message to send
      *     - html string the full HTML content to be sent
      *     - text string optional full text content to be sent
      *     - subject string the message subject
      *     - from_email string the sender email address.
      *     - from_name string optional from name to be used
      *     - to array an array of recipient information.
-     *         - to[] array a single recipient's information.
+     *         - to[] struct a single recipient's information.
      *             - email string the email address of the recipient
      *             - name string the optional display name to use for the recipient
      *             - type string the header type to use for the recipient, defaults to "to" if not provided

@@ -1,7 +1,9 @@
 {
     "require": {
-        "mailgun/mailgun-php": "~1.7.2",
-        "mandrill/mandrill": "1.0.*"
+        "mailgun/mailgun-php": "^2.6",
+        "mandrill/mandrill": "1.0.*",
+        "php-http/curl-client": "^1.7",
+        "guzzlehttp/psr7": "^1.4"
     },
     "autoload": {
         "classmap": [
