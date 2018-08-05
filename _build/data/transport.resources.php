@@ -2,7 +2,7 @@
 /**
  * resources transport file for Notify extra
  *
- * Copyright 2013-2017 by Bob Ray <https://bobsguides.com>
+ * Copyright 2013-2018 by Bob Ray <https://bobsguides.com>
  * Created on 02-17-2014
  *
  * @package notify
@@ -40,7 +40,7 @@ $resources[1]->fromArray(array (
   'introtext' => '',
   'richtext' => false,
   'template' => 'NotifyTemplate',
-  'menuindex' => 4,
+  'menuindex' => 15,
   'searchable' => true,
   'cacheable' => true,
   'createdby' => 1,
