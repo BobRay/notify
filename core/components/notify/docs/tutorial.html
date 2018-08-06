@@ -11,37 +11,14 @@
 <h3>What's New</h3>
 <h4>New in this version:</h4>
 <ul>
-    <li>Add support for Mailgun</li>
-    <li>Refactor to allow easier addition of new mail services</li>
-    <li>Create MailService interface</li>
-    <li>Improve diagnostics</li>
-    <li>Add mailService property</li>
-    <li>Add additionalHeaders property</li>
-    <li>Use Composer for Mandrill and Mailgun classes</li>
-    <li>Implement optimized autoloader</li>
-</ul>
-
-
-<h4>New in Previous Versions</h4>
-<ul>
-    <li>Allows launch from NewsPublisher and other extras (see below)</li>
-    <li>Fixes bugs with Tpl names</li>
-    <li>Looks for chunks prefixed with 'My'</li>
-    <li>Fixes undefined variable bug in JS</li>
-    <li>Fixes bug with oauth</li>
-    <li>Sends email (optionally) with the Mandrill email service (see below for more info).</li>
-    <li>Has Buttons to select User Groups to send to.</li>
-    <li>Shows a progress bar for bulk sends</li>
-    <li>Sends mail in batches to save memory (batch size is adjustable).</li>
-    <li>Has much more efficient database queries for quicker sends.</li>
-    <li>Sends email to a single user by email or username</li>
-    <li>Allows user tags for any field of the user profile (including the 'extended' fields).</li>
-    <li>Processes chunk, snippet, and setting tags in the email Tpl chunk.</li>
-    <li>Allows resource and TV placeholder tags!</li>
-    <li>Makes inserting the unsubscribe link optional.</li>
-
+    <li>Updates to Mailgun and Guzzle libraries</li>
+    <li>Update cert file</li>
+    <li>Fixes bug with JQueryUI loading</li>
+    <li>More debugging code</li>
 
 </ul>
+
+
 
 
 <br />
@@ -50,6 +27,8 @@
 <p>&nbsp;</p>
 
 <h3>Upgrade Notes</h3>
+
+<p><b>Important note for Mailgun users!</b> Mailgun is still free for up to 10,000 emails per month, but they now require you register a credit card in order to use the service. They've also updated the SPF record format so you may need to re-verify your site (check the Mailgun dashboard for you site). It may take up to 48 hours before you can send mail through Mailgun.</p>
 
 <p>With the death of free Mandrill, Notify has been refactored to allow the use of Mailgun. See the Mailgun section below. Mandrill will still work, but as of April 27, 2016, will cost about $30/month to use.<p>
 

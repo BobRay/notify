@@ -1,5 +1,11 @@
 Changelog for Notify
 
+Notify 1.4.2-pl
+-----------------
+Update mailgun library, guzzle, and cert file
+Fix bug with JS loading
+Add debug line for response code
+
 Notify 1.4.1-pl
 -----------------
 Change alerts to console log
