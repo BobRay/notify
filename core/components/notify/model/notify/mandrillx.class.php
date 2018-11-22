@@ -155,9 +155,10 @@ class MandrillX extends Mandrill implements MailService{
             } catch (Exception $e) {
 
                 $this->SetError($e->getMessage());
+                $retVal = false;
             }
         } else {
-            $retVal = 'OK';
+            $retVal = true;
         }
         if (isset($this->properties['unitTest'])) {
             echo "\n MandrillX Message: " . print_r($this->message, true) . "\n";
