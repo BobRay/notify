@@ -96,49 +96,49 @@ class Notify
 
     /** @var $modx modX */
     /** @var $resource modResource */
-    protected $resource = null;
-    protected $modx = null;
-    protected $props = array();
-    protected $mail_from = '';
-    protected $mail_from_name = '';
-    protected $mail_sender = '';
-    protected $mail_reply_to = '';
-    protected $mail_subject = '';
+    public $resource = null;
+    public $modx = null;
+    public $props = array();
+    public $mail_from = '';
+    public $mail_from_name = '';
+    public $mail_sender = '';
+    public $mail_reply_to = '';
+    public $mail_subject = '';
 
-    protected $emailText;
-    protected $emailTpl;
-    protected $tweetTpl;
-    protected $tweetText;
+    public $emailText;
+    public $emailTpl;
+    public $tweetTpl;
+    public $tweetText;
     /** @var $successMessages array */
-    protected $successMessages;
+    public $successMessages;
     /** @var $errors array */
-    protected $errors;
-    protected $pageId;
+    public $errors;
+    public $pageId;
     /** @var $previewPage modResource */
-    protected $previewPage;
-    protected $formTpl;
-    protected $urlShorteningService;
-    protected $shortenUrls;
+    public $previewPage;
+    public $formTpl;
+    public $urlShorteningService;
+    public $shortenUrls;
     /** @var $shortener UrlShortener */
     public $shortener;
-    protected $tplType; /* new, update, blank, custom */
+    public $tplType; /* new, update, blank, custom */
     /** @var $unSub Unsubscribe */
-    protected $unSub;
-    protected $unSubUrl;
-    protected $unSubTpl;
+    public $unSub;
+    public $unSubUrl;
+    public $unSubTpl;
     /** @var $profile modUserProfile */
-    protected $profile;
+    public $profile;
     /** @var $html2text html2text */
-    protected $html2text;
-    protected $requireDefault;
+    public $html2text;
+    public $requireDefault;
     /** @var $mx MandrillX */
-    protected $mx = null;
+    public $mx = null;
     /** @var $userFields array - array of user placeholders used in message */
-    protected $userFields = array();
-    protected $debug;
-    protected $maxLogs = 5;
-    protected $testMode;
-    protected $injectUnsubscribeUrl;
+    public $userFields = array();
+    public $debug;
+    public $maxLogs = 5;
+    public $testMode;
+    public $injectUnsubscribeUrl = true;
 
 
     /**
@@ -236,6 +236,7 @@ class Notify
         $this->debug = $this->modx->getOption('debug', $this->props, false);
         $this->saveConfig();
         set_time_limit(0);
+        return true;
     }
 
     public function saveConfig() {

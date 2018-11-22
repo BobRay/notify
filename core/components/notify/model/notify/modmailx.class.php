@@ -1,8 +1,8 @@
 <?php
 
-use Mailgun\Mailgun;
+// use Mailgun\Mailgun;
 /**
- * MailgunX class file for Notify extra
+ * modMailX class file for Notify extra
  *
  * Copyright 2013-2017 Bob Ray <https://bobsguides.com>
  * Created on 03-18-2016
@@ -221,7 +221,7 @@ Class modMailX  implements MailService {
 
     public function sendBatch() {
         $mFields = $this->mailFields;
-
+        $success = true; // report success in testMode
         foreach ($this->emailArray as $email) {
 
             $this->modx->mail->set(modMail::MAIL_SUBJECT, $mFields['subject']);
@@ -283,11 +283,11 @@ Class modMailX  implements MailService {
                 'bcc' => $this->mailFields['bcc'],
 
             );
-            echo "\nmodMailX Message: \n" . print_r($fields, true) . "\n";
+            // echo "\nmodMailX Message: \n" . print_r($fields, true) . "\n";
 
         }
 
-         return true;
+         return $success;
         // $tag = str_replace(array('/', ' '), array('-', '_'), strftime('%c'));
     }
 

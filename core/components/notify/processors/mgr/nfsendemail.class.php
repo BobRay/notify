@@ -15,18 +15,19 @@ include_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
 
 class NfSendEmailProcessor extends modProcessor {
 
-    protected $errors = array();
-    protected $successMessages = array();
-    protected $testMode = false;
-    protected $userFields = array();
-    protected $emailText = '';
-    protected $logFile = '';
-    protected $debug = false;
-    protected $tags = '';
-    protected $corePath = '';
-    protected $modelPath = '';
-    protected $html2text = null;
-    protected $injectUnsubscribeUrl = true;
+    public $errors = array();
+    public $successMessages = array();
+    public $testMode = false;
+    public $userFields = array();
+    public $emailText = '';
+    public $logFile = '';
+    public $debug = false;
+    public $tags = '';
+    public $corePath = '';
+    public $modelPath = '';
+    public $config = array();
+    public $html2text = null;
+    public $injectUnsubscribeUrl = true;
     /** @var $mailService MailService */
     public $mailService = null;
     protected $mailServiceClass = '';
@@ -505,11 +506,15 @@ class NfSendEmailProcessor extends modProcessor {
             do {
                 try {
                     $response = $this->mailService->sendBatch();
-                    $code = $response->http_response_code;
+                    if (isset($response->http_response_code)) {
+                        $code = $response->http_response_code;
+                    } else {
+                        $code = null;
+                    }
                     if ($this->debug) {
                         $this->modx->log(modX::LOG_LEVEL_ERROR, " Response code: " . $code);
                     }
-                    if ($code == 200 || $code == 421) {
+                    if ($code == 200 || $code == 421 || $response == true) {
                         if ($this->debug) {
                             $this->modx->log(modX::LOG_LEVEL_ERROR, " Success -- Batch {$batchNumber} -- Attempt: {$attempt}");
                         }
