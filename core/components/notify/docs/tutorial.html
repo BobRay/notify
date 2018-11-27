@@ -181,7 +181,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>The MailgunX class is included in Version 1.4.0 of Notify. In order to use Mailgun, you need to go to <a href="https://mailgun.com/signup" target="_blank">Mailgun</a> and create an account. Mailgun requires you to set DKIM and SPF records and verify the domain. The method for this varies depending on the domain registrar. Follow the directions at Mailgun. If you would like to track opens and clicks, you'll also need to set a CNAME record. This is a bit of a hassle, but on the plus side, it will increase the deliverability of your emails by quite a bit and prevent them from ending up in the spam folder.</p>
 
-<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet. You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testModx property = </code>`1` to prevent the messages from being sent.</p>
+<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet. You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testMode property = </code>`1` to prevent the messages from being sent.</p>
 
 <p>Don't forget to set the <code>&mailService</code> property to <code>MailgunX</code>.</p>
 
