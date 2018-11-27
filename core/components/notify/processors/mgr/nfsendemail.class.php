@@ -28,6 +28,9 @@ class NfSendEmailProcessor extends modProcessor {
     public $config = array();
     public $html2text = null;
     public $injectUnsubscribeUrl = true;
+    /** @var $unSub Unsubscribe */
+    public $unSub = null; // Unsubscribe class
+    public $unSubUrl = '';
     /** @var $mailService MailService */
     public $mailService = null;
     protected $mailServiceClass = '';
@@ -80,6 +83,13 @@ class NfSendEmailProcessor extends modProcessor {
             return false;
         }
 
+        if ($this->injectUnsubscribeUrl) {
+            $this->unSub = $this->initializeUnsubscribe();
+            if ($this->unSub == false) {
+                $this->setError('Subscribe Extra is not installed'); /* ToDo: lex string */
+            }
+        }
+
         $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
         if (!$this->mailService instanceof $this->mailServiceClass) {
             $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
@@ -100,6 +110,25 @@ class NfSendEmailProcessor extends modProcessor {
         return true;
     }
 
+    public function initializeUnsubscribe() {
+        /* Set up variables for unSubScribe link - user-specific part is added later.
+           Link itself is a user merge variable processed in the mailService class.
+       */
+        $unSub = null;
+        $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
+        $this->unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
+        $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
+            $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
+            'components/subscribe/');
+        @include_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
+        if (!class_exists('Unsubscribe')) {
+            return false;
+        } else {
+            $unSub = new Unsubscribe($this->modx, $this->properties);
+            $unSub->init();
+        }
+        return $unSub;
+    }
     /**
      * Update file that is read to create status bar.
      * @param $percent int - percentage complete
@@ -236,7 +265,7 @@ class NfSendEmailProcessor extends modProcessor {
         $fp = NULL;
         $batchSize = $this->getProperty('batchSize', 25);
         $batchDelay = $this->getProperty('batchDelay', 1);
-        $itemDelay = (float)$this->getProperty('itemDelay', .51);
+        // $itemDelay = (float)$this->getProperty('itemDelay', .51);
         $profileAlias = $this->getProperty('profileAlias', 'Profile');
         $profileAlias = empty($profileAlias) ? 'Profile' : $profileAlias;
         $profileClass = $this->getProperty('profileClass', 'modUserProfile');
@@ -248,26 +277,12 @@ class NfSendEmailProcessor extends modProcessor {
             return false;
         }
 
-        /* Set up variables for unSubScribe link - user-specific part is added later.
-            Link itself is a user merge variable processed in the mailService class.
-        */
-        $unSub = null;
-        if (
-        $this->injectUnsubscribeUrl) {
-            $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
-            $unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
-            $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
-                $this->modx->getOption('core_path', NULL, MODX_CORE_PATH) .
-                'components/subscribe/');
-            require_once($subscribeCorePath . 'model/subscribe/unsubscribe.class.php');
-            $unSub = new Unsubscribe($this->modx, $this->properties);
-            $unSub->init();
-        }
+
 
         $userFields = $this->getUserFields($this->emailText);
 
         /* Tell service what the fields are (not their values) */
-        $this->mailService->setUserPlaceholders($userFields); // xxx
+        $this->mailService->setUserPlaceholders($userFields);
 
         $this->logFile .= ' (' . $this->mailServiceClass . ')';
 
@@ -300,7 +315,7 @@ class NfSendEmailProcessor extends modProcessor {
                 $groups[$key] = $group;
             }
         }
-
+        /* Get Count of Users */
         $userClass = $this->getProperty('userClass', 'modUser');
 
         $c = $this->modx->newQuery($userClass);
@@ -437,14 +452,10 @@ class NfSendEmailProcessor extends modProcessor {
                 $fields['userid'] = $user->get('id');
                 $fields['username'] = $username;
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' . $userNumber . ' -- Username: ' . $username . ' -- UnsubURL: ' .$unSubUrl);
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' . $userNumber . ' -- Username: ' . $username . ' -- UnsubURL: ' .$this->unSubUrl);
                 }
                 if ($this->injectUnsubscribeUrl) {
-                    if (!$unSub instanceof Unsubscribe) {
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe not an instance of Unsubscribe');
-
-                    }
-                    $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
+                    $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $profile);
                     if ($this->debug) {
                         $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " . $fields['unsubscribe_url']);
                         $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe injected -- User: ' . $userNumber . ' -- Username: ' . $username);
