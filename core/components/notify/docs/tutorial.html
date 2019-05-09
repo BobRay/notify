@@ -263,6 +263,12 @@ $modx->sendRedirect($url);
 
 <p>&nbsp;</p>
 
+<h3>Controlling Who Uses Notify</h3>
+
+<p>The snippet is controlled by the <code>allowedGroups</code> property. The plugin is controlled by the allowedGroups System Setting. Both are comma-separated lists of allowed user groups. The default is the administrator group.  Make sure they match or the property value will override the System Setting value for the snippet.</p>
+
+
+<p>&nbsp;</p>
 <h3>Notify Template and CSS</h3>
 
 <p>If you need to modify the Notify Template, duplicate it and change the Template of the Notify page to your new Template. The Notify form CSS file is <code>assets/components/notify/css/notify.css</code>. If you would like to modify it, create a new file and change the reference in the Notify Template (after duplicating the Template and resetting the Template of the Notify page).</p>
@@ -311,6 +317,8 @@ $modx->sendRedirect($url);
 <p>If you upgrade Notify and your Property Set is no long shown in Tools | Property Sets, it may mean that the Property Set has an obsolete category. The only solution is to use PhpMyAdmin to edit the modx_property_sets table and change the category of the Property Set to 0.</p>
 
 <p>If you follow the Unsubscribe/Manage Preferences link in a test email using the same browser you used to send the emails, you'll have to log out or Flush All Sessions before doing anything else in the Manager. This is because following the link resets <code>$modx->user</code>, which changes the MODX session in that browser.</p>
+
+<p>Make sure that the value of the <code>allowedGroups</code> property matches the value of the <code>allowedGroups</code> System Setting.</p>
 
 <p>If you are testing on a localhost install, some URL shortening services (bit.ly for one) will fail to produce a valid URL. This is normal &mdash; they just don't consider &quot;localhost&quot; a valid  domain.</p>
 

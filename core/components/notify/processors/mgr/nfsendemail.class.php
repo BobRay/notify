@@ -512,7 +512,7 @@ class NfSendEmailProcessor extends modProcessor {
             $percent = $stepSize * $batchNumber;
 
             $attempt = 1;
-            $maxAttempts = 3;
+            $maxAttempts = 1;
 
             do {
                 try {
