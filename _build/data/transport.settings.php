@@ -35,4 +35,14 @@ $systemSettings[1]->fromArray(array (
   'name' => 'Notify Status Resource ID',
   'description' => 'ID of Notify Status Resource',
 ), '', true, true);
+$systemSettings[2] = $modx->newObject('modSystemSetting');
+$systemSettings[2]->fromArray(array (
+  'key' => 'allowedGroups',
+  'value' => '',
+  'xtype' => 'textfield',
+  'namespace' => 'notify',
+  'area' => '',
+  'name' => 'Allowed Groups',
+  'description' => 'Comma-separated list of User Groups allowed for plugin execution; set to match the snippet property of the same name; default: Administrator',
+), '', true, true);
 return $systemSettings;

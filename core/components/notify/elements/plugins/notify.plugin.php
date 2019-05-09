@@ -62,8 +62,10 @@ if (!function_exists("my_debug")) {
 }
 $sp =& $scriptProperties;
 
-/* Act only when user is a member of the Administrator group */
-if (!$modx->user->isMember('Administrator')) {
+/* Act only when user is a member of an allowed group */
+$allowedGroups = $modx->getOption('allowedGroups', $scriptProperties, 'Administrator', true);
+$allowedGroups = array_map('trim', explode(',', $allowedGroups));
+if (!$modx->user->isMember($allowedGroups)) {
     return '';
 }
 
