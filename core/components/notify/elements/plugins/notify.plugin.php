@@ -61,11 +61,15 @@ if (!function_exists("my_debug")) {
     }
 }
 $sp =& $scriptProperties;
+$modx->lexicon->load('notify:default');
 
 /* Act only when user is a member of an allowed group */
 $allowedGroups = $modx->getOption('allowedGroups', $scriptProperties, 'Administrator', true);
 $allowedGroups = array_map('trim', explode(',', $allowedGroups));
 if (!$modx->user->isMember($allowedGroups)) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
+        $modx->lexicon('nf_bad_group')
+    );
     return '';
 }
 
@@ -125,7 +129,9 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
         $tvObj = $modx->getObject('modTemplateVar', array('name' => 'NotifySubscribers'));
         if (! $tvObj) {
-            my_debug('No TV object');
+            $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
+                $modx->lexicon('nf.no_tv')
+            );
             return '';
         }
         $tvId = $tvObj->get('id');
@@ -135,12 +141,17 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
         $tvt = $modx->getObject('modTemplateVarTemplate', array('templateid'=> $templateId, 'tmplvarid' => $tvId));
         if (!$tvt) {
+            $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
+                $modx->lexicon('nf.no_tv')
+            );
             return '';
         }
 
         $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
         if (! $notifyObj) {
-            my_debug('No resource');
+            $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
+                $modx->lexicon('nf.no_resource')
+            );
             return '';
         }
         $notifyUrl = $modx->makeUrl($notifyObj->get('id'), "", "", "full");

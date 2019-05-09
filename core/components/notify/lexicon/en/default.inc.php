@@ -65,6 +65,8 @@ $_lang['nf_status_resource_id_bad_resource'] = 'nf_status_resource_id is set to 
 
 
 /* Used in transport.settings.php */
+$_lang['setting_allowedGroups'] = 'Allowed Groups';
+$_lang['setting_allowedGroups_desc'] = 'Comma-separated list of User Groups allowed for plugin execution; set to match the snippet property of the same name; default: Administrator';
 $_lang['setting_nf_status_resource_id'] = 'Notify Status Resource ID';
 $_lang['setting_nf_status_resource_id_desc'] = 'ID of Notify Status Resource';
 
@@ -85,3 +87,8 @@ $_lang['nf.test_mode_on'] = '(testMode is on, no messages or Tweets sent)';
 
 /* Used in mandrillx.class.php */
 $_lang['nf_malformed_header'] = 'Malformed header';
+
+/* Used in notify.plugin.php */
+$_lang['nf_bad_group'] = 'Not a member of an allowed group; check allowedGroups System Setting';
+$_lang['nf.no_tv'] = 'NotifySubscribers TV not attached to template';
+$_lang['nf.no_resource'] = 'Notify Resource not found';
