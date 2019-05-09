@@ -2,7 +2,7 @@
 /**
  * resources transport file for Notify extra
  *
- * Copyright 2013-2018 by Bob Ray <https://bobsguides.com>
+ * Copyright 2013-2019 Bob Ray <https://bobsguides.com>
  * Created on 02-17-2014
  *
  * @package notify
@@ -34,13 +34,14 @@ $resources[1]->fromArray(array (
   'longtitle' => 'Notify',
   'description' => '',
   'alias' => 'notify',
+  'alias_visible' => true,
   'link_attributes' => '',
   'published' => true,
   'isfolder' => false,
   'introtext' => '',
   'richtext' => false,
   'template' => 'NotifyTemplate',
-  'menuindex' => 15,
+  'menuindex' => 17,
   'searchable' => true,
   'cacheable' => true,
   'createdby' => 1,
@@ -72,6 +73,7 @@ $resources[2]->fromArray(array (
   'longtitle' => '',
   'description' => '',
   'alias' => 'notify-preview',
+  'alias_visible' => true,
   'link_attributes' => '',
   'published' => true,
   'isfolder' => false,
@@ -110,6 +112,7 @@ $resources[3]->fromArray(array (
   'longtitle' => '',
   'description' => '',
   'alias' => 'notify-status',
+  'alias_visible' => true,
   'link_attributes' => '',
   'published' => true,
   'isfolder' => false,
