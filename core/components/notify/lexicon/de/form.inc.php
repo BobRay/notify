@@ -20,7 +20,8 @@
  * @package notify
  */
 /**
- * form Lexicon Topic
+ * form Lexicon Topic -- de
+ * Translation by Jo Lichter
  *
  * @package notify
  * @subpackage lexicon

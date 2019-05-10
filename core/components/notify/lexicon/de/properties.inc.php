@@ -20,7 +20,8 @@
  * @package notify
  */
 /**
- * Properties (property descriptions) Lexicon Topic
+ * Properties (property descriptions) Lexicon Topic -- de
+ * Translation by Jo Lichter
  *
  * @package notify
  * @subpackage lexicon

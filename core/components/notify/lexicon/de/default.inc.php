@@ -20,10 +20,12 @@
  * @package notify
  */
 /**
- * Default Lexicon Topic
+ * Default Lexicon Topic -- de
+ * Translation by Jo Lichter
  *
  * @package notify
  * @subpackage lexicon
+ *
  */
 
 /* notify default strings */
