@@ -1,5 +1,14 @@
 Changelog for Notify
 
+Notify 1.5.0-pl
+-----------------
+Prevent issue with multiple messages
+Add allowedGroups System Setting
+Improve error messages in plugin
+Correct bug with Mandrill
+Fix bug with modMailX
+Other bug and typo fixes
+
 Notify 1.4.2-pl
 -----------------
 Update mailgun library, guzzle, and cert file

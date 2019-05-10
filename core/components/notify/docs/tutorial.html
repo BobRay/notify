@@ -11,28 +11,20 @@
 <h3>What's New</h3>
 <h4>New in this version:</h4>
 <ul>
-    <li>Updates to Mailgun and Guzzle libraries</li>
-    <li>Update cert file</li>
-    <li>Fixes bug with JQueryUI loading</li>
-    <li>More debugging code</li>
+    <li>Prevents issue with multiple messages</li>
+    <li>Adds allowedGroups System Setting</li>
+    <li>Improved error messages in plugin</li>
+    <li>Corrects bug with Mandrill</li>
+    <li>Fixes bug with modMailX</li>
+    <li>Other bug and typo fixes</li>
 
 </ul>
 
-
-
-
-<br />
-<div class="box">
-
 <p>&nbsp;</p>
-
+<div class="box">
 <h3>Upgrade Notes</h3>
 
-<p><b>Important note for Mailgun users!</b> Mailgun is still free for up to 10,000 emails per month, but they now require you register a credit card in order to use the service. They've also updated the SPF record format so you may need to re-verify your site (check the Mailgun dashboard for you site). It may take up to 48 hours before you can send mail through Mailgun.</p>
-
-<p>With the death of free Mandrill, Notify has been refactored to allow the use of Mailgun. See the Mailgun section below. Mandrill will still work, but as of April 27, 2016, will cost about $30/month to use.<p>
-
-<p>Notify Version 1.4.0 introduces a new property: <code>&mailService</code> for selecting the mail service to use. The choices are modMailX (the MODX phpMailer implementation), MandrillX, and MailgunX. The modMailX implementation is much slower than the others since it requires that every message be sent separately. The <code>&useMandrill</code> property will still work, but is deprecated.
+<p>The <code>allowedGroups</code> System Setting has been added to fix an issue with allowing groups other than Administrator to use the plugin. Its value should match the value of the <code>allowedGroups</code> snippet property. Note that users in other groups will need the <code>view_user</code> permission. If Administrator group is your only allowed group, you can ignore this, since it's the default.
 </p>
 
 </div>
@@ -44,7 +36,7 @@
 
 <h3>Installing Notify for MODX Revolution</h3>
 <p>
-Go to System | Package Management on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put Notify in the search box and press Enter. Download Notify, then click on the button that takes you back to Package Management. Click on the &quot;Install&quot; button next to Notify in the grid. The Notify package should now be installed.</p>
+Go to Package Manager &mdash; Extras -> Installer on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put Notify in the search box and press Enter. Download Notify, then click on the button that takes you back to Package Management. Click on the &quot;Install&quot; button next to Notify in the grid. The Notify package should now be installed.</p>
         
 <p>During the installation, the Notify TV will be connected to the site's default template. If you need to attach it to other templates, you'll have to connect it manually by editing the TV, checking the boxes on the &quot;Template Access&quot; tab, and clicking on the &quot;Save&quot; button.</p>
         
@@ -77,10 +69,6 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 <p>The various options are independent, so you can send a single email, send a message to subscribers, or send a Tweet without activating the other options. When you click on the &quot;Single Email&quot; checkbox, an input field will appear where you can enter either the email address or the user name of a user on the site.</p>
         
 <p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <code>pagetitle</code>, <code>introtext</code>, <code>description</code> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that MODX placeholders are not available to you if you do this, though user placeholders are.</p>
-
-<pre><fixedpre>
-[[$CreateSnippetPropertySet? &snippetName=`Notify`]]
-</fixedpre></pre>
 
 <p>Call your Property Set &quot;NotifyProperties&quot;. Notify already specifies that Property Set in the Notify snippet tag for you. If you use that name, Notify will also make sure to reconnect the Property Set to the snippet when you upgrade. If you use another name for the Property Set, you'll have to remember to reconnect it to the snippet when you upgrade or your updates to Twitter, Facebook, and/or the URL shortening service may stop working.</p>
 
