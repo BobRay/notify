@@ -66,7 +66,9 @@ $_lang['nf_status_resource_id_bad_resource'] = 'nf_status_resource_id ist auf ei
 
 
 /* Used in transport.settings.php */
-$_lang['setting_nf_status_resource_id'] = 'Notify Status Resource ID';
+$_lang['setting_allowedGroups'] = 'Erlaubte Gruppen';
+$_lang['setting_allowedGroups_desc'] = 'Komma getrennte Liste der Benutzergruppen die zur Ausführung des Plugins zugelassen sind, auf die gleichnamige Snippet-Eigenschaft setzten; Standard: Administrator';
+$_lang['setting_nf_status_resource_id'] = 'Notify Status Ressource ID';
 $_lang['setting_nf_status_resource_id_desc'] = 'ID von Notify Status Ressource';
 
 /* Used in nfsendemail.class.php */
@@ -85,4 +87,9 @@ $_lang['nf.error_sending_to'] = 'Fehler gesendet an';
 $_lang['nf.test_mode_on'] = '(testMode ist an, es werden keine Nachrichten oder Tweets gesendet)';
 
 /* Used in mandrillx.class.php */
-$_lang['nf_malformed_header'] = 'Malformed Header';
+$_lang['nf_malformed_header'] = 'Malformed header';
+
+/* Used in notify.plugin.php */
+$_lang['nf_bad_group'] = 'Kein Mitglied einer erlaubten Gruppe; prüfe allowedGroups System Einstellung';
+$_lang['nf.no_tv'] = 'NotifySubscribers TV nicht mit Template verbunden';
+$_lang['nf.no_resource'] = 'Notify Ressource nicht gefunden';
