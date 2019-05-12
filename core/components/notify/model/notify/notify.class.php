@@ -203,7 +203,10 @@ class Notify
         if (empty($this->mail_reply_to)) {
             $this->mail_reply_to = $this->mail_from;
         }
-        $this->props['reply_to'] = $this->mail_reply_to;
+        if (empty($this->mail_reply_to)) {
+            $this->mail_reply_to = $this->modx->getOption('emailsender');
+        }
+        $this->props['reply-to'] = $this->mail_reply_to;
 
         $this->mail_subject = isset($_POST['nf_email_subject'])
             ? $_POST['nf_email_subject']
