@@ -67,9 +67,6 @@ $modx->lexicon->load('notify:default');
 $allowedGroups = $modx->getOption('allowedGroups', $scriptProperties, 'Administrator', true);
 $allowedGroups = array_map('trim', explode(',', $allowedGroups));
 if (!$modx->user->isMember($allowedGroups)) {
-    $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
-        $modx->lexicon('nf_bad_group')
-    );
     return '';
 }
 
@@ -129,9 +126,6 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
         $tvObj = $modx->getObject('modTemplateVar', array('name' => 'NotifySubscribers'));
         if (! $tvObj) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
-                $modx->lexicon('nf.no_tv')
-            );
             return '';
         }
         $tvId = $tvObj->get('id');
@@ -141,9 +135,6 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
         $tvt = $modx->getObject('modTemplateVarTemplate', array('templateid'=> $templateId, 'tmplvarid' => $tvId));
         if (!$tvt) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
-                $modx->lexicon('nf.no_tv')
-            );
             return '';
         }
 

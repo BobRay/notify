@@ -89,6 +89,4 @@ $_lang['nf.test_mode_on'] = '(testMode is on, no messages or Tweets sent)';
 $_lang['nf_malformed_header'] = 'Malformed header';
 
 /* Used in notify.plugin.php */
-$_lang['nf_bad_group'] = 'Not a member of an allowed group; check allowedGroups System Setting';
-$_lang['nf.no_tv'] = 'NotifySubscribers TV not attached to template';
 $_lang['nf.no_resource'] = 'Notify Resource not found';
