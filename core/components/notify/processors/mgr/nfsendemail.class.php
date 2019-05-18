@@ -198,7 +198,7 @@ class NfSendEmailProcessor extends modProcessor {
         return $this->modx->toJSON($results);
     }
 
-    public function sendMailFields() { // xxx
+    public function sendMailFields() {
         $fields = array();
         $success = true;
         $fromName = $this->getProperty('from_name', '');
@@ -220,6 +220,9 @@ class NfSendEmailProcessor extends modProcessor {
         $fields['fromName'] = $fromName;
 
         $fields['reply-to'] = $this->getProperty('mailReplyTo', $this->modx->getOption('emailsender'));
+        if (empty($fields['reply-to'])) {
+            $fields['reply-to'] = $this->modx->getOption('emailsender');
+        }
 
         if (empty($fields['html'])) {
             $this->setError(('nf.empty_message'));
@@ -430,10 +433,13 @@ class NfSendEmailProcessor extends modProcessor {
                 }
 
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Qualifying users');
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Qualifying user');
                 }
                 if (!empty($this->tags)) {
                     if (!$this->qualifyUser($profile, $username, $requireAllTags)) {
+                        if ($this->debug) {
+                            $this->modx->log(modX::LOG_LEVEL_ERROR, 'User not qualified');
+                        }
                         continue;
                     }
                 }
@@ -455,7 +461,13 @@ class NfSendEmailProcessor extends modProcessor {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' . $userNumber . ' -- Username: ' . $username . ' -- UnsubURL: ' .$this->unSubUrl);
                 }
                 if ($this->injectUnsubscribeUrl) {
+                    if ($this->debug) {
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, "\nCalling createUrl()");
+                    }
                     $fields['unsubscribe_url'] = $this->unSub->createUrl($this->unSubUrl, $profile);
+                    if ($this->debug) {
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, "\ncreateUrl() successful");
+                    }
                     if ($this->debug) {
                         $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " . $fields['unsubscribe_url']);
                         $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe injected -- User: ' . $userNumber . ' -- Username: ' . $username);
