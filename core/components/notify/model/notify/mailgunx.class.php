@@ -262,7 +262,15 @@ Class MailgunX extends Mailgun implements MailService {
             $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\nFinal Fields\n"  . print_r($fields, true));
         }
         /* Uses parent class sendMessage() */
-        $response = $this->sendMessage($this->domain, $fields);
+        try {
+            $response = $this->sendMessage($this->domain, $fields);
+        } catch (Exception $e) {
+            try { //retry
+                $response = $this->sendMessage($this->domain, $fields);
+            } catch (Exception $e) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, '[MailgunX] ' . $e->getMessage());
+            }
+        }
         if (isset($this->properties['unitTest'])) {
             echo "\n MailgunX Message: " . print_r($fields, true) . "\n";
         }
