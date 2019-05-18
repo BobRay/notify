@@ -5,6 +5,8 @@ Notify 1.5.0-pl
 Prevent issue with multiple messages
 Add allowedGroups System Setting
 Improve error messages in plugin
+Catch MailGun exceptions and retry
+Make sure reply-to is set
 Correct bug with Mandrill
 Fix bug with modMailX
 Other bug and typo fixes
