@@ -30,37 +30,37 @@ use Mailgun\Mailgun;
 
 
 Class MailgunX extends Mailgun implements MailService {
-    var $debug;
+    protected  $debug;
     
-    var $properties; /* ScriptProperties */
+    protected  $properties; /* ScriptProperties */
 
 
     /** @var $mailgunPublicApiKey string - Used only for verifying emails, not for sending them */
-    var $mailgunPublicApiKey = '';
+    protected  $mailgunPublicApiKey = '';
     /** @var $emailArray array - used internally to store recipients' email addresses */
-    var $emailArray = array();
-    // var $messageHTML = '';
-    var $messageText = '';
-    var $messageSubject = '';
-    var $messageFrom = '';
-    var $messageFromName = '';
-    var $messageReplyTo = '';
-    var $headerFields = array();
-    var $mailFields = array();
+    protected  $emailArray = array();
+    // protected  $messageHTML = '';
+    protected  $messageText = '';
+    protected  $messageSubject = '';
+    protected  $messageFrom = '';
+    protected  $messageFromName = '';
+    protected  $messageReplyTo = '';
+    protected  $headerFields = array();
+    protected  $mailFields = array();
     /** @var $recipientVariables array - array of keys and values for merge tags */
-    var $recipientVariables = array();
-    var $testMode = false;
+    protected $recipientVariables = array();
+    protected $testMode = false;
 
     /** @var string $domain - Mailgun Sending domain - can be set to real domain or sandbox domain in calling function */
-    var $domain = '';
+    protected $domain = '';
     /** @var $userPlaceholders array - array of user placeholders (merge tags) actually used in message: {{+pName}} */
-    var $userPlaceholders = array();
+    protected $userPlaceholders = array();
     /** @var  $modx modX */
-    var $modx;
-    var $client = null; // instance of Mailgun class
+    protected $modx;
+    protected $client = null; // instance of Mailgun class
 
-    var $errors = array();
-    var $apiKey = null;
+    protected $errors = array();
+    protected $apiKey = null;
 
     function __construct(&$modx, $props) {
         $this->modx =& $modx;
