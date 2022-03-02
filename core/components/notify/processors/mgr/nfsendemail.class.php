@@ -38,7 +38,7 @@ class NfSendEmailProcessor extends modProcessor {
             $config = $this->modx->fromJSON($_SESSION['nf_config']);
             $this->properties = array_merge($config, $this->properties);
         }
-        $this->debug = $this->getProperty('debug', false);
+        $this->debug = $this->modx->getOption('nf_debug',null, false);
 
         if ($this->debug) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, "\nProperties after merge\n" . print_r($this->properties, true));
@@ -55,7 +55,6 @@ class NfSendEmailProcessor extends modProcessor {
         $this->corePath = $this->modx->getOption('nf.core_path', NULL, MODX_CORE_PATH . 'components/notify/');
         $this->modelPath = $this->corePath . 'model/notify/';
         $pageAlias = $this->getProperty('page_alias', '');
-        $this->logFile = $this->corePath . 'notify-logs/' . $pageAlias . '--' . date('Y-m-d-h.i.sa');
         $this->mailServiceClass = $this->getProperty('mailService', '');
         /* Backward Compatibility */
         if (empty($this->mailServiceClass)) {
@@ -65,6 +64,7 @@ class NfSendEmailProcessor extends modProcessor {
                 $this->mailServiceClass = 'modMailX';
             }
         }
+
         $msLower = strtolower($this->mailServiceClass);
         $shortName = str_replace('x', '', $msLower);
         $filename = $this->modelPath . strtolower($this->mailServiceClass) . '.class.php';
@@ -78,7 +78,10 @@ class NfSendEmailProcessor extends modProcessor {
                     . $filename);
             return false;
         }
-
+        $this->logFile = $this->corePath . 'notify-logs/' .
+                $pageAlias . '--' . date('Y-m-d-h.i.sa') .
+                ' (' . $this->mailServiceClass . ')';
+        $this->properties['logFile'] = $this->logFile;
         $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
         if (!$this->mailService instanceof $this->mailServiceClass) {
             $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
@@ -268,17 +271,24 @@ class NfSendEmailProcessor extends modProcessor {
         /* Tell service what the fields are (not their values) */
         $this->mailService->setUserPlaceholders($userFields); // xxx
 
-        $this->logFile .= ' (' . $this->mailServiceClass . ')';
-
+        /* Append mail service name to log file name */
         $fp = fopen($this->logFile, 'w');
 
         if (!$fp) {
             $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
         } else {
-            fwrite($fp, "MESSAGE\n*****************************\n" .
-                    $this->emailText .
-                    "\n*****************************\n\n");
-
+            if ($this->debug) {
+                fwrite($fp, "MESSAGE TPL\n*****************************\n" .
+                        $this->emailText .
+                        "\n*****************************\n");
+                fclose($fp);
+            }
+            /* Remove oldest log file */
+            $maxLogs = $this->getProperty('maxLogs', 5);
+            $dir = $this->corePath . 'notify-logs';
+            if ($maxLogs != '0') {
+                $this->removeOldFiles($dir, $maxLogs);
+            }
         }
 
         /* Select users to send to */
@@ -322,6 +332,7 @@ class NfSendEmailProcessor extends modProcessor {
                 $this->setError($this->modx->lexicon('nf.user_not_found'));
                 return false;
             }
+
 
         } else {
             if (!empty($groups)) {
@@ -409,9 +420,6 @@ class NfSendEmailProcessor extends modProcessor {
                 if (empty($profile)) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, 'Profile is empty -- User: ' . $userNumber . 'Username: ' . $username);
                 }
-                if (!$profile instanceof modUserProfile) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Profile is not a profile -- User: ' . $userNumber . 'Username: ' . $username);
-                }
 
                 if ($this->debug) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, 'Qualifying users');
@@ -436,7 +444,9 @@ class NfSendEmailProcessor extends modProcessor {
                 $fields['userid'] = $user->get('id');
                 $fields['username'] = $username;
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' . $userNumber . ' -- Username: ' . $username . ' -- UnsubURL: ' . $unSubUrl);
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' .
+                            $userNumber . ' -- Username: ' . $username .
+                            ' -- UnsubURL: ' . $unSubUrl);
                 }
                 if ($this->injectUnsubscribeUrl) {
                     if (!$unSub instanceof Unsubscribe) {
@@ -445,8 +455,10 @@ class NfSendEmailProcessor extends modProcessor {
                     }
                     $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
                     if ($this->debug) {
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " . $fields['unsubscribe_url']);
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe injected -- User: ' . $userNumber . ' -- Username: ' . $username);
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " .
+                                $fields['unsubscribe_url']);
+                        $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe injected -- User: ' .
+                                $userNumber . ' -- Username: ' . $username);
                     }
                 }
                 $fields = array_merge($profile->toArray(), $fields);
@@ -488,7 +500,12 @@ class NfSendEmailProcessor extends modProcessor {
 
                 if ($this->debug) {
                     $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $user->get('username') . ' -- ' . $profile->get('email'));
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" .
+                            'Fields sent to addUser: ' .
+                            print_r($fields, true)
+                    );
                 }
+
                 $sentCount++;
                 $userNumber++;
 
@@ -504,7 +521,7 @@ class NfSendEmailProcessor extends modProcessor {
 
             do {
                 try {
-                    $response = $this->mailService->sendBatch();
+                    $response = $this->mailService->sendBatch($batchNumber);
                     $code = $response->http_response_code;
                     if ($this->debug) {
                         $this->modx->log(modX::LOG_LEVEL_ERROR, " Response code: " . $code);
@@ -591,15 +608,6 @@ class NfSendEmailProcessor extends modProcessor {
         }
         if ($totalSent == 0) {
             $this->setError($this->modx->lexicon('nf.no_messages_sent'));
-        }
-        if ($fp !== NULL) {
-
-            $maxLogs = $this->getProperty('maxLogs', 5);
-            $dir = $this->corePath . 'notify-logs';
-            if ($maxLogs != '0') {
-                $this->removeOldFiles($dir, $maxLogs);
-            }
-            fclose($fp);
         }
 
         $this->update(0, 'Starting', '', $statusChunk);

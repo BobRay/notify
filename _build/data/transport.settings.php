@@ -45,4 +45,14 @@ $systemSettings[2]->fromArray(array (
   'name' => 'Allowed Groups',
   'description' => 'Comma-separated list of User Groups allowed for plugin execution; set to match the snippet property of the same name; default: Administrator',
 ), '', true, true);
+$systemSettings[3] = $modx->newObject('modSystemSetting');
+$systemSettings[3]->fromArray(array(
+    'key' => 'nf_debug',
+    'value' => '0',
+    'xtype' => 'combo-boolean',
+    'namespace' => 'notify',
+    'area' => '',
+    'name' => 'Debug Notify',
+    'description' => 'Send debugging information to MODX error log; default: false',
+), '', true, true);
 return $systemSettings;
