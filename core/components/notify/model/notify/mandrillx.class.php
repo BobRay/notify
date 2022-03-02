@@ -139,7 +139,7 @@ class MandrillX extends Mandrill implements MailService{
         $this->merge_vars = array();
     }
 
-    public function sendBatch() {
+    public function sendBatch($batchNumber) {
         $this->message['to'] = $this->to;
         $this->message['merge_vars'] = $this->merge_vars;
         $this->message['global_merge_vars'] = $this->global_merge_vars;

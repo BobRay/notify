@@ -40,7 +40,7 @@
         public function getUserPlaceholders();
 
         /* Send a batch of emails through the service */
-        public function sendBatch();
+        public function sendBatch($batchNumber);
 
         /* Set mail fields common to all messages line from, subject, etc.) in $this->mailFields */
         public function setMailFields($fields);

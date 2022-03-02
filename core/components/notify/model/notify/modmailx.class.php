@@ -56,6 +56,7 @@ Class modMailX  implements MailService {
 
     var $errors = array();
     var $apiKey = null;
+    var $logFile = ''; // full path to log file
 
     function __construct(&$modx, $props) {
         $this->modx =& $modx;
@@ -63,10 +64,11 @@ Class modMailX  implements MailService {
     }
 
     public function init() {
-        $this->emailArray = $this->modx->getOption('emailArray', $this->properties, array());
+        $this->debug = $this->modx->getOption('nf_debug', null, false, true);
+        // $this->emailArray = $this->modx->getOption('emailArray', $this->properties, array());
         $this->recipientVariables = array();
         $this->testMode = $this->modx->getOption('testMode', $this->properties, false);
-
+        $this->logFile = $this->properties['logFile'];
         /* This class only */
         $this->modx->getService('mail', 'mail.modPHPMailer');
         return true;
@@ -157,12 +159,19 @@ Class modMailX  implements MailService {
      *     Must match the merge variable placeholders in the Tpl chunk
      */
     public function addUser($fields = array()) {
-
+        if ($this->debug) {
+            $fp = fopen($this->logFile, 'a');
+            if ($fp) {
+                fwrite($fp, "\naddUser Fields: " . print_r($fields, true));
+                fclose($fp);
+            }
+        }
         /* These will be set even if not used in message */
         $extraFields = array(
             'first',
             'last',
             'fullname',
+            'username',
         );
         $email = $fields['email'];
         $userFields = $this->userPlaceholders;
@@ -219,9 +228,15 @@ Class modMailX  implements MailService {
     }
 
 
-    public function sendBatch() {
+    public function sendBatch($batchNumber) {
         $mFields = $this->mailFields;
         $success = true; // report success in testMode
+        $fp = fopen($this->logFile, 'a');
+        if ($fp) {
+            fwrite($fp, "SENDING BATCH {$batchNumber}\n");
+            fclose($fp);
+        }
+        $count = 1;
         foreach ($this->emailArray as $email) {
 
             $this->modx->mail->set(modMail::MAIL_SUBJECT, $mFields['subject']);
@@ -251,10 +266,25 @@ Class modMailX  implements MailService {
                     $this->modx->mail->header($k . ':' . $v);
                 }
             }
+            $userFields = $this->recipientVariables[$email];
 
-            $this->modx->mail->address('to', $email, $this->recipientVariables[$email]['fullname']);
-            $html = $this->replacePlaceholders($mFields['html'], $this->recipientVariables[$email]);
-            $text = $this->replacePlaceholders($mFields['text'], $this->recipientVariables[$email]);
+            if ($this->debug) {
+                $fp = fopen($this->logFile, 'a');
+                if ($fp) {
+                    fwrite($fp, "\nRecipientFields: " . print_r($userFields, true));
+                    fclose($fp);
+                }
+            }
+            $this->modx->mail->address('to', $email, $userFields['fullname']);
+            $html = $this->replacePlaceholders($mFields['html'], $userFields);
+            if ($this->debug) {
+                $fp = fopen($this->logFile, 'a');
+                if ($fp) {
+                    fwrite($fp, "\nHTML: " . $html);
+                    fclose($fp);
+                }
+            }
+            $text = $this->replacePlaceholders($mFields['text'], $userFields[$email]);
             $this->modx->mail->set(modMail::MAIL_BODY, $html);
             $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text);
 
@@ -264,6 +294,25 @@ Class modMailX  implements MailService {
 
             if (!$success) {
                 $this->setError($this->modx->mail->mailer->ErrorInfo);
+            }
+
+            $msg = $success? ' -- Success' : ' -- Failed';
+            $fp = fopen($this->logFile, 'a');
+            if ($fp) {
+
+                /* This only happens once */
+                if ($batchNumber === 1 && $count === 1) {
+                    $count++;
+                    fwrite($fp, "\n\n*****************************************\n" .
+                          "Sample Message:\n" . $html .
+                          "*****************************************\n"
+                    );
+
+                }
+                /* This happens once for each user */
+                fwrite($fp, "\nSending to " . $userFields['username']);
+                fwrite($fp, $msg);
+                fclose($fp);
             }
 
             $this->modx->mail->reset();
@@ -284,7 +333,9 @@ Class modMailX  implements MailService {
 
             );
             // echo "\nmodMailX Message: \n" . print_r($fields, true) . "\n";
-
+            if ($fp) {
+                fclose($fp);
+            }
         }
 
          return $success;

@@ -244,7 +244,7 @@ Class MailgunX extends Mailgun implements MailService {
     }
 
 
-    public function sendBatch() {
+    public function sendBatch($batchNumber) {
 
         $tag = str_replace(array('/', ' '), array('-', '_'), strftime('%c'));
 
