@@ -73,7 +73,8 @@ $(document).ready(function (event) {
                    'single_id': $("#nf_test_email_address").val(),
                    'email_subject': $("#nf_email_subject").val(),
                    'email_text': $("#nf_email_text").val(),
-                   'single': true
+                   'single': true,
+                   'page_alias': $("#nf_page_alias").val()
                 },
                 dataType: "json",
                 cache: false,
