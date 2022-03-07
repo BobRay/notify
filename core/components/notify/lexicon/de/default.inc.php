@@ -55,12 +55,9 @@ $_lang['nf.tweet_sent_successfully'] = 'Tweet erfolgreich gesendet';
 
 
 /* Used in notify.class.php */
-$_lang['nf.no_mandrill_api_key'] = 'Kein Mandrill API Key';
-$_lang['nf.no_mandrill'] = 'Konnte Mandrill Objekt nicht instanziieren';
 $_lang['nf.user_not_found'] = 'Benutzer wurde nicht gefunden';
 $_lang['nf.sending_batch_of'] = 'Senden Batch von';
 $_lang['nf.no_messages_sent'] = 'Keine Nachrichten gesendet';
-$_lang['nf.send_user_mandrill'] = 'Sendet an Benutzer (Mandrill)';
 $_lang['nf_status_resource_id_not_set'] = 'nf_status_resource_id ist nicht gesetzt';
 $_lang['nf_status_resource_id_bad_resource'] = 'nf_status_resource_id ist auf eine nicht vorhandene Ressource gesetzt';
 
@@ -83,6 +80,4 @@ $_lang['nf.successful_send_to'] = 'Erfolgreich gesendet an';
 $_lang['nf.user_tags'] = 'Benutzer Tags';
 $_lang['nf.error_sending_to'] = 'Fehler gesendet an';
 $_lang['nf.test_mode_on'] = '(testMode ist an, es werden keine Nachrichten oder Tweets gesendet)';
-
-/* Used in mandrillx.class.php */
 $_lang['nf_malformed_header'] = 'Malformed Header';

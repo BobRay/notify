@@ -74,7 +74,6 @@ $_lang['nf.unsubscribe_tpl_desc'] = 'Name of chunk to use for Unsubscribe link.'
 
 /* Used in properties.notify.snippet.php */
 $_lang['nf.additional_headers_desc'] = 'JSON string specifying custom headers (do not use for regular mailfields: cc, bcc, to, from, reply-to). Example: {"X-header1":"someValue","X-header2":"someOtherValue"}';
-$_lang['mandrill_api_key_desc'] = 'Mandrill API Key';
 $_lang['nf.mail_service_desc'] = 'Mail Service to use for sending mail';
 $_lang['mailgun.debug_desc'] = 'Write Mailgun debugging information to the MODX Error log.';
 $_lang['mailgun.api_key_desc'] = 'Mailgun API key. Available on your Mailgun Dashboard.';
@@ -85,14 +84,11 @@ $_lang['mailgun.use_mailgun_desc'] = 'Deprecated - use MailService Property';
 $_lang['mailgun.use_sandbox_desc'] = 'Use Mailgun Sandbox domain for testing rather than sending emails. Requires mailgun.sandbox_domain property to be set and Sandobox domain to be set up at Mailgun.';
 $_lang['nf_allowed_groups_desc'] = 'Comma-separated list of groups allowed to use Notify; default:Administrator';
 $_lang['nf_inject_unsubscribe_url_desc'] = 'If set, adds an unsubscribe/manage preferences link to every email; default: Yes. Be aware that if you send bulk emails, such a link is required by USA law.';
-$_lang['nf_testMode_desc'] = 'Test mode -- Notify functions normally, but no emails are sent.
-';
-$_lang['subaccount_property_desc'] = 'Name of the Mandrill subaccount to send through if using Mandrill. Subaccount must exist or send will fail. Default: test';
+$_lang['nf_testMode_desc'] = 'Test mode -- Notify functions normally, but no emails are sent.';
 $_lang['include_tv_list_property_desc'] = 'Comma-separated list of TV names. Only TVs on the list will have their placeholders set.';
 $_lang['include_tvs_property_desc'] = 'If set, placeholders will be set for Resource TVs; default: No.';
 $_lang['use_extended_fields_property_desc'] = 'If set, placeholders will be set from the extended fields of the User Profile; default: No';
 $_lang['debug_property_desc'] = 'Set to Yes to output debugging information';
 $_lang['maxlogs_property_desc'] = 'Set this to limit the number of email logs kept. The oldest one will be deleted. Set to 0 for unlimited logs. Default: 5';
 $_lang['nf.process_tvs_desc'] = 'If set to No, the raw values of the TVs will used. Default: Yes.';
-$_lang['nf.use_mandrill_desc'] = 'deprecated - use MailService property';
 $_lang['nf.group_list_chunk_name_desc'] = 'Specifies the chunk that will be used for the buttons under the Groups input in the form; default: sbsGroupListTpl';

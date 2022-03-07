@@ -58,11 +58,7 @@ class NfSendEmailProcessor extends modProcessor {
         $this->mailServiceClass = $this->getProperty('mailService', '');
         /* Backward Compatibility */
         if (empty($this->mailServiceClass)) {
-            if ($this->getProperty('useMandrill', '')) {
-                $this->mailServiceClass = 'MandrillX';
-            } else {
-                $this->mailServiceClass = 'modMailX';
-            }
+           $this->mailServiceClass = 'modMailX';
         }
 
         $msLower = strtolower($this->mailServiceClass);
@@ -188,7 +184,7 @@ class NfSendEmailProcessor extends modProcessor {
         /* Used by MailgunX */
         $fields['from'] = $fromName . ' <' . $fromEmail . '>';
 
-        /* Used by mandrillX and modMailX */
+        /* Used by modMailX */
         $fields['fromEmail'] = $fromEmail;
         $fields['fromName'] = $fromName;
 
@@ -694,7 +690,7 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
     /**
-     * Sends an individual email - not used if sending via Mandrill
+     * Sends an individual email
      *
      * @param $fields array - fields for user placeholders.
      * @return bool - true on success; false on failure to mail.

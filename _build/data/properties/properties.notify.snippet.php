@@ -152,12 +152,6 @@ $properties = array (
         'value' => 'MailgunX',
         'name' => 'MailgunX',
       ),
-      2 => 
-      array (
-        'text' => 'MandrillX',
-        'value' => 'MandrillX',
-        'name' => 'MandrillX',
-      ),
     ),
     'value' => 'modMailX',
     'lexicon' => 'notify:properties',
@@ -529,42 +523,7 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Mailgun',
   ),
-  'mandrill_api_key' => 
-  array (
-    'name' => 'mandrill_api_key',
-    'desc' => 'mandrill_api_key_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => '',
-    'lexicon' => 'notify:properties',
-    'area' => 'Mandrill',
-  ),
-  'nfUseMandrill' => 
-  array (
-    'name' => 'nfUseMandrill',
-    'desc' => 'nf.use_mandrill_desc',
-    'type' => 'combo-boolean',
-    'options' => 
-    array (
-    ),
-    'value' => false,
-    'lexicon' => 'notify:properties',
-    'area' => 'Mandrill',
-  ),
-  'subaccount' => 
-  array (
-    'name' => 'subaccount',
-    'desc' => 'subaccount_property_desc',
-    'type' => 'textfield',
-    'options' => 
-    array (
-    ),
-    'value' => 'test',
-    'lexicon' => 'notify:properties',
-    'area' => 'Mandrill',
-  ),
+
   'bitlyApiKey' => 
   array (
     'name' => 'bitlyApiKey',

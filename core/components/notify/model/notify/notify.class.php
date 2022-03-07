@@ -62,7 +62,6 @@
  * @property &nfTweetTplExisting textfield -- Name of chunk to use for the updated resource Tweet text; Default: nfTweetTplExisting.
  * @property &nfTweetTplNew textfield -- Name of chunk to use for the new resource Tweet text; Default: nfTweetTplNew.
  * @property &nfUnsubscribeTpl textfield -- Name of chunk to use for Unsubscribe link; Default: (empty)..
- * @property &nfUseMandrill combo-boolean -- Use Mandrill service to send email; Default: (empty)..
  * @property &notifyFacebook combo-boolean -- Notify Facebook via Twitter with #fb in tweet -- must be set up in the Facebook Twitter App; Default: (empty)..
  * @property &prefListChunkName textfield -- (optional) Chunk to use for preferences (tags) list; Default: sbsPrefListTpl.
  * @property &processTVs combo-boolean -- If set to No, the raw values of the TVs will used; Default: Yes.
@@ -71,8 +70,7 @@
  * @property &requireAllTagsDefault combo-boolean -- (optional) sets the default value of the Require All Tags checkbox; if set, only users who have all tags will receive email; Default: No.
  * @property &sortBy textfield -- (optional) Field to sort by when selecting users; Default: username.
  * @property &sortByAlias textfield -- (optional) class of the user object. Only necessary if you have subclassed the user object; Default: modUser.
- * @property &subaccount textfield -- Name of the Mandrill subaccount to send through if using Mandrill. Subaccount must exist or send will fail; Default: test.
- * @property &suprApiKey textfield -- StumbleUpon API key (optional); Default: (empty)..
+  * @property &suprApiKey textfield -- StumbleUpon API key (optional); Default: (empty)..
  * @property &suprUsername textfield -- Stumble Upon Username (optional); Default: (empty)..
  * @property &tags textfield -- (optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive the email; Default: (empty)..
  * @property &testMode combo-boolean -- Test mode -- Notify functions normally, but no emails are sent.
@@ -131,8 +129,6 @@ class Notify
     /** @var $html2text html2text */
     public $html2text;
     public $requireDefault;
-    /** @var $mx MandrillX */
-    public $mx = null;
     /** @var $userFields array - array of user placeholders used in message */
     public $userFields = array();
     public $debug;
@@ -162,7 +158,6 @@ class Notify
         $this->initJS();
 
         $this->props['testMode'] = $this->modx->getOption('testMode', $this->props, false);
-        $this->props['useMandrill'] = $this->modx->getOption('nfUseMandrill', $this->props, false);
         $this->props['injectUnsubscribeUrl'] = $this->modx->getOption('injectUnsubscribeUrl', $this->props, true);
         $this->injectUnsubscribeUrl = $this->modx->getOption('injectUnsubscribeUrl', $this->props, true);
         $this->errors = array();

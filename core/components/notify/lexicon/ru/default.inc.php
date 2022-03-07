@@ -54,12 +54,11 @@ $_lang['nf.tweet_sent_successfully'] = 'Твит успешно отправле
 
 
 /* Used in notify.class.php */
-$_lang['nf.no_mandrill_api_key'] = 'Нет Mandrill API Ключа';
-$_lang['nf.no_mandrill'] = 'Не смог создать объект Mandrill';
+
 $_lang['nf.user_not_found'] = 'Пользователь не найден';
 $_lang['nf.sending_batch_of'] = 'Отправляю партию';
 $_lang['nf.no_messages_sent'] = 'Сообщения не отправлены';
-$_lang['nf.send_user_mandrill'] = 'Отправляю пользователю (Mandrill)';
+
 
 
 /* Used in transport.settings.php */
