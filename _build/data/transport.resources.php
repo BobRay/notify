@@ -41,7 +41,7 @@ $resources[1]->fromArray(array (
   'introtext' => '',
   'richtext' => false,
   'template' => 'NotifyTemplate',
-  'menuindex' => 17,
+  'menuindex' => 19,
   'searchable' => true,
   'cacheable' => true,
   'createdby' => 1,

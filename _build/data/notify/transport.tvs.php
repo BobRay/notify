@@ -37,7 +37,9 @@ $templateVars[1]->fromArray(array (
   'rank' => 1,
   'display' => 'default',
   'default_text' => 'existing',
-  'properties' => NULL,
+  'properties' => 
+  array (
+  ),
   'input_properties' => 
   array (
     'allowBlank' => 'true',
