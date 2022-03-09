@@ -384,6 +384,7 @@ class ComposerStaticInitf140379aa215f253419363865d05ce90
         'NfSendEmailProcessor' => __DIR__ . '/../..' . '/processors/mgr/nfsendemail.class.php',
         'NfSendTweetProcessor' => __DIR__ . '/../..' . '/processors/mgr/nfsendtweet.class.php',
         'Notify' => __DIR__ . '/../..' . '/model/notify/notify.class.php',
+        'NotifyLog' => __DIR__ . '/../..' . '/model/notify/notifylog.class.php',
         'OAuthConsumer' => __DIR__ . '/../..' . '/model/notify/oauth.php',
         'OAuthDataStore' => __DIR__ . '/../..' . '/model/notify/oauth.php',
         'OAuthException' => __DIR__ . '/../..' . '/model/notify/oauth.php',

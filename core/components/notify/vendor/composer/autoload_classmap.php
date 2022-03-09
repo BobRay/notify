@@ -282,6 +282,7 @@ return array(
     'NfSendEmailProcessor' => $baseDir . '/processors/mgr/nfsendemail.class.php',
     'NfSendTweetProcessor' => $baseDir . '/processors/mgr/nfsendtweet.class.php',
     'Notify' => $baseDir . '/model/notify/notify.class.php',
+    'NotifyLog' => $baseDir . '/model/notify/notifylog.class.php',
     'OAuthConsumer' => $baseDir . '/model/notify/oauth.php',
     'OAuthDataStore' => $baseDir . '/model/notify/oauth.php',
     'OAuthException' => $baseDir . '/model/notify/oauth.php',
