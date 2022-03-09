@@ -24,16 +24,12 @@ use Mailgun\Mailgun;
  */
 
 
-// For future autoloader
-// require_once dirname(dirname(__FILE__)) . '/mailgun/vendor/autoload.php';
-
-
-
 Class MailgunX extends Mailgun implements MailService {
     protected  $debug;
-    
+
     protected  $properties; /* ScriptProperties */
 
+    protected $stars = "******************************************************************************************";
 
     /** @var $mailgunPublicApiKey string - Used only for verifying emails, not for sending them */
     protected  $mailgunPublicApiKey = '';
@@ -62,9 +58,12 @@ Class MailgunX extends Mailgun implements MailService {
     protected $errors = array();
     protected $apiKey = null;
 
-    function __construct(&$modx, $props) {
+    protected $logger = null;
+
+    function __construct(&$modx, $props, $logger = null) {
         $this->modx =& $modx;
         $this->properties =& $props;
+        $this->logger = $logger;
         $this->apiKey = $this->modx->getOption('mailgun_api_key', $this->properties,
             $this->modx->getOption('mailgun_api_key', null), true);
         parent::__construct($this->apiKey);
@@ -72,7 +71,7 @@ Class MailgunX extends Mailgun implements MailService {
     }
 
     public function init() {
-
+        $this->logFile = $this->properties['logFile'];
         $useSandbox = $this->modx->getOption('mailgun.use_sandbox', $this->properties, false);
         if ($useSandbox) {
 
@@ -91,9 +90,10 @@ Class MailgunX extends Mailgun implements MailService {
             return false;
         }
 
-        $this->debug = $this->modx->getOption('mailgun.debug', $this->properties, false);
+        $this->debug = $this->modx->getOption('nf_debug', null, false);
+
         if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n **********  MailgunX class **********\n");
+            $this->logger->write("\n ********** In MailgunX class **********\n");
         }
 
         $this->domain = empty($this->domain) ? MODX_HTTP_HOST : $this->domain;
@@ -157,6 +157,9 @@ Class MailgunX extends Mailgun implements MailService {
      * @param $fields array
      */
     public function setMailFields($fields) {
+        if ($this->debug) {
+            $this->logger->write("\n" . $this->stars . "\nFields sent to setMailFields: " . print_r($fields, true) . "\n" . $this->stars . "\n");
+        }
         $this->mailFields = array(
             'from' => $fields['from'],
             'subject' => $fields['subject'],
@@ -168,6 +171,8 @@ Class MailgunX extends Mailgun implements MailService {
 
 
     /**
+     *  Create $recipientVariables array with fields actually used in Tpl
+     *  for all users.
      *
      * @param array $fields array() - array of email plus user merge variables:
      *
@@ -188,8 +193,15 @@ Class MailgunX extends Mailgun implements MailService {
      *     Must match the merge variable placeholders in the Tpl chunk
      */
     public function addUser($fields = array()) {
+        if ($this->debug) {
+            $this->logger->write("\n" . $this->stars . "\nFields sent to addUser: " . print_r($fields, true) . "\n" . $this->stars . "\n");
+        }
         $email = $fields['email'];
         $userFields = $this->userPlaceholders;
+        /* Add username */
+        if (!in_array('username', $userFields )) {
+            $userFields[] = 'username';
+        }
         $userVariables = array();
 
         /* Unset unused user variables */
@@ -228,7 +240,7 @@ Class MailgunX extends Mailgun implements MailService {
         $text = str_replace('}}', '%', $text);
         
         if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\nPrepared Tpl\n" . $text);
+            $this->logger->write("\n" . $this->stars . "\nPrepared Tpl\n" . $text . $this->stars . "\n" );
         }
         return $text;
     }
@@ -246,20 +258,45 @@ Class MailgunX extends Mailgun implements MailService {
 
     public function sendBatch($batchNumber) {
 
-        $tag = str_replace(array('/', ' '), array('-', '_'), strftime('%c'));
+        $to = array_keys($this->recipientVariables)[0];
+
+        if ((int) $batchNumber === 1) {
+
+            $sampleMessage = "Sample Message:" .
+                    "\nFrom: " . $this->mailFields['from'] .
+                    "\nTo: " . $to .
+                    "\nSubject: " . $this->mailFields['subject'];
+
+            $sampleMessage .= "\nMessage Body: \n" .
+                    $this->replacePlaceholders($this->mailFields['html'], $this->recipientVariables[$to]);
+
+            $this->logger->write($sampleMessage . "\n");
+        }
 
         $fields = $this->mailFields;
+
+        if ($this->debug) {
+            $this->logger->write("\n" . $this->stars . "\nmailFields: " .
+                    print_r($this->mailFields, true) . $this->stars . "\n");
+        }
+
         $fields['to'] = implode(', ', $this->emailArray);
+
         if (! empty($this->headerFields)) {
             $fields = array_merge($fields, $this->headerFields);
         }
+        if ($this->debug) {
+            $this->logger->write("\n" . $this->stars . "\nRecipientVariables: \n" . print_r($this->recipientVariables, true) . "\n" . $this->stars . "\n");
+        }
+
         $fields['recipient-variables'] = $this->modx->toJSON($this->recipientVariables);
 
         if ($this->testMode) {
             $fields['o:testmode'] = true;
         }
+
         if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n\nFinal Fields\n"  . print_r($fields, true));
+            $this->logger->write("\n" . $this->stars . "\nFinal Fields\n" . print_r($fields, true) . "\n" . $this->stars . "\n");
         }
         /* Uses parent class sendMessage() */
         try {
@@ -271,12 +308,35 @@ Class MailgunX extends Mailgun implements MailService {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, '[MailgunX] ' . $e->getMessage());
             }
         }
+
+        $sendList = "\n" . $this->stars . "\nSending to:\n";
+        $list = $this->recipientVariables;
+        foreach ($list as $key => $value) {
+            $sendList .= "\n" . $list[$key]['username'] . " (" . $key . ")";
+        }
+
+        if ($this->debug) {
+            $this->logger->write("\n" . $this->stars . "\nRESPONSE: " .
+                    print_r($response, true) . "\n" . $this->stars . "\n");
+        }
+
+        $this->logger->write($sendList);
+
+        /* report success or failure of batch */
+        $code = $response->http_response_code;
+        if ($code == 200 || $code == 421) {
+            $msg = "\n\nBatch {$batchNumber} sent successfully\n" . $this->stars . "\n";
+        } else {
+            $msg = "\n\nSending batch {$batchNumber} failed with code {$code}\n" .
+                    $this->stars . "\n";
+        }
+        $this->logger->write($msg);
+
         if (isset($this->properties['unitTest'])) {
             echo "\n MailgunX Message: " . print_r($fields, true) . "\n";
         }
 
         return $response;
-
     }
 
 
@@ -288,5 +348,18 @@ Class MailgunX extends Mailgun implements MailService {
      */
     public function getProperty($k, $default = null) {
         return array_key_exists($k, $this->properties) ? $this->properties[$k] : $default;
+    }
+
+    public function replacePlaceholders($tpl, $placeholders) {
+        if ($this->debug) {
+            $this->logger->write("\n" . $this->stars . "\nTPL: " . $tpl . "\n");
+            $this->logger->write("\n***\nplaceholders: " .
+                    print_r($placeholders, true) . "\n" . $this->stars . "\n");
+        }
+        foreach ($placeholders as $k => $v) {
+            $tpl = str_replace('%recipient.' . $k . '%', $v, $tpl);
+        }
+
+        return $tpl;
     }
 }

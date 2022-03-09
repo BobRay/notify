@@ -30,6 +30,7 @@ class NfSendEmailProcessor extends modProcessor {
     /** @var $mailService MailService */
     public $mailService = null;
     protected $mailServiceClass = '';
+    protected $logger = null; // NotifyLog class
 
 
     public function initialize() {
@@ -74,11 +75,16 @@ class NfSendEmailProcessor extends modProcessor {
                     . $filename);
             return false;
         }
-        $this->logFile = $this->corePath . 'notify-logs/' .
-                $pageAlias . '--' . date('Y-m-d-h.i.sa') .
-                ' (' . $this->mailServiceClass . ')';
+        $this->logger = new NotifyLog;
+        $logFile = $this->corePath . 'notify-logs/' .
+                $pageAlias . '--' . date('Y-m-d-h.i.s-a') .
+                '(' . $this->mailServiceClass . ').log';
+        if (! $this->logger->init($logFile)){
+              $this->setError($this->modx->lexicon('nf.could_not_open_log_file'));
+        }
+
         $this->properties['logFile'] = $this->logFile;
-        $this->mailService = new $this->mailServiceClass($this->modx, $this->properties);
+        $this->mailService = new $this->mailServiceClass($this->modx, $this->properties, $this->logger);
         if (!$this->mailService instanceof $this->mailServiceClass) {
             $this->setError($this->modx->lexicon('nf.failed_ms_instantation')
                     . $this->mailServiceClass);
@@ -231,7 +237,7 @@ class NfSendEmailProcessor extends modProcessor {
 
     protected function sendBulk($singleId = null) {
         $singleUser = $singleId !== NULL;
-        $fp = NULL;
+        // $fp = NULL;
         $batchSize = $this->getProperty('batchSize', 25);
         $batchDelay = $this->getProperty('batchDelay', 1);
         $itemDelay = (float)$this->getProperty('itemDelay', .51);
@@ -250,8 +256,7 @@ class NfSendEmailProcessor extends modProcessor {
             Link itself is a user merge variable processed in the mailService class.
         */
         $unSub = null;
-        if (
-                $this->injectUnsubscribeUrl) {
+        if ($this->injectUnsubscribeUrl) {
             $unSubId = $this->modx->getOption('sbs_unsubscribe_page_id', NULL, NULL);
             $unSubUrl = $this->modx->makeUrl($unSubId, "", "", "full");
             $subscribeCorePath = $this->modx->getOption('subscribe.core_path', NULL,
@@ -267,24 +272,11 @@ class NfSendEmailProcessor extends modProcessor {
         /* Tell service what the fields are (not their values) */
         $this->mailService->setUserPlaceholders($userFields); // xxx
 
-        /* Append mail service name to log file name */
-        $fp = fopen($this->logFile, 'w');
-
-        if (!$fp) {
-            $this->setError($this->modx->lexicon('nf.could_not_open_log_file') . ': ' . $this->logFile);
-        } else {
-            if ($this->debug) {
-                fwrite($fp, "MESSAGE TPL\n*****************************\n" .
-                        $this->emailText .
-                        "\n*****************************\n");
-                fclose($fp);
-            }
-            /* Remove oldest log file */
-            $maxLogs = $this->getProperty('maxLogs', 5);
-            $dir = $this->corePath . 'notify-logs';
-            if ($maxLogs != '0') {
-                $this->removeOldFiles($dir, $maxLogs);
-            }
+        /* Remove oldest log files */
+        $maxLogs = $this->getProperty('maxLogs', 5);
+        $dir = $this->corePath . 'notify-logs';
+        if ($maxLogs != '0') {
+            $this->logger->removeOldFiles($dir, $maxLogs);
         }
 
         /* Select users to send to */
@@ -382,8 +374,8 @@ class NfSendEmailProcessor extends modProcessor {
             if ($this->debug) {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, "User Data Cleared");
             }
-            // sleep(4);
             $i++;
+
             /* Get one batch's potential users */
             if ($this->debug) {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, "Doing Query");
@@ -563,7 +555,6 @@ class NfSendEmailProcessor extends modProcessor {
                 }
                 if ($this->mailService->hasError()) {
                     $errors = $this->mailService->getErrors();
-                    // $this->successMessages = array();
                     foreach ($errors as $error) {
                         $this->setError($error);
                     }
@@ -662,77 +653,7 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
 
-    public function removeOldFiles($dir, $maxLogs) {
-        if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Removing old files');
-        }
-        $files = glob($dir . '/*.*');
-
-        $over = count($files) - $maxLogs;
-
-        if ($over > 0) {
-            array_multisort(
-                    array_map('filemtime', $files),
-                    SORT_NUMERIC,
-                    SORT_ASC,
-                    $files
-            );
-            for ($i = 0; $i < $over; $i++) {
-                if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Removing an old file');
-                }
-                unlink($files[$i]);
-            }
-        }
-        if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, 'All old files removed');
-        }
-    }
-
-    /**
-     * Sends an individual email
-     *
-     * @param $fields array - fields for user placeholders.
-     * @return bool - true on success; false on failure to mail.
-     */
-
-    /* This function all goes to the modMailX class */
-    /*public function sendMail($fields) {
-
-        $content = $this->emailText;
-
-        //
-        $fieldsUsed = $this->userFields;
-
-        foreach ($fields as $key => $value) {
-            if (is_array($value)) {
-                continue;
-            }
-            if (in_array($key, $fieldsUsed)) {
-            }
-            if (!is_array($value)) {
-                $content = str_replace('{{+' . $key . '}}', $value, $content);
-            }
-        }
-
-        $this->modx->mail->set(modMail::MAIL_BODY, $content);
-        $this->html2text->set_html($content);
-        $text = $this->html2text->get_text();
-        $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text);
-        $this->modx->mail->address('to', $fields['email'], $fields['name']);
-
-        $success = $this->testMode
-            ? true
-            : $this->modx->mail->send();
-
-        if (!$success) {
-            $this->setError($this->modx->mail->mailer->ErrorInfo);
-        }
-
-        return $success;
-
-    }*/
-
+    /** User placeholders actually used in Tpl chunk */
     public function getUserFields($text) {
         $content = $text;
 
@@ -748,7 +669,6 @@ class NfSendEmailProcessor extends modProcessor {
     }
 
     public function setError($msg) {
-        // $this->modx->log(modX::LOG_LEVEL_ERROR, $msg);
         $this->errors[] = $msg;
     }
 

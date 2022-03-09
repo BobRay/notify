@@ -2,8 +2,8 @@
 
     interface MailService {
 
-        /* Sets $this->modx, $this->properties */
-        public function __construct(&$modx, $properties);
+        /* Sets $this->modx, $this->properties, $this->logger */
+        public function __construct(&$modx, $properties, NotifyLog $logger);
 
         /* Initialize data fields */
         public function init();
