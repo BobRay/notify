@@ -29,7 +29,7 @@ Class MailgunX extends Mailgun implements MailService {
 
     protected  $properties; /* ScriptProperties */
 
-    protected $stars = "******************************************************************************************";
+    protected $stars = MailService::STARS;
 
     /** @var $mailgunPublicApiKey string - Used only for verifying emails, not for sending them */
     protected  $mailgunPublicApiKey = '';

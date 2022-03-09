@@ -1,7 +1,7 @@
 <?php
 
     interface MailService {
-
+        const STARS = "********************************************************************************";
         /* Sets $this->modx, $this->properties, $this->logger */
         public function __construct(&$modx, $properties, NotifyLog $logger);
 

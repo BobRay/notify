@@ -26,7 +26,7 @@
 
 Class modMailX  implements MailService {
     protected $debug;
-    protected $stars = "******************************************************************************************";
+    protected $stars = MailService::STARS;
     protected $properties; /* ScriptProperties */
     /** @var $emailArray array - used internally to store recipients' email addresses */
     protected $emailArray = array();

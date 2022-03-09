@@ -31,6 +31,7 @@ class NfSendEmailProcessor extends modProcessor {
     public $mailService = null;
     protected $mailServiceClass = '';
     protected $logger = null; // NotifyLog class
+    protected $stars = MailService::STARS;
 
 
     public function initialize() {
@@ -42,7 +43,8 @@ class NfSendEmailProcessor extends modProcessor {
         $this->debug = $this->modx->getOption('nf_debug',null, false);
 
         if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\nProperties after merge\n" . print_r($this->properties, true));
+            $this->logger->write("\n" . $this->stars .  "\nProperties after merge\n" .
+                    print_r($this->properties, true) . $this->stars . "\n");
         }
         unset ($t, $config);
         $this->testMode = $this->getProperty('testMode', false);
@@ -142,7 +144,8 @@ class NfSendEmailProcessor extends modProcessor {
             } else {
                 $content = 'No Props';
             }
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\n Content: " . $content);
+            $this->logger->write("\n" . $this->stars . "\n Content: " . $content . "\n" . $this->stars . "\n");
+
         }
 
         $sendBulk = (bool)$this->getProperty('send_bulk', false);
@@ -343,7 +346,7 @@ class NfSendEmailProcessor extends modProcessor {
             return false;
         }
         if ($this->debug) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, "\nTotal Count: " . $totalCount);
+            $this->logger->write("\nTotal Count: " . $totalCount . "\n");
         }
         if ($totalCount % $batchSize) {
             $batches = floor($totalCount / $batchSize) + 1;
@@ -365,36 +368,33 @@ class NfSendEmailProcessor extends modProcessor {
         /* Batch loop - sends all batches */
         while ($offset < $totalCount) {
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, " ************* NEW BATCH -- Batch {$batchNumber}");
+
+                $this->logger->write("\n ************* NEW BATCH -- Batch {$batchNumber}" . "\n");
             }
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, "Clearing User Data");
+                $this->logger->write("\nClearing User Data");
             }
             $this->mailService->clearUserData();
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, "User Data Cleared");
+                $this->logger->write("\nUser Data Cleared");
             }
             $i++;
 
             /* Get one batch's potential users */
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, "Doing Query");
+                $this->logger->write("\nDoing Query");
             }
             $c->limit($batchSize, $offset);
             // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
             $users = $this->modx->getCollectionGraph($userClass, '{"' . $profileAlias . '":{}', $c);
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, "Query completed ");
+                $this->logger->write("Query completed ");
             }
             $offset += $batchSize;
 
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, "Count: " . count($users) . ' -- Offset: ' . $offset);
-                $msg = "\n\n" . $i . "  Count: " . count($users) .
-                        "\nOffset: " . $offset . "\nBatchSize: " .
-                        $batchSize;
-                $this->modx->log(modX::LOG_LEVEL_ERROR, $msg);
+                $this->logger->write("\nCount: " . count($users) . ' -- Offset: ' . $offset . " -- BatchSize: " . $batchSize);
             }
             $sentCount = 0;
 
@@ -410,7 +410,7 @@ class NfSendEmailProcessor extends modProcessor {
                 }
 
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Qualifying users');
+                    $this->logger->write('\nQualifying users');
                 }
                 if (!empty($this->tags)) {
                     if (!$this->qualifyUser($profile, $username, $requireAllTags)) {
@@ -425,14 +425,14 @@ class NfSendEmailProcessor extends modProcessor {
                 unset($x, $z);
 
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'User qualified');
+                    $this->logger->write('\nUser qualified');
                 }
                 /* Now we have a user to send to */
                 $fields = array();
                 $fields['userid'] = $user->get('id');
                 $fields['username'] = $username;
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Injecting Unsubscribe URL-- User: ' .
+                    $this->logger->write("\nInjecting Unsubscribe URL-- User: " .
                             $userNumber . ' -- Username: ' . $username .
                             ' -- UnsubURL: ' . $unSubUrl);
                 }
@@ -443,9 +443,9 @@ class NfSendEmailProcessor extends modProcessor {
                     }
                     $fields['unsubscribe_url'] = $unSub->createUrl($unSubUrl, $profile);
                     if ($this->debug) {
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, "\nUnsub URL: " .
+                        $this->logger->write("\nUnsub URL: " .
                                 $fields['unsubscribe_url']);
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, 'Unsubscribe injected -- User: ' .
+                        $this->logger->write("\nUnsubscribe injected -- User: " .
                                 $userNumber . ' -- Username: ' . $username);
                     }
                 }
@@ -487,10 +487,10 @@ class NfSendEmailProcessor extends modProcessor {
                 $this->mailService->addUser($fields);
 
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $user->get('username') . ' -- ' . $profile->get('email'));
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" .
+                    $this->logger->write("\n" . $user->get('username') . ' -- ' . $profile->get('email'));
+                    $this->logger->write("\n" .
                             'Fields sent to addUser: ' .
-                            print_r($fields, true)
+                            print_r($fields, true) . "\n"
                     );
                 }
 
@@ -499,7 +499,7 @@ class NfSendEmailProcessor extends modProcessor {
 
             }
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, 'All users added');
+                $this->logger->write("\nAll users added");
             }
             /* All users added, send batch */
             $percent = $stepSize * $batchNumber;
@@ -512,11 +512,11 @@ class NfSendEmailProcessor extends modProcessor {
                     $response = $this->mailService->sendBatch($batchNumber);
                     $code = $response->http_response_code;
                     if ($this->debug) {
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, " Response code: " . $code);
+                        $this->logger->write("\n    Response code: " . $code);
                     }
                     if ($code == 200 || $code == 421) {
                         if ($this->debug) {
-                            $this->modx->log(modX::LOG_LEVEL_ERROR, " Success -- Batch {$batchNumber} -- Attempt: {$attempt}");
+                            $this->logger->write("\n    Success -- Batch {$batchNumber} -- Attempt: {$attempt}");
                         }
                         break;
                     } else {
@@ -525,7 +525,7 @@ class NfSendEmailProcessor extends modProcessor {
                         }
                         /* No exception, but bad code */
                         if ($this->debug) {
-                            $this->modx->log(modX::LOG_LEVEL_ERROR, " No Exception -- bad code -- Batch {$batchNumber} -- Attempt: {$attempt} -- Code: {$code}");
+                            $this->logger->write("\n    No Exception -- bad code -- Batch {$batchNumber} -- Attempt: {$attempt} -- Code: {$code}");
                         }
                         if ($attempt < $maxAttempts) {
                             throw new exception('Retrying');
@@ -533,7 +533,7 @@ class NfSendEmailProcessor extends modProcessor {
                     }
                 } catch (Exception $e) {
                     if ($this->debug) {
-                        $this->modx->log(modX::LOG_LEVEL_ERROR, "Exception -- Batch {$batchNumber} " . $e->getMessage() . " Attempt: {$attempt}");
+                        $this->logger->write("\nException -- Batch {$batchNumber} " . $e->getMessage() . " Attempt: {$attempt}");
                     }
                     sleep(1);
                     $attempt++;
@@ -544,14 +544,14 @@ class NfSendEmailProcessor extends modProcessor {
 
 
             if ($this->debug) {
-                $this->modx->log(modX::LOG_LEVEL_ERROR, "\n" . $this->modx->lexicon('nf.full_response') .
+                $this->logger->write("\n" . $this->modx->lexicon('nf.full_response') .
                         "\n" . print_r($response, true) . "\n");
             }
 
             /* If we still don't have a 200 response, record errors */
             if ($code !== 200 && $code !== 421) {
                 if ($this->debug) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'End of batch error -- code: ' . $code);
+                    $this->logger->write("\nEnd of batch error -- code: " . $code);
                 }
                 if ($this->mailService->hasError()) {
                     $errors = $this->mailService->getErrors();
