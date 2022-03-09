@@ -49,18 +49,6 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Basic Settings',
   ),
-  'debug' => 
-  array (
-    'name' => 'debug',
-    'desc' => 'debug_property_desc',
-    'type' => 'combo-boolean',
-    'options' => 
-    array (
-    ),
-    'value' => false,
-    'lexicon' => 'notify:properties',
-    'area' => 'Basic Settings',
-  ),
   'groupListChunkName' => 
   array (
     'name' => 'groupListChunkName',
@@ -178,6 +166,18 @@ $properties = array (
     array (
     ),
     'value' => '',
+    'lexicon' => 'notify:properties',
+    'area' => 'Basic Settings',
+  ),
+  'nf_debug' => 
+  array (
+    'name' => 'nf_debug',
+    'desc' => 'debug_property_desc',
+    'type' => 'combo-boolean',
+    'options' => 
+    array (
+    ),
+    'value' => false,
     'lexicon' => 'notify:properties',
     'area' => 'Basic Settings',
   ),
@@ -523,7 +523,6 @@ $properties = array (
     'lexicon' => 'notify:properties',
     'area' => 'Mailgun',
   ),
-
   'bitlyApiKey' => 
   array (
     'name' => 'bitlyApiKey',
