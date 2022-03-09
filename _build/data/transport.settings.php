@@ -38,7 +38,7 @@ $systemSettings[1]->fromArray(array (
 $systemSettings[2] = $modx->newObject('modSystemSetting');
 $systemSettings[2]->fromArray(array (
   'key' => 'allowedGroups',
-  'value' => '',
+  'value' => 'Administrator',
   'xtype' => 'textfield',
   'namespace' => 'notify',
   'area' => '',
@@ -46,13 +46,13 @@ $systemSettings[2]->fromArray(array (
   'description' => 'Comma-separated list of User Groups allowed for plugin execution; set to match the snippet property of the same name; default: Administrator',
 ), '', true, true);
 $systemSettings[3] = $modx->newObject('modSystemSetting');
-$systemSettings[3]->fromArray(array(
-    'key' => 'nf_debug',
-    'value' => '0',
-    'xtype' => 'combo-boolean',
-    'namespace' => 'notify',
-    'area' => '',
-    'name' => 'Debug Notify',
-    'description' => 'Send debugging information to MODX error log; default: false',
+$systemSettings[3]->fromArray(array (
+  'key' => 'nf_debug',
+  'value' => false,
+  'xtype' => 'combo-boolean',
+  'namespace' => 'notify',
+  'area' => '',
+  'name' => 'Debug Notify',
+  'description' => 'Write debugging info to Notify log file',
 ), '', true, true);
 return $systemSettings;
