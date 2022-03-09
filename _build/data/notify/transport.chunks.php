@@ -149,4 +149,14 @@ $chunks[12]->fromArray(array (
 ), '', true, true);
 $chunks[12]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfstatus.chunk.html'));
 
+$chunks[13] = $modx->newObject('modChunk');
+$chunks[13]->fromArray(array (
+  'id' => 13,
+  'property_preprocess' => false,
+  'name' => 'NfLogHeaderTpl',
+  'description' => 'Chunk for top of Notify mail log',
+  'properties' => NULL,
+), '', true, true);
+$chunks[13]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nflogheadertpl.chunk.html'));
+
 return $chunks;
