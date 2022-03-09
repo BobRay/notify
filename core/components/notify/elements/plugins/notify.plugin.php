@@ -39,27 +39,6 @@
 /* @var $resource modResource */
 /* @var $nf Notify */
 
-if (!function_exists("my_debug")) {
-    function my_debug($message, $clear = false) {
-        global $modx;
-        /* @var $chunk modChunk */
-        $chunk = $modx->getObject('modChunk', array('name' => 'debug'));
-
-        if (!$chunk) {
-            $chunk = $modx->newObject('modChunk', array('name' => 'debug'));
-            $chunk->save();
-            $chunk = $modx->getObject('modChunk', array('name' => 'debug'));
-        }
-        if ($clear) {
-            $content = '';
-        } else {
-            $content = $chunk->getContent();
-        }
-        $content .= $message;
-        $chunk->setContent($content);
-        $chunk->save();
-    }
-}
 $sp =& $scriptProperties;
 $modx->lexicon->load('notify:default');
 
