@@ -56,7 +56,7 @@ $components = array(
      * their namespace to the lowercase package name of your extra */
 
     'newSystemSettings' => array(
-        'nf_status_resource_id' => array( // key
+        'nf_status_resource_id' => array(
              'key'         => 'nf_status_resource_id',
              'name'        => 'Notify Status Resource ID',
              'description' => 'ID of Notify Status Resource',
@@ -64,6 +64,24 @@ $components = array(
              'xtype'       => 'integer',
              'value'       => '',
              'area'        => '',
+        ),
+        'nf_debug' => array(
+                'key' => 'nf_debug',
+                'name' => 'Debug Notify',
+                'description' => 'Write debugging info to Notify log file',
+                'namespace' => 'notify',
+                'xtype' => 'combo-boolean',
+                'value' => false,
+                'area' => '',
+        ),
+        'allowedGroups' => array(
+                'key' => 'allowedGroups',
+                'name' => 'Allowed Groups',
+                'description' => 'Comma-separated list of User Groups allowed for plugin execution; set to match the snippet property of the same name; default: Administrator',
+                'namespace' => 'notify',
+                'xtype' => 'integer',
+                'value' => "Administrator",
+                'area' => '',
         ),
     ),
 
@@ -229,6 +247,11 @@ $components = array(
                 'name'        => 'NfStatus',
                 'description' => 'Status chunk for Notify progress bar',
                 'category'    => 'Notify',
+            ),
+            'NfLogHeaderTpl' => array(
+                    'name' => 'NfLogHeaderTpl',
+                    'description' => 'Chunk for top of Notify mail log',
+                    'category' => 'Notify',
             ),
 
         ),
