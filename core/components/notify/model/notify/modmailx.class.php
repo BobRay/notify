@@ -215,11 +215,37 @@ Class modMailX  implements MailService {
         return $this->userPlaceholders;
     }
 
+    /** Write sample message to top of log file (all but recipient list) */
+    public function writeSampleMessage() {
+        if ($this->modx->getCount('modChunk', array('name' => 'MyNfLogHeaderTpl'))) {
+            $headerTpl = 'MyNfLogHeaderTpl';
+        } else {
+            $headerTpl = 'NfLogHeaderTpl';
+        }
+        if ($this->debug) {
+            $this->logger->write("\nMAIL FIELDS: " . print_r($this->mailFields, true));
+        }
+        $to = array_keys($this->recipientVariables)[0];
 
+        $body = $this->replacePlaceholders($this->mailFields['html'], $this->recipientVariables[$to]);
+
+        $headerFields = array(
+                'from' => $this->mailFields['from'],
+                'to' => $to,
+                'fullname' => reset($this->recipientVariables)['fullname'],
+                'subject' => $this->mailFields['subject'],
+                'body' => $body,
+        );
+
+        $this->logger->write($this->modx->getChunk($headerTpl, $headerFields));
+    }
     public function sendBatch($batchNumber) {
+        if ((int) $batchNumber === 1) {
+            $this->writeSampleMessage();
+        }
         $mFields = $this->mailFields;
         $success = true; // report success in testMode
-        $this->logger->write("SENDING BATCH {$batchNumber}\n");
+        $this->logger->write($this->stars . "\nSENDING BATCH {$batchNumber}\n");
         $count = 1;
         foreach ($this->emailArray as $email) {
 
@@ -273,13 +299,7 @@ Class modMailX  implements MailService {
             }
 
             $msg = $success? ' -- Success' : ' -- Failed';
-            if ($batchNumber === 1 && $count === 1) {
-                $count++;
-                $this->logger->write( "\n\n*****************************************\n" .
-                        "Sample Message:\n" . $html .
-                        "*****************************************\n"
-                );
-            }
+
             /* This happens once for each user */
             $this->logger->write("\nSending to " . $userFields['username'] . $msg);
 

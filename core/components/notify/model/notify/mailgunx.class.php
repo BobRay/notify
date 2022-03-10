@@ -198,10 +198,15 @@ Class MailgunX extends Mailgun implements MailService {
         }
         $email = $fields['email'];
         $userFields = $this->userPlaceholders;
-        /* Add username */
+        /* Add username and fullname */
         if (!in_array('username', $userFields )) {
             $userFields[] = 'username';
         }
+        if (!in_array('fullname', $userFields)) {
+            $userFields[] = 'fullname';
+        }
+
+
         $userVariables = array();
 
         /* Unset unused user variables */
@@ -210,6 +215,7 @@ Class MailgunX extends Mailgun implements MailService {
                 $userVariables[$key] = $value;
             }
         }
+        unset($fields);
 
         /* Array of emails */
         $this->emailArray[] = $email;
@@ -255,22 +261,36 @@ Class MailgunX extends Mailgun implements MailService {
         return $this->userPlaceholders;
     }
 
+    /** Write sample message to top of log file (all but recipient list) */
+    public function writeSampleMessage(){
+        if ($this->modx->getCount('modChunk', array('name' => 'MyNfLogHeaderTpl'))) {
+            $headerTpl = 'MyNfLogHeaderTpl';
+        } else {
+            $headerTpl = 'NfLogHeaderTpl';
+        }
+        if ($this->debug) {
+            $this->logger->write("\nMAIL FIELDS: " . print_r($this->mailFields, true));
+        }
+        $to = array_keys($this->recipientVariables)[0];
+
+        $body = $this->replacePlaceholders($this->mailFields['html'], $this->recipientVariables[$to]);
+
+        $headerFields = array(
+                'from' => $this->mailFields['from'],
+                'to' => $to,
+                'fullname' => reset($this->recipientVariables)['fullname'],
+                'subject' => $this->mailFields['subject'],
+                'body' => $body,
+        );
+
+        $this->logger->write($this->modx->getChunk($headerTpl, $headerFields));
+    }
 
     public function sendBatch($batchNumber) {
 
-        $to = array_keys($this->recipientVariables)[0];
-
+        /* Write sample message once at top of log file */
         if ((int) $batchNumber === 1) {
-
-            $sampleMessage = "Sample Message:" .
-                    "\nFrom: " . $this->mailFields['from'] .
-                    "\nTo: " . $to .
-                    "\nSubject: " . $this->mailFields['subject'];
-
-            $sampleMessage .= "\nMessage Body: \n" .
-                    $this->replacePlaceholders($this->mailFields['html'], $this->recipientVariables[$to]);
-
-            $this->logger->write($sampleMessage . "\n");
+            $this->writeSampleMessage();
         }
 
         $fields = $this->mailFields;
@@ -309,7 +329,7 @@ Class MailgunX extends Mailgun implements MailService {
             }
         }
 
-        $sendList = "\n" . $this->stars . "\nSending to:\n";
+        $sendList = $this->stars . "\nSending to:\n";
         $list = $this->recipientVariables;
         foreach ($list as $key => $value) {
             $sendList .= "\n" . $list[$key]['username'] . " (" . $key . ")";

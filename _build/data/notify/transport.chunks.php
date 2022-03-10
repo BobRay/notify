@@ -155,7 +155,9 @@ $chunks[13]->fromArray(array (
   'property_preprocess' => false,
   'name' => 'NfLogHeaderTpl',
   'description' => 'Chunk for top of Notify mail log',
-  'properties' => NULL,
+  'properties' => 
+  array (
+  ),
 ), '', true, true);
 $chunks[13]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nflogheadertpl.chunk.html'));
 
