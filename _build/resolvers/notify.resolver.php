@@ -47,7 +47,54 @@ if ($object->xpdo) {
                 $setting->set('value', $id);
                 $setting->save();
             }
-            break;
+            /* Remove deprecated properties from Notify snippet
+               and NotifyProperties property set */
+        $set = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties'));
+        $props = $set->get('properties');
+
+        $removeList = array(
+                'debug',
+                'mailgun.debug',
+                'mandrill_api_key',
+                'nfUseMandrill',
+                'subaccount',
+        );
+        foreach ($removeList as $k => $v) {
+            if (isset($props[$v])) {
+                unset($props[$v]);
+            }
+        }
+
+        $options = $props['mailService']['options'];
+        foreach ($options as $k => $v) {
+            if ($v['text'] === 'MandrillX') {
+                unset($props['mailService']['options'][$k]);
+            }
+        }
+
+        $set->set('properties', $props);
+        $set->save();
+
+        $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
+        $props = $snippet->get('properties');
+        foreach ($removeList as $k => $v) {
+            if (isset($props[$v])) {
+                unset($props[$v]);
+            }
+        }
+
+
+        $options = $props['mailService']['options'];
+        foreach ($options as $k => $v) {
+            if ($v['text'] === 'MandrillX') {
+                echo "\nFound MandrillX";
+                unset($props['mailService']['options'][$k]);
+            }
+        }
+        $snippet->set('properties', $props);
+        $snippet->save();
+
+        break;
 
         case xPDOTransport::ACTION_UNINSTALL:
             $resource = $modx->getObject('modResource', array('alias' => 'notify'));
