@@ -34,8 +34,6 @@ if ($object->xpdo) {
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
-
-
             $resource = $modx->getObject('modResource', array('alias' => 'notify-status'));
             $setting = $modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($resource) {
@@ -49,9 +47,6 @@ if ($object->xpdo) {
             }
             /* Remove deprecated properties from Notify snippet
                and NotifyProperties property set */
-        $set = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties'));
-        $props = $set->get('properties');
-
         $removeList = array(
                 'debug',
                 'mailgun.debug',
@@ -59,42 +54,53 @@ if ($object->xpdo) {
                 'nfUseMandrill',
                 'subaccount',
         );
-        foreach ($removeList as $k => $v) {
-            if (isset($props[$v])) {
-                unset($props[$v]);
+
+            $set = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties'));
+            if ($set) {
+                $props = $set->get('properties');
+
+                foreach ($removeList as $k => $v) {
+                    if (isset($props[$v])) {
+                        unset($props[$v]);
+                    }
+                }
+
+                if (isset($props['mailService']['options'])) {
+                    $options = $props['mailService']['options'];
+                    foreach ($options as $k => $v) {
+                        if (isset($v['text']) && ($v['text'] === 'MandrillX')) {
+                            unset($props['mailService']['options'][$k]);
+                        }
+                    }
+                }
+
+                $set->set('properties', $props);
+                $set->save();
             }
-        }
 
-        $options = $props['mailService']['options'];
-        foreach ($options as $k => $v) {
-            if ($v['text'] === 'MandrillX') {
-                unset($props['mailService']['options'][$k]);
+
+            $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
+            $props = $snippet->get('properties');
+            if ($snippet && $props) {
+                foreach ($removeList as $k => $v) {
+                    if (isset($props[$v])) {
+                        unset($props[$v]);
+                    }
+                }
+
+                if (isset($props['mailService']['options'])) {
+                    $options = $props['mailService']['options'];
+                    foreach ($options as $k => $v) {
+                        if (isset($v['text']) && ($v['text'] === 'MandrillX')) {
+                            unset($props['mailService']['options'][$k]);
+                        }
+                    }
+                }
+                $snippet->set('properties', $props);
+                $snippet->save();
             }
-        }
 
-        $set->set('properties', $props);
-        $set->save();
-
-        $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
-        $props = $snippet->get('properties');
-        foreach ($removeList as $k => $v) {
-            if (isset($props[$v])) {
-                unset($props[$v]);
-            }
-        }
-
-
-        $options = $props['mailService']['options'];
-        foreach ($options as $k => $v) {
-            if ($v['text'] === 'MandrillX') {
-                echo "\nFound MandrillX";
-                unset($props['mailService']['options'][$k]);
-            }
-        }
-        $snippet->set('properties', $props);
-        $snippet->save();
-
-        break;
+            break;
 
         case xPDOTransport::ACTION_UNINSTALL:
             $resource = $modx->getObject('modResource', array('alias' => 'notify'));
