@@ -9,7 +9,7 @@
 
 /** @var $modx modX */
 
-include_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
+// include_once MODX_CORE_PATH . 'model/modx/modprocessor.class.php';
 include_once dirname(dirname(__DIR__)) . '/model/notify/mailservice.php';
 include_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
 
@@ -198,6 +198,10 @@ class NfSendEmailProcessor extends modProcessor {
         $fields['fromName'] = $fromName;
 
         $fields['reply-to'] = $this->getProperty('mailReplyTo', $this->modx->getOption('emailsender'));
+
+        if (empty($fields['reply-to'])) {
+            $fields['reply-to'] = $this->modx->getOption('emailsender');
+        }
 
         if (empty($fields['html'])) {
             $this->setError(('nf.empty_message'));
