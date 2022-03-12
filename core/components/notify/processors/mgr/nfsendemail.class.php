@@ -80,7 +80,7 @@ class NfSendEmailProcessor extends modProcessor {
         $this->logger = new NotifyLog;
         $logFile = $this->corePath . 'notify-logs/' .
                 $pageAlias . '--' . date('Y-m-d-h.i.s-a') .
-                '(' . $this->mailServiceClass . ').log';
+                '(' . $this->mailServiceClass . ')-log.txt';
         if (! $this->logger->init($logFile)){
               $this->setError($this->modx->lexicon('nf.could_not_open_log_file'));
         }
