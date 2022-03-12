@@ -292,6 +292,7 @@ Class MailgunX extends Mailgun implements MailService {
         if ((int) $batchNumber === 1) {
             $this->writeSampleMessage();
         }
+        $this->logger->write($this->stars . "\nSENDING BATCH {$batchNumber}\n");
 
         $fields = $this->mailFields;
 
