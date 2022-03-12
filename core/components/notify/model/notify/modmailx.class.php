@@ -331,8 +331,10 @@ Class modMailX  implements MailService {
      * @return string - altered $tpl
      */
     public function replacePlaceholders($tpl, $placeholders) {
-        foreach( $placeholders as $k => $v) {
-            $tpl = str_replace('{{+' . $k . '}}', $v, $tpl);
+        if (! empty($placeholders)) {
+            foreach ($placeholders as $k => $v) {
+                $tpl = str_replace('{{+' . $k . '}}', $v, $tpl);
+            }
         }
 
         return $tpl;
