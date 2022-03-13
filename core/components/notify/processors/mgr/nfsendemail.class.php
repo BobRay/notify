@@ -13,7 +13,14 @@
 include_once dirname(dirname(__DIR__)) . '/model/notify/mailservice.php';
 include_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
 
-class NfSendEmailProcessor extends modProcessor {
+if (class_exists('MODX\Revolution\Processors\Processor')) {
+    abstract class DynamicProcessorParent extends MODX\Revolution\Processors\Processor {
+    }
+} else {
+    abstract class DynamicProcessorParent extends modProcessor {
+    }
+}
+class NfSendEmailProcessor extends DynamicProcessorParent {
 
     protected $errors = array();
     protected $successMessages = array();

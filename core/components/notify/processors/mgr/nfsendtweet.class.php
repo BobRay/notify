@@ -1,12 +1,20 @@
 <?php
 
+if (class_exists('MODX\Revolution\Processors\Processor')) {
+    abstract class DynamicTweetParent extends MODX\Revolution\Processors\Processor {
+    }
+} else {
+    abstract class DynamicTweetParent extends modProcessor {
+    }
+}
+
 /**
  * Class NfSendTweetProcessor
  *
  * (for LexiconHelper)
  * $modx->lexicon->load('notify:default');
  */
-class NfSendTweetProcessor extends modProcessor {
+class NfSendTweetProcessor extends DynamicTweetParent {
 
     protected $props;
     protected $errors;
