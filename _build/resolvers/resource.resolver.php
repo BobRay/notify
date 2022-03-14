@@ -43,6 +43,13 @@ if (!function_exists('checkFields')) {
     }
 }
 if($object->xpdo) {
+    $isMODX3Plus = $modx->getVersionData()['version'] >= 3;
+    if ($isMODX3Plus) {
+        $classPrefix = 'MODX\Revolution\\';
+    } else {
+        $classPrefix = '';
+    }
+
     $modx =& $object->xpdo;
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
@@ -72,17 +79,23 @@ if($object->xpdo) {
                     if (! checkFields('pagetitle,parent,template', $fields)) {
                         continue;
                     }
-                    $resource = $modx->getObject('modResource',
+                    $resource = $modx->getObject($classPrefix . 'modResource',
                         array('pagetitle' => $fields['pagetitle']));
                     if (! $resource) {
                         continue;
                     }
+
+                    /* Set class_key if MODX 3+ */
+                    if ($isMODX3Plus) {
+                        $resource->set('class_key', 'MODX\Revolution\modDocument');
+                    }
+
                     if ($fields['template'] == 'default') {
                         $resource->set('template', $modx->getOption('default_template'));
                     } elseif (empty($fields['template'])) {
                         $resource->set('template', 0);
                     } else {
-                        $templateObj = $modx->getObject('modTemplate',
+                        $templateObj = $modx->getObject($classPrefix . 'modTemplate',
                             array('templatename' => $fields['template']));
                         if ($templateObj) {
                             $resource->set('template', $templateObj->get('id'));
@@ -92,7 +105,7 @@ if($object->xpdo) {
                     }
                     if (!empty($fields['parent'])) {
                         if ($fields['parent'] != 'default') {
-                            $parentObj = $modx->getObject('modResource', array('pagetitle' => $fields['parent']));
+                            $parentObj = $modx->getObject($classPrefix . 'modResource', array('pagetitle' => $fields['parent']));
                             if ($parentObj) {
                                 $resource->set('parent', $parentObj->get('id'));
                             } else {
