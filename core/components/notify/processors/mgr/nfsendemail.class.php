@@ -39,6 +39,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
     protected $mailServiceClass = '';
     protected $logger = null; // NotifyLog class
     protected $stars = MailService::STARS;
+    protected $prefix;
 
 
     public function initialize() {
@@ -48,6 +49,10 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
             $this->properties = array_merge($config, $this->properties);
         }
         $this->debug = $this->modx->getOption('nf_debug',null, false);
+
+        $this->prefix = $this->modx->getVersionData()['version'] >= 3
+                ? 'MODX\Revolution\\'
+                : '';
 
         if ($this->debug) {
             $this->logger->write("\n" . $this->stars .  "\nProperties after merge\n" .
@@ -302,7 +307,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         foreach ($groups as $key => $group) {
             $group = trim($group);
             if (!is_numeric($group)) {
-                $grp = $this->modx->getObject('modUserGroup', array('name' => $group));
+                $grp = $this->modx->getObject($this->prefix . 'modUserGroup', array('name' => $group));
                 $groups[$key] = $grp
                         ? $grp->get('id')
                         : '';
@@ -324,10 +329,10 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         if ($singleUser) {
             $c->limit(1);
             /* Try to retrieve user, first by username, then  email */
-            if ($u = $this->modx->getObject('modUser', array('username' => $singleId))) {
+            if ($u = $this->modx->getObject($this->prefix . 'modUser', array('username' => $singleId))) {
                 $c->where(array('username' => $singleId));
                 unset($u);
-            } elseif ($p = $this->modx->getObject($profileClass, array('email' => $singleId))) {
+            } elseif ($p = $this->modx->getObject($this->prefix . $profileClass, array('email' => $singleId))) {
                 $c->where(array('id' => $p->get('internalKey')));
                 unset($p);
             } else {
@@ -351,7 +356,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         }
 
         $c->prepare();
-        $totalCount = $this->modx->getCount('modUser', $c);
+        $totalCount = $this->modx->getCount($this->prefix . 'modUser', $c);
         if (!$totalCount) {
             $this->setError($this->modx->lexicon('nf.no_recipients_to_send_to'));
             return false;
@@ -370,7 +375,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         $batchNumber = 1;
         $stepSize = floor(100 / $batches);
         /** @var $statusChunk modChunk */
-        $statusChunk = $this->modx->getObject('modChunk', array('name' => 'NfStatus'));
+        $statusChunk = $this->modx->getObject($this->prefix . 'modChunk', array('name' => 'NfStatus'));
         $this->update(0, "", '', $statusChunk);
         $processMsg1 = $this->modx->lexicon('nf.processing_batch');
         $processMsg2 = $this->modx->lexicon('nf.users_emailed_in_batch');
@@ -398,7 +403,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
             $c->limit($batchSize, $offset);
             // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
-            $users = $this->modx->getCollectionGraph($userClass, '{"' . $profileAlias . '":{}', $c);
+            $users = $this->modx->getCollectionGraph($this->prefix . $userClass, '{"' . $profileAlias . '":{}', $c);
             if ($this->debug) {
                 $this->logger->write("Query completed ");
             }

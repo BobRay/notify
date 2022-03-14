@@ -21,6 +21,7 @@ class NfSendTweetProcessor extends DynamicTweetParent {
     protected $successMessages;
     protected $testMode;
     protected $debug;
+    protected $prefix;
 
 
     public function initialize() {
@@ -30,6 +31,10 @@ class NfSendTweetProcessor extends DynamicTweetParent {
         }
         $this->testMode = $this->getProperty('testMode',false);
         $this->debug = $this->getProperty('debug', false);
+        $this->prefix = $this->modx->getVersionData()['version'] >= 3
+                ? 'MODX\\Revolution'
+                : '';
+
         return true;
     }
 
@@ -45,7 +50,7 @@ class NfSendTweetProcessor extends DynamicTweetParent {
 
 
         if ($this->debug) {
-            $chunk = $this->modx->getObject('modChunk', array('name' => 'Debug'));
+            $chunk = $this->modx->getObject($this->prefix . 'modChunk', array('name' => 'Debug'));
 
             if (isset($this->properties)) {
                 $content = 'Properties: ' . print_r($this->properties, true);
