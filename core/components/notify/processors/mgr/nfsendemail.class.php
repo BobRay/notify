@@ -188,7 +188,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         return $this->modx->toJSON($results);
     }
 
-    public function sendMailFields() { // xxx
+    public function sendMailFields() {
         $fields = array();
         $success = true;
         $fromName = $this->getProperty('from_name', '');
