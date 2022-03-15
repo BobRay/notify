@@ -44,8 +44,6 @@ Class modMailX  implements MailService {
     protected $userPlaceholders = array();
     /** @var  $modx modX */
     protected $modx;
-    protected $client = null; // instance of Mailgun class
-
     protected $errors = array();
     protected $apiKey = null;
     protected $logger = null;
@@ -286,7 +284,7 @@ Class modMailX  implements MailService {
             if ($this->debug) {
                 $this->logger->write("\nHTML: " . $html);
             }
-            $text = $this->replacePlaceholders($mFields['text'], $userFields[$email]);
+            $text = $this->replacePlaceholders($mFields['text'], $userFields);
             $this->modx->mail->set(modMail::MAIL_BODY, $html);
             $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $text);
 
