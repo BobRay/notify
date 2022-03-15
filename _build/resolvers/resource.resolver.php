@@ -43,6 +43,9 @@ if (!function_exists('checkFields')) {
     }
 }
 if($object->xpdo) {
+
+    $modx =& $object->xpdo;
+
     $isMODX3Plus = $modx->getVersionData()['version'] >= 3;
     if ($isMODX3Plus) {
         $classPrefix = 'MODX\Revolution\\';
@@ -50,7 +53,6 @@ if($object->xpdo) {
         $classPrefix = '';
     }
 
-    $modx =& $object->xpdo;
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:

@@ -32,7 +32,7 @@ class NfSendTweetProcessor extends DynamicTweetParent {
         $this->testMode = $this->getProperty('testMode',false);
         $this->debug = $this->getProperty('debug', false);
         $this->prefix = $this->modx->getVersionData()['version'] >= 3
-                ? 'MODX\\Revolution'
+                ? 'MODX\Revolution\\'
                 : '';
 
         return true;

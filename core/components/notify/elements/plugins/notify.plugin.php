@@ -49,6 +49,10 @@ if (!$modx->user->isMember($allowedGroups)) {
     return '';
 }
 
+$classPrefix = $modx->getVersionData()['version'] >= 3
+        ? 'MODX\Revolution\\'
+        : '';
+
 require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path') . 'components/notify/') . 'model/notify/notify.class.php';
 
     $src = "<script type='text/javascript'>
@@ -103,7 +107,7 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
         /* @var $tvObj modTemplateVar */
         /* @var $notifyObj modResource */
 
-        $tvObj = $modx->getObject('modTemplateVar', array('name' => 'NotifySubscribers'));
+        $tvObj = $modx->getObject($classPrefix . 'modTemplateVar', array('name' => 'NotifySubscribers'));
         if (! $tvObj) {
             return '';
         }
@@ -112,12 +116,12 @@ require_once $modx->getOption('nf.core_path', null, $modx->getOption('core_path'
 
         /* bail if the Notify TV is not attached to this template */
 
-        $tvt = $modx->getObject('modTemplateVarTemplate', array('templateid'=> $templateId, 'tmplvarid' => $tvId));
+        $tvt = $modx->getObject($classPrefix . 'modTemplateVarTemplate', array('templateid'=> $templateId, 'tmplvarid' => $tvId));
         if (!$tvt) {
             return '';
         }
 
-        $notifyObj = $modx->getObject('modResource', array('alias' => 'notify'));
+        $notifyObj = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify'));
         if (! $notifyObj) {
             $modx->log(modX::LOG_LEVEL_ERROR, '[Notify] ' .
                 $modx->lexicon('nf.no_resource')

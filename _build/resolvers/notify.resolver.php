@@ -31,11 +31,15 @@
 
 if ($object->xpdo) {
     $modx =& $object->xpdo;
+
+    $classPrefix = $modx->getVersionData()['version'] >= 3
+            ? 'MODX\Revolution\\'
+            : '';
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
-            $resource = $modx->getObject('modResource', array('alias' => 'notify-status'));
-            $setting = $modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            $resource = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify-status'));
+            $setting = $modx->getObject($classPrefix . 'modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($resource) {
                 $resource->set('template', 0);
                 $resource->save();
@@ -55,7 +59,7 @@ if ($object->xpdo) {
                 'subaccount',
         );
 
-            $set = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties'));
+            $set = $modx->getObject($classPrefix . 'modPropertySet', array('name' => 'NotifyProperties'));
             if ($set) {
                 $props = $set->get('properties');
 
@@ -79,7 +83,7 @@ if ($object->xpdo) {
             }
 
 
-            $snippet = $modx->getObject('modSnippet', array('name' => 'Notify'));
+            $snippet = $modx->getObject($classPrefix . 'modSnippet', array('name' => 'Notify'));
             $props = $snippet->get('properties');
             if ($snippet && $props) {
                 foreach ($removeList as $k => $v) {
@@ -103,9 +107,9 @@ if ($object->xpdo) {
             break;
 
         case xPDOTransport::ACTION_UNINSTALL:
-            $resource = $modx->getObject('modResource', array('alias' => 'notify'));
+            $resource = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify'));
             if ($resource) $resource->remove();
-            $setting = $modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            $setting = $modx->getObject($classPrefix . 'modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($setting) {
                 $setting->remove();
             }

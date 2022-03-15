@@ -135,6 +135,7 @@ class Notify
     public $maxLogs = 5;
     public $testMode;
     public $injectUnsubscribeUrl = true;
+    public $prefix;
 
 
     /**
@@ -150,6 +151,10 @@ class Notify
         $this->modx =& $modx;
         $this->props = $props;
 
+        $this->prefix = $this->modx->getVersionData()['version'] >= 3
+                ? 'MODX\Revolution\\'
+                : '';
+
         /* nf paths; Set the nf. System Settings only for development */
         $this->corePath = $this->modx->getOption('nf.core_path', null, MODX_CORE_PATH . 'components/notify/');
     }
@@ -162,7 +167,7 @@ class Notify
         $this->injectUnsubscribeUrl = $this->modx->getOption('injectUnsubscribeUrl', $this->props, true);
         $this->errors = array();
         $this->successMessages = array();
-        $this->previewPage = $this->modx->getObject('modResource', array('alias' => 'notify-preview'));
+        $this->previewPage = $this->modx->getObject($this->prefix . 'modResource', array('alias' => 'notify-preview'));
         if (!$this->previewPage) {
             $this->setError($this->modx->lexicon('nf.could_not_find_preview_page'));
         }
@@ -287,7 +292,7 @@ class Notify
                 $this->tplType = ucfirst($this->tplType);
                 /* First try 'My' prefix */
                 $chunkName = 'MyNfSubscriberEmailTpl' . $this->tplType;
-                if ($this->modx->getCount('modChunk', array('name' => $chunkName ))) {
+                if ($this->modx->getCount($this->prefix . 'modChunk', array('name' => $chunkName ))) {
                     $this->emailTpl = $chunkName;
                 }
                 if (empty($this->emailTpl)) {
@@ -297,7 +302,7 @@ class Notify
                 }
 
                 $chunkName = 'NfTweetTpl' . $this->tplType;
-                if ($this->modx->getCount('modChunk', array('name' => 'My' . $chunkName))) {
+                if ($this->modx->getCount($this->prefix . 'modChunk', array('name' => 'My' . $chunkName))) {
                     $this->tweetTpl = 'My' . $chunkName;
                 }
                 if (empty($this->tweetTpl)) {
@@ -373,7 +378,7 @@ class Notify
             return true;
         }
 
-        $this->resource = $this->modx->getObject('modResource', (int) $this->pageId);
+        $this->resource = $this->modx->getObject($this->prefix . 'modResource', (int) $this->pageId);
         if (!$this->resource) {
             $this->setError($this->modx->lexicon('nf.could_not_get_resource'));
             return false;
@@ -401,7 +406,7 @@ class Notify
 
             $renderTvs = $this->modx->getOption('processTVs', $this->props, true);
             if (!empty($includeTVList)) {
-                $tvs = $this->modx->getCollection('modTemplateVar', array('name:IN' => $includeTVList));
+                $tvs = $this->modx->getCollection($this->prefix . 'modTemplateVar', array('name:IN' => $includeTVList));
             } else {
                 $tvs = $this->resource->getMany('TemplateVars');
             }
@@ -635,8 +640,8 @@ class Notify
         /* try to set the System Setting if it didn't
          * get set during the install */
         if (empty($nf_status_resource_id)) {
-            $r = $this->modx->getObject('modResource', array('alias' => 'notify-status'));
-            $s = $this->modx->getObject('modSystemSetting', array('key' => 'nf_status_resource_id'));
+            $r = $this->modx->getObject($this->prefix . 'modResource', array('alias' => 'notify-status'));
+            $s = $this->modx->getObject($this->prefix . 'modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($r && $s) {
                 $s->set('value', $r->get('id'));
                 $s->save();

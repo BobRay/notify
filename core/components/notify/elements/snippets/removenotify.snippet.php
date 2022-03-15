@@ -43,13 +43,22 @@
 /* @var $nameSpace modNameSpace */
 /* @var $elementPropertySet modElementPropertySet */
 
-$category = $modx->getObject('modCategory', array('category'=>'Notify'));
+$classPrefix = $modx->getVersionData()['version'] >= 3
+        ? 'MODX\Revolution\\'
+        : '';
+
+$doc = $modx->getObject($classPrefix . 'modResource', array('pagetitle' => 'Notify'));
+if ($doc) {
+    $doc->remove();
+}
+
+$category = $modx->getObject($classPrefix . 'modCategory', array('category'=>'Notify'));
 $output = '';
 $pluginId = null;
 if (! $category) return 'Category not found<br />';
 
 $categoryId = $category->get('id');
-$tvs = $modx->getCollection('modTemplateVar', array('category'=> $categoryId));
+$tvs = $modx->getCollection($classPrefix . 'modTemplateVar', array('category'=> $categoryId));
 
 if (empty ($tvs)) {
   $output .= 'TVs already removed<br />';
@@ -58,10 +67,16 @@ if (empty ($tvs)) {
       $tv->remove();
       $output .= 'Removed TV<br />';
    }
-
 }
 
-$chunks = $modx->getCollection('modChunk', array('category'=> $categoryId));
+$template = $modx->getObject($classPrefix . 'modTemplate', array('templatename' => 'Notify Template'));
+if ($template) {
+    $template->remove();
+}
+
+
+
+$chunks = $modx->getCollection($classPrefix . 'modChunk', array('category'=> $categoryId));
 
 if (empty ($chunks)) {
   $output .= 'Chunks already removed<br />';
@@ -72,7 +87,7 @@ if (empty ($chunks)) {
    }
 
 }
-$plugin = $modx->getObject('modPlugin', array('name' => 'Notify'));
+$plugin = $modx->getObject($classPrefix . 'modPlugin', array('name' => 'Notify'));
 
 if (!$plugin) {
    $output .= 'plugin already removed<br />';
@@ -81,7 +96,7 @@ if (!$plugin) {
    $plugin->remove();
    $output .= 'Removed plugin<br />';
 }
-$pluginEvents = $modx->getCollection('modPluginEvent', array('pluginId'=> $pluginId));
+$pluginEvents = $modx->getCollection($classPrefix . 'modPluginEvent', array('pluginId'=> $pluginId));
 
 if (empty ($pluginEvents)) {
   $output .= 'pluginEvents already removed<br />';
@@ -93,7 +108,7 @@ if (empty ($pluginEvents)) {
 
 }
 
-$propertySet = $modx->getObject('modPropertySet', array ('name' => 'NotifyProperties'));
+$propertySet = $modx->getObject($classPrefix . 'modPropertySet', array ('name' => 'NotifyProperties'));
 
 if (!$propertySet) {
    $output .= 'propertySet already removed<br />';
@@ -113,7 +128,7 @@ $fields = array (
 
 );
 
-$elementPropertySet = $modx->getObject('modElementPropertySet', $fields);
+$elementPropertySet = $modx->getObject($classPrefix . 'modElementPropertySet', $fields);
 
 if (! $elementPropertySet) {
     $output .= 'elementPropertySet already removed<br />';
@@ -126,7 +141,7 @@ $category->remove();
 $output .= 'Removed category<br />';
 
 
-$nameSpace = $modx->getObject('modNamespace', array ('name' => 'notify'));
+$nameSpace = $modx->getObject($classPrefix . 'modNamespace', array ('name' => 'notify'));
 
 if (!$nameSpace) {
    $output .= 'namespace already removed<br />';

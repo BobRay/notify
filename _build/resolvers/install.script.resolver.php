@@ -32,11 +32,13 @@
  * use $object->xpdo
  */
 
-/* @var $modx modX */
-
-
+/** @var $object xPDO */
+/** @var $modx modX */
 $modx =& $object->xpdo;
 
+$classPrefix = $modx->getVersionData()['version'] >= 3
+        ? 'MODX\Revolution\\'
+        : '';
 
 $plugins = array('Notify');
 
@@ -59,8 +61,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
-        $ps = $modx->getObject('modPropertySet', array('name' => 'NotifyProperties' ));
-        $sn = $modx->getObject('modSnippet', array('name' => 'Notify'));
+        $ps = $modx->getObject($classPrefix . 'modPropertySet', array('name' => 'NotifyProperties' ));
+        $sn = $modx->getObject($classPrefix . 'modSnippet', array('name' => 'Notify'));
         if ($sn && $ps) {
             $fields = array(
                 'property_set' => $ps->get('id'),
@@ -68,9 +70,9 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                 'element_class' => 'modSnippet',
             );
 
-            $eps = $modx->getObject('modElementPropertySet', $fields );
+            $eps = $modx->getObject($classPrefix . 'modElementPropertySet', $fields );
             if (! $eps) {
-                $eps = $modx->newObject('modElementPropertySet');
+                $eps = $modx->newObject($classPrefix . 'modElementPropertySet');
                 foreach ($fields as $k => $value) {
                     $eps->set($k, $value);
                 }
@@ -84,7 +86,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_UNINSTALL:
         /* @var $category modCategory */
         $modx->log(xPDO::LOG_LEVEL_INFO, 'Uninstalling . . .');
-        $category = $modx->getObject('modCategory', array('category' => 'Notify'));
+        $category = $modx->getObject($classPrefix . 'modCategory', array('category' => 'Notify'));
         if ($category) {
             $category->remove();
         }

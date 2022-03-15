@@ -14,7 +14,6 @@
     <li>Prevents issue with multiple messages</li>
     <li>Adds allowedGroups System Setting</li>
     <li>Improved error messages in plugin</li>
-    <li>Corrects bug with Mandrill</li>
     <li>Fixes bug with modMailX</li>
     <li>Other bug and typo fixes</li>
 
@@ -24,8 +23,11 @@
 <div class="box">
 <h3>Upgrade Notes</h3>
 
-<p>The <code>allowedGroups</code> System Setting has been added to fix an issue with allowing groups other than Administrator to use the plugin. Its value should match the value of the <code>allowedGroups</code> snippet property. Note that users in other groups will need the <code>view_user</code> permission. If Administrator group is your only allowed group, you can ignore this, since it's the default.
-</p>
+<p>The <code>allowedGroups</code> System Setting has been added to fix an issue with allowing groups other than Administrator to use the plugin.  Its value should match the value of the <code>allowedGroups</code> snippet property. Note that users in other groups will need the <code>view_user</code> permission. If Administrator group is your only allowed group, you can ignore this, since it's the default.
+
+<p>A new System Setting, <code>nf_debug</code> has been added and the <code>&debug</code> property of the snippet has been removed. Setting the System Setting will write a wealth of debugging information to the Notify send log (<code>core/components/notify/notify-logs</code>) when you run Notify. Debugging information is no longer written to the MODX error log.
+
+<p>The Mandrill mail service no longer exists so the option to use it and the relevant code have been removed.</p>
 
 </div>
 
@@ -58,7 +60,7 @@ Go to Package Manager &mdash; Extras -> Installer on the main menu in the MODX M
     <li>Click on the &quot;Launch Notify&quot; button</li>
 </ol>
 
-<p>That will launch the notify Form (see below for launching Notify from NewsPublisher or another snippet or plugin).</p>
+<p>That will launch the Notify Form (see below for launching Notify from NewsPublisher or another snippet or plugin).</p>
 
 <p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Notify will look first for the Tpl chunks prefixed with 'My', then in the Tpl chunks specified in the snippet properties or in a property set.
 
@@ -167,33 +169,17 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <h3>Mailgun</h3>
 
-<p>The MailgunX class is included in Version 1.4.0 of Notify. In order to use Mailgun, you need to go to <a href="https://mailgun.com/signup" target="_blank">Mailgun</a> and create an account. Mailgun requires you to set DKIM and SPF records and verify the domain. The method for this varies depending on the domain registrar. Follow the directions at Mailgun. If you would like to track opens and clicks, you'll also need to set a CNAME record. This is a bit of a hassle, but on the plus side, it will increase the deliverability of your emails by quite a bit and prevent them from ending up in the spam folder.</p>
+<p>The MailgunX class is included with Notify. In order to use Mailgun, you need to go to <a href="https://mailgun.com/signup" target="_blank">Mailgun</a> and create an account. Mailgun requires you to set DKIM and SPF records and verify the domain. The method for this varies depending on the domain registrar. Follow the directions at Mailgun. This is a bit of a hassle, but on the plus side, it will increase the deliverability of your emails by quite a bit and prevent them from ending up in the spam folder. If you would like to track opens and clicks, you'll also need to set a CNAME record. </p>
 
-<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet. You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testMode property = </code>`1` to prevent the messages from being sent.</p>
+<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet (in your NotifyProperties property set as described earlier). You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testMode property = `1`</code> to prevent the messages from being sent.</p>
 
 <p>Don't forget to set the <code>&mailService</code> property to <code>MailgunX</code>.</p>
 
 <p>&nbsp;</p>
 
-<h3>Mandrill</h3>
-
-<p>Mandrill is an email service and a subsidiary of MailChimp. As of April 27, 2016, Mandrill is no longer free. As of Version 1.4.0 or Notify, the MandrillX class is included in the package. There is no longer any need to install it separately. If you want to use Mandrill with Notify, you need to create a Mandrill account, get a Mandrill API Key, create a subaccount called <code>test</code> at Mandrill, set the <code>mandrill_api_key</code> System Setting, and the <code>&useMandrill</code> snippet property. All of that should take about 10-20 minutes and is described in more detail below.</p>
-
-<p>Using Mandrill with Notify is easy. Go to <a href="https://mandrillapp.com" target="_blank">Mandrill</a> and open a free account. Hover over the little gear icon at the upper right and select &quot;SMTP & API Credentials.&quot;. Click on the blue &quot;New API Key&quot; button. Copy the API key code and paste it either into the input when you install MandrillX, or any time later, into the <code>mandrill_api_key</code> System Setting in the Manager (find it with the search box at the upper right in System -> System Settings).</p>
-
-<p>Before you leave Mandrillapp.com, hover over &quot;Outbound&quot; on the top menu and select &quot;Subaccounts&quot; in the dropdown menu. Click on the blue &quot;Create a Subaccount&quot; button. Call your subaccount <code>test</code> (all lowercase). This is the default subaccount used by Notify when you install it. It assumes that you don't want all your test emails in a real subaccount. Once you are up and running, you can create a new subaccount, add &subaccount=`NewSubName` to the Notify snippet tag or its property set, and (optionally) delete the &quot;test&quot; subacccount at Mandrill.</p>
-
-<p>One last thing is necessary for using Mandrill &mdash; you have to tell Notify to use Mandrill by adding &nfUseMandrill=`1` to the snippet tag or setting that property to Yes in the property set.</p>
-
-<p>Remember that if you change any of the Notify Snippet's default properties, they will be reset to their defaults when you upgrade Notify.</p>
-
-<p>That's it. Once you've complete those steps, Notify will use Mandrill automatically for all its emails.</p>
-
-<p>&nbsp;</p>
-
 <h3>The additionalHeaders property</h3>
 
-<p>Notify 1.4.0 add this property to allow you to add custom headers to your emails. Do *not* use this for standard email fields and headers: to, from, reply-to, etc., this property is for custom headers of your own. The property takes a JSON-formatted string in the following form:</p>
+<p>Notify 1.4.0 adds this property to allow you to add custom headers to your emails. Do *not* use this for standard email fields and headers: to, from, reply-to, etc., this property is for custom headers of your own. The property takes a JSON-formatted string in the following form:</p>
 
 <pre><fixedpre>
 `{"X-header1":"someValue","X-header2":"someOtherValue"}`
@@ -234,7 +220,7 @@ $modx->sendRedirect($url);
 
 <p>For each email update, Notify writes a log file to the <code>core/components/notify/notify-logs</code> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs.</p>
         
-<p>When using Mandrill or Mailgun, only a minimal local log is kept since those services provide a much better log with some sophisticated analytics. The local log will have the date and time, resource pagetitle, and the mail service in the filename, and only the message itself as the log content.</p>
+<p>When using Mailgun, the Mailgun log (at mailgun.com) will give you information about bounces and other issues that won't appear in the Notify send log.</p>
 
 
 <p>&nbsp;</p>
@@ -278,7 +264,7 @@ $modx->sendRedirect($url);
 
 <h3>Posting Updates to Facebook</h3>
         
-<p>Notify does not post directly to Facebook, but you can set up an account at <a href = "https://apps.facebook.com/selectivetwitter/" target="_blank">Selective Tweets</a> in about 30 seconds. Once you've done that, simply add the hashtag <code>#fb</code> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <code>&notifyFacebook</code> property of the Notify snippet, the <code>#fb</code> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. You can remove it manually if you don't want the Tweet to go to Facebook.</p>
+<p>Notify does not post directly to Facebook, but you can set up an account at <a href = "https://www.facebook.com/selectivetwitter/" target="_blank">Selective Twitter</a> in about 30 seconds. Once you've done that, simply add the hashtag <code>#fb</code> to any Tweet and the Tweet will be posted to your Facebook page in addition to Twitter. If you set the <code>&notifyFacebook</code> property of the Notify snippet, the <code>#fb</code> hashtag will be added automatically to the end of the Tweet and you'll see it in the Notify form. You can remove it manually if you don't want the Tweet to go to Facebook.</p>
 
 <p>You can also use a Twitter App if you want to post *all* your Tweets to Facebook, but I don't recommend doing that if you're a heavy Twitter user because it will load up your Facebook page with lots of Tweets that most visitors won't want to see.</p>
 
@@ -436,7 +422,7 @@ Class SendGridX extends SendGrid implements MailService {}
 </tr>
     <tr>
         <td>mailService</td>
-        <td>Which mail service to use: modMailX (MODX mail system), MailgunX, MandrillX</td>
+        <td>Which mail service to use: modMailX (MODX mail system), MailgunX</td>
         <td>modMailX</td>
     </tr>
 <tr>
@@ -494,11 +480,7 @@ Class SendGridX extends SendGrid implements MailService {}
     <td>Name of chunk to use for Unsubscribe link</td>
     <td>NfUnsubscribeTpl</td>
 </tr>
-<tr>
-    <td>nfUseMandrill</td>
-    <td>Use Mandrill service to send email</td>
-    <td></td>
-</tr>
+
 <tr>
     <td>notifyFacebook</td>
     <td>Notify Facebook via Twitter with #fb in tweet -- must be set up in the <a href="https://apps.facebook.com/selectivetwitter/" target="_blank">Facebook Selective Tweets App</a></td>
@@ -539,11 +521,7 @@ Class SendGridX extends SendGrid implements MailService {}
     <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
     <td>modUser</td>
 </tr>
-<tr>
-    <td>subaccount</td>
-    <td>Name of the Mandrill subaccount to send through if using Mandrill. Subaccount must exist or send will fail</td>
-    <td>test</td>
-</tr>
+
 <tr>
     <td>suprApiKey</td>
     <td>StumbleUpon API key (optional)</td>
