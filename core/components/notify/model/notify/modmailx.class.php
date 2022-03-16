@@ -47,11 +47,15 @@ Class modMailX  implements MailService {
     protected $errors = array();
     protected $apiKey = null;
     protected $logger = null;
+    protected $classPrefix = null;
 
     function __construct(&$modx, $props, $logger) {
         $this->modx =& $modx;
         $this->properties =& $props;
         $this->logger = $logger;
+        $this->prefix = $modx->getVersionData()['version'] >= 3
+                ? 'MODX\Revolution\\'
+                : '';
     }
 
     public function init() {
@@ -215,7 +219,7 @@ Class modMailX  implements MailService {
 
     /** Write sample message to top of log file (all but recipient list) */
     public function writeSampleMessage() {
-        if ($this->modx->getCount('modChunk', array('name' => 'MyNfLogHeaderTpl'))) {
+        if ($this->modx->getCount($this->prefix . 'modChunk', array('name' => 'MyNfLogHeaderTpl'))) {
             $headerTpl = 'MyNfLogHeaderTpl';
         } else {
             $headerTpl = 'NfLogHeaderTpl';
@@ -235,7 +239,7 @@ Class modMailX  implements MailService {
                 'body' => $body,
         );
 
-        $this->logger->write($this->modx->getChunk($headerTpl, $headerFields));
+        $this->logger->write($this->modx->getChunk($this->prefix . $headerTpl, $headerFields));
     }
     public function sendBatch($batchNumber) {
         if ((int) $batchNumber === 1) {

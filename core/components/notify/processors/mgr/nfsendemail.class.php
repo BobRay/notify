@@ -347,7 +347,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
                         'UserGroupMembers.user_group:IN' => $groups,
                         'active' => '1',
                 ));
-                $c->leftJoin('modUserGroupMember', 'UserGroupMembers');
+                $c->leftJoin($this->prefix . 'modUserGroupMember', 'UserGroupMembers');
             } else {
                 $c->where(array(
                         'active' => '1',

@@ -100,6 +100,19 @@ if ($object->xpdo) {
                         }
                     }
                 }
+                /* Add MODX\Revolution\ prefix if >= MODX 3 and not set already */
+                $fixes = array(
+                    'userClass',
+                    'profileClass',
+                );
+                foreach ($fixes as $k => $v) {
+                    if (isset($props[$v]['value'])) {
+                        if (!strpos($props[$v]['value'], 'Revolution') === false) {
+                            $props[$v]['value'] = $classPrefix . $v;
+                        }
+                    }
+                }
+
                 $snippet->set('properties', $props);
                 $snippet->save();
             }
