@@ -196,8 +196,13 @@ Class MailgunX extends Mailgun implements MailService {
         if ($this->debug) {
             $this->logger->write("\n" . $this->stars . "\nFields sent to addUser: " . print_r($fields, true) . "\n" . $this->stars . "\n");
         }
-        $email = $fields['email'];
+
+        /* Set email to form Somebody <somebody@gmail.com> */
+        $name = $fields['fullname'];
+        $name = empty ($name)? $fields['username'] : $name;
+        $email = $name . ' <' . $fields['email'] . '>';
         $userFields = $this->userPlaceholders;
+
         /* Add username and fullname */
         if (!in_array('username', $userFields )) {
             $userFields[] = 'username';
@@ -205,7 +210,6 @@ Class MailgunX extends Mailgun implements MailService {
         if (!in_array('fullname', $userFields)) {
             $userFields[] = 'fullname';
         }
-
 
         $userVariables = array();
 

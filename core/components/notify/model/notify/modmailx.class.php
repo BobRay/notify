@@ -163,7 +163,11 @@ Class modMailX  implements MailService {
             'fullname',
             'username',
         );
-        $email = $fields['email'];
+        /* Set email to form Somebody <somebody@gmail.com> */
+        $name = $fields['fullname'];
+        $name = empty ($name) ? $fields['username'] : $name;
+        $email = $name . ' <' . $fields['email'] . '>';
+
         $userFields = $this->userPlaceholders;
         $userVariables = array();
 
@@ -303,7 +307,7 @@ Class modMailX  implements MailService {
             $msg = $success? ' -- Success' : ' -- Failed';
 
             /* This happens once for each user */
-            $this->logger->write("\nSending to " . $userFields['username'] . $msg);
+            $this->logger->write("\nSending to " . $email . $msg);
 
             $this->modx->mail->reset();
         }
