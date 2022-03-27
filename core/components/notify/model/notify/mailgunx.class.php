@@ -60,6 +60,8 @@ Class MailgunX extends Mailgun implements MailService {
 
     protected $logger = null;
 
+    protected $prefix = '';
+
     function __construct(&$modx, $props, $logger = null) {
         $this->modx =& $modx;
         $this->properties =& $props;
@@ -71,6 +73,10 @@ Class MailgunX extends Mailgun implements MailService {
     }
 
     public function init() {
+
+        $this->prefix = $this->modx->getVersionData()['version'] >= 3
+                ? 'MODX/REVOLUTION//'
+                : '';
         $this->logFile = $this->properties['logFile'];
         $useSandbox = $this->modx->getOption('mailgun.use_sandbox', $this->properties, false);
         if ($useSandbox) {
@@ -267,7 +273,7 @@ Class MailgunX extends Mailgun implements MailService {
 
     /** Write sample message to top of log file (all but recipient list) */
     public function writeSampleMessage(){
-        if ($this->modx->getCount('modChunk', array('name' => 'MyNfLogHeaderTpl'))) {
+        if ($this->modx->getCount($this->prefix . 'modChunk', array('name' => 'MyNfLogHeaderTpl'))) {
             $headerTpl = 'MyNfLogHeaderTpl';
         } else {
             $headerTpl = 'NfLogHeaderTpl';

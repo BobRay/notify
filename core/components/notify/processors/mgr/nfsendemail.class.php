@@ -262,8 +262,8 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         $itemDelay = (float)$this->getProperty('itemDelay', .51);
         $profileAlias = $this->getProperty('profileAlias', 'Profile');
         $profileAlias = empty($profileAlias) ? 'Profile' : $profileAlias;
-        $profileClass = $this->getProperty('profileClass', 'modUserProfile');
-        $profileClass = empty($profileClass) ? 'modUserProfile' : $profileClass;
+        $profileClass = $this->getProperty('profileClass', $this->prefix . 'modUserProfile');
+        $profileClass = empty($profileClass) ? $this->prefix . 'modUserProfile' : $profileClass;
         /* Don't remove this */
         $emailText = $this->emailText;
         if (empty($emailText)) {
@@ -317,7 +317,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
             }
         }
 
-        $userClass = $this->getProperty('userClass', 'modUser');
+        $userClass = $this->getProperty('userClass', $this->prefix . 'modUser');
 
         $c = $this->modx->newQuery($userClass);
         $c->select($this->modx->getSelectColumns($userClass, $userClass, "", array(
