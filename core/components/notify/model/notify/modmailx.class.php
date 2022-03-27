@@ -28,8 +28,8 @@ Class modMailX  implements MailService {
     protected $debug;
     protected $stars = MailService::STARS;
     protected $properties; /* ScriptProperties */
-    /** @var $emailArray array - used internally to store recipients' email addresses */
-    protected $emailArray = array();
+    /** @var $userArray array - used internally to store recipients' usernames */
+    protected $userArray = array();
     protected $messageText = '';
     protected $messageSubject = '';
     protected $headerFields = array();
@@ -156,12 +156,14 @@ Class modMailX  implements MailService {
         if ($this->debug) {
             $this->logger->write("\naddUser Fields: " . print_r($fields, true));
         }
+        $userName = $fields['username'];
         /* These will be set even if not used in message */
         $extraFields = array(
             'first',
             'last',
             'fullname',
             'username',
+            'email',
         );
         /* Set email to form Somebody <somebody@gmail.com> */
         $name = $fields['fullname'];
@@ -184,12 +186,12 @@ Class modMailX  implements MailService {
             }
         }
 
-        /* Array of emails */
-        $this->emailArray[] = $email;
+        /* Array of users */
+        $this->userArray[] = $userName;
 
         /* Add recipient variables to $this->recipientVariables */
         if (!empty ($userVariables)) {
-            $this->recipientVariables[$email] = $userVariables;
+            $this->recipientVariables[$userName] = $userVariables;
         }
     }
 
@@ -253,26 +255,28 @@ Class modMailX  implements MailService {
         $success = true; // report success in testMode
         $this->logger->write($this->stars . "\nSENDING BATCH {$batchNumber}\n");
         $count = 1;
-        foreach ($this->emailArray as $email) {
+        foreach ($this->userArray as $username) {
 
             $this->modx->mail->set(modMail::MAIL_SUBJECT, $mFields['subject']);
             $this->modx->mail->set(modMail::MAIL_FROM, $mFields['fromEmail']);
             $this->modx->mail->set(modMail::MAIL_FROM_NAME, $mFields['fromName']);
             $rt = $mFields['reply-to'];
-            /* Parse reply-to in the style: Bob Ray <bob@gmail.com> */
-            $name = null;
-            if (strpos($rt, '<') !== false) {
+
+
+/*            if (strpos($rt, '<') !== false) {
                 $rtArray = explode('<', $rt);
                 if (count($rtArray) > 1) {
                     $name = trim($rtArray[0]);
                     $rt = trim($rtArray[1], ' <>');
                 }
-            }
+            }*/
+
+            $name = $mFields['fromName'];
             if (isset($this->properties['unitTest'])) {
                 echo "\n Reply-to: " . $rt;
                 echo "\n Reply-to-name: " . $name;
             }
-            $name = empty($name) ? $mFields['fromName'] : $name;
+
 
             $this->modx->mail->address('reply-to', $rt, $name);
             unset ($rt, $name);
@@ -282,12 +286,12 @@ Class modMailX  implements MailService {
                     $this->modx->mail->header($k . ':' . $v);
                 }
             }
-            $userFields = $this->recipientVariables[$email];
+            $userFields = $this->recipientVariables[$username];
 
             if ($this->debug) {
                 $this->logger->write("\nRecipientFields: " . print_r($userFields, true));
             }
-            $this->modx->mail->address('to', $email, $userFields['fullname']);
+            $this->modx->mail->address('to', $userFields['email'], $userFields['fullname']);
             $html = $this->replacePlaceholders($mFields['html'], $userFields);
             if ($this->debug) {
                 $this->logger->write("\nHTML: " . $html);
@@ -307,7 +311,8 @@ Class modMailX  implements MailService {
             $msg = $success? ' -- Success' : ' -- Failed';
 
             /* This happens once for each user */
-            $this->logger->write("\nSending to " . $email . $msg);
+            $this->logger->write("\nSending to " . $username .
+                    ' (' . $userFields['email'] . ') ' .  $msg);
 
             $this->modx->mail->reset();
         }
