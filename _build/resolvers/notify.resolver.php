@@ -107,7 +107,7 @@ if ($object->xpdo) {
                 );
                 foreach ($fixes as $k => $v) {
                     if (isset($props[$v]['value'])) {
-                        if (!strpos($props[$v]['value'], 'Revolution') === false) {
+                        if (strpos($props[$v]['value'], 'Revolution') === false) {
                             $props[$v]['value'] = $classPrefix . $v;
                         }
                     }
