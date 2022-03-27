@@ -168,7 +168,8 @@ Class modMailX  implements MailService {
         /* Set email to form Somebody <somebody@gmail.com> */
         $name = $fields['fullname'];
         $name = empty ($name) ? $fields['username'] : $name;
-        $email = $name . ' <' . $fields['email'] . '>';
+        /* Make sure fullname is populated */
+        $fields['fullname'] = $name;
 
         $userFields = $this->userPlaceholders;
         $userVariables = array();
