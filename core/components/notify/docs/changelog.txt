@@ -2,107 +2,107 @@ Changelog for Notify
 
 Notify 1.4.9-pl
 -----------------
-Prevent issue with multiple messages
-Add allowedGroups System Setting
-Improve error messages in plugin
-Catch MailGun exceptions and retry
-Make sure reply-to is set
-Fix bug with modMailX
-Other bug and typo fixes
+ - Prevent issue with multiple messages
+ - Add allowedGroups System Setting
+ - Improve error messages in plugin
+ - Catch MailGun exceptions and retry
+ - Make sure reply-to is set
+ - Fix bug with modMailX
+ - Other bug and typo fixes
 
 Notify 1.4.2-pl
 -----------------
-Update mailgun library, guzzle, and cert file
-Fix bug with JS loading
-Add debug line for response code
+ - Update mailgun library, guzzle, and cert file
+ - Fix bug with JS loading
+ - Add debug line for response code
 
 Notify 1.4.1-pl
 -----------------
-Change alerts to console log
-Add more debugging code
-Fix aborting before finished on some platforms
-Fix bug in groups selection
-Make multiple attempts to send a packet of emails
-Catch uncaught exceptions inside email classes
+ - Change alerts to console log
+ - Add more debugging code
+ - Fix aborting before finished on some platforms
+ - Fix bug in groups selection
+ - Make multiple attempts to send a packet of emails
+ - Catch uncaught exceptions inside email classes
 
 
 Notify 1.4.0-pl
 -----------------
-Add support for Mailgun
-Refactor to allow easier addition of new mail services
-Create MailService interface
-Improve diagnostics
-Add mailService property
-Add additionalHeaders property
-Use Composer for Mandrill and Mailgun classes
-Implement optimized autoloader
-Fix bug with testEmailAddress
+ - Add support for Mailgun
+ - Refactor to allow easier addition of new mail services
+ - Create MailService interface
+ - Improve diagnostics
+ - Add mailService property
+ - Add additionalHeaders property
+ - Use Composer for Mandrill and Mailgun classes
+ - Implement optimized autoloader
+ - Fix bug with testEmailAddress
 
 Notify 1.3.0-pl
 -----------------
-Add &allowedGroups property to set groups who can use Notify
-Minor bug fixes
+ - Add &allowedGroups property to set groups who can use Notify
+ - Minor bug fixes
 
 Notify 1.2.4-pl
 -----------------
-Look for 'My' prefixed chunks
-Improved error messages
-Use $_SESSION variables when launched as a service
-Mods to allow launching from NewsPublisher and other extras
-Fix bug with Tpl chunk names
-Fix undefined variable bug in JS
+ - Look for 'My' prefixed chunks
+ - Improved error messages
+ - Use $_SESSION variables when launched as a service
+ - Mods to allow launching from NewsPublisher and other extras
+ - Fix bug with Tpl chunk names
+ - Fix undefined variable bug in JS
 
 Notify 1.2.3-pl
 -----------------
-Fix bug with user-specified Tpl chunks
-Re-fix oauth.php file bug
-Prevent spurious alerts
-Fix bug with case of oauth.php file
+ - Fix bug with user-specified Tpl chunks
+ - Re-fix oauth.php file bug
+ - Prevent spurious alerts
+ - Fix bug with case of oauth.php file
 
 Notify 1.2.2-pl
 -----------------
-Add Option to send with Mandrill email service
-Progress bar for bulk sends
-Much faster sends
-Make unsubscribe URL optional
-Add &maxLogs property to limit number of logs kept
-Handle TV placeholders - thanks to support from Aaron Baxter
-Add &includeTVs, &includeTVList, and &processTVs properties
-Add &useExtendedFields property
-Allow Groups to be selected with buttons, like Tags
-Set url placeholder for resources
-Improve Error Handling
-Retrieve users in batches to conserve memory
-Improved query efficiency with user groups
-Add &debug property
+ - Add Option to send with Mandrill email service
+ - Progress bar for bulk sends
+ - Much faster sends
+ - Make unsubscribe URL optional
+ - Add &maxLogs property to limit number of logs kept
+ - Handle TV placeholders - thanks to support from Aaron Baxter
+ - Add &includeTVs, &includeTVList, and &processTVs properties
+ - Add &useExtendedFields property
+ - Allow Groups to be selected with buttons, like Tags
+ - Set url placeholder for resources
+ - Improve Error Handling
+ - Retrieve users in batches to conserve memory
+ - Improved query efficiency with user groups
+ - Add &debug property
 
 Notify 1.1.4 pl
 -----------------
-Adapt to yet another Twitter API Change
-Russian Translation - thanks to Viktor Matushevskyi (Viktorminator)
-Fix bug with quotes in pagetitles
+ - Adapt to yet another Twitter API Change
+ - Russian Translation - thanks to Viktor Matushevskyi (Viktorminator)
+ - Fix bug with quotes in pagetitles
 
 Notify 1.1.3 pl
 -----------------
-Fixed bug with wrong unsubscribe link being sent
-Better avoidance of timeouts
-Fix bug with url shortening service
-Improved security
+ - Fixed bug with wrong unsubscribe link being sent
+ - Better avoidance of timeouts
+ - Fix bug with url shortening service
+ - Improved security
 
 Notify 1.1.2 pl
 -----------------
-Fix bug with missing Unsubscribe link
+ - Fix bug with missing Unsubscribe link
 
 Notify 1.1.1 pl
 -----------------
-Secure Unsubscribe/Manage Preferences link in every email
-Option to require all selected tags for user selection
-Displays number of successful sends
+ - Secure Unsubscribe/Manage Preferences link in every email
+ - Option to require all selected tags for user selection
+ - Displays number of successful sends
 
 Notify 1.0.5 pl
 -----------------
-Better avoidance of spam filters
+ - Better avoidance of spam filters
 
 Notify 1.0.4 beta1
 --------------------
-Initial Version
+ - Initial Version
