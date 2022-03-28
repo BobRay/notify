@@ -263,21 +263,11 @@ Class modMailX  implements MailService {
             $this->modx->mail->set(modMail::MAIL_FROM_NAME, $mFields['fromName']);
             $rt = $mFields['reply-to'];
 
-
-/*            if (strpos($rt, '<') !== false) {
-                $rtArray = explode('<', $rt);
-                if (count($rtArray) > 1) {
-                    $name = trim($rtArray[0]);
-                    $rt = trim($rtArray[1], ' <>');
-                }
-            }*/
-
             $name = $mFields['fromName'];
             if (isset($this->properties['unitTest'])) {
                 echo "\n Reply-to: " . $rt;
                 echo "\n Reply-to-name: " . $name;
             }
-
 
             $this->modx->mail->address('reply-to', $rt, $name);
             unset ($rt, $name);
