@@ -28,6 +28,69 @@
 /** @var  $resource modResource */
 /** @var  $setting modSystemSetting */
 
+/** Fix properties for MODX 3 and remove obsolete properties
+ *
+ * @param $modx modX
+ * @param $class string
+ * @param $name string
+ *
+ */
+function fixProperties($modx, $class, $name) {
+    $isMODX3 = $modx->getVersionData()['version'] >= 3;
+    $prefix = $isMODX3
+            ? 'MODX\Revolution\\'
+            : '';
+    $fixes = array(
+            'modUserProfile',
+            'modUser',
+    );
+
+    $removeList = array(
+            'debug',
+            'mailgun.debug',
+            'mandrill_api_key',
+            'nfUseMandrill',
+            'subaccount',
+    );
+
+    /* number of changes */
+    $count = 0;
+    $object = $modx->getObject($class, array('name' => $name));
+    if ($object) {
+        $props = $object->get('properties');
+    }
+    if (!empty($props)) {
+        if ($isMODX3) {
+            foreach ($props as $key => $fields) {
+                $value = $fields['value'];
+                if (in_array($value, $fixes, true)) {
+                    $count++;
+                    $props[$key]['value'] = $prefix . $value;
+                }
+            }
+        }
+        foreach ($removeList as $k => $v) {
+            if (isset($props[$v])) {
+                unset($props[$v]);
+                $count++;
+            }
+        }
+        if (isset($props['mailService']['options'])) {
+            $options = $props['mailService']['options'];
+            foreach ($options as $k => $v) {
+                if (isset($v['text']) && ($v['text'] === 'MandrillX')) {
+                    unset($props['mailService']['options'][$k]);
+                    $count++;
+                }
+            }
+        }
+    }
+
+    if ($count > 0) {
+        $object->set('properties', $props);
+        $object->save();
+    }
+}
 
 if ($object->xpdo) {
     $modx =& $object->xpdo;
@@ -38,6 +101,8 @@ if ($object->xpdo) {
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
+            fixProperties($modx, 'modSnippet', 'Notify');
+            fixProperties($modx, 'modPropertySet', 'NotifyProperties');
             $resource = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify-status'));
             $setting = $modx->getObject($classPrefix . 'modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($resource) {
@@ -49,83 +114,15 @@ if ($object->xpdo) {
                 $setting->set('value', $id);
                 $setting->save();
             }
-            /* Remove deprecated properties from Notify snippet
-               and NotifyProperties property set */
-        $removeList = array(
-                'debug',
-                'mailgun.debug',
-                'mandrill_api_key',
-                'nfUseMandrill',
-                'subaccount',
-        );
-
-            $set = $modx->getObject($classPrefix . 'modPropertySet', array('name' => 'NotifyProperties'));
-            if ($set) {
-                $props = $set->get('properties');
-
-                foreach ($removeList as $k => $v) {
-                    if (isset($props[$v])) {
-                        unset($props[$v]);
-                    }
-                }
-
-                if (isset($props['mailService']['options'])) {
-                    $options = $props['mailService']['options'];
-                    foreach ($options as $k => $v) {
-                        if (isset($v['text']) && ($v['text'] === 'MandrillX')) {
-                            unset($props['mailService']['options'][$k]);
-                        }
-                    }
-                }
-
-                $set->set('properties', $props);
-                $set->save();
-            }
-
-
-            $snippet = $modx->getObject($classPrefix . 'modSnippet', array('name' => 'Notify'));
-            $props = $snippet->get('properties');
-            if ($snippet && $props) {
-                foreach ($removeList as $k => $v) {
-                    if (isset($props[$v])) {
-                        unset($props[$v]);
-                    }
-                }
-
-                if (isset($props['mailService']['options'])) {
-                    $options = $props['mailService']['options'];
-                    foreach ($options as $k => $v) {
-                        if (isset($v['text']) && ($v['text'] === 'MandrillX')) {
-                            unset($props['mailService']['options'][$k]);
-                        }
-                    }
-                }
-                /* Add MODX\Revolution\ prefix if >= MODX 3 and not set already */
-                $fixes = array(
-                    'userClass',
-                    'profileClass',
-                );
-                foreach ($fixes as $k => $v) {
-                    if (isset($props[$v]['value'])) {
-                        if (strpos($props[$v]['value'], 'Revolution') === false) {
-                            $props[$v]['value'] = $classPrefix . $v;
-                        }
-                    }
-                }
-
-                $snippet->set('properties', $props);
-                $snippet->save();
-            }
-
             break;
 
         case xPDOTransport::ACTION_UNINSTALL:
-            $resource = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify'));
+            /*$resource = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify'));
             if ($resource) $resource->remove();
             $setting = $modx->getObject($classPrefix . 'modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($setting) {
                 $setting->remove();
-            }
+            }*/
             break;
     }
 }
