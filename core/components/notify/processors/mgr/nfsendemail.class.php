@@ -320,7 +320,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         $userClass = $this->getProperty('userClass', $this->prefix . 'modUser');
 
         $c = $this->modx->newQuery($userClass);
-        $c->select($this->modx->getSelectColumns($userClass, $userClass, "", array(
+        $c->select($this->modx->getSelectColumns('modUser', 'modUser', "", array(
                 'id',
                 'username',
                 'active',
@@ -332,7 +332,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
             if ($u = $this->modx->getObject($this->prefix . 'modUser', array('username' => $singleId))) {
                 $c->where(array('username' => $singleId));
                 unset($u);
-            } elseif ($p = $this->modx->getObject($this->prefix . $profileClass, array('email' => $singleId))) {
+            } elseif ($p = $this->modx->getObject($profileClass, array('email' => $singleId))) {
                 $c->where(array('id' => $p->get('internalKey')));
                 unset($p);
             } else {
@@ -403,7 +403,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
             $c->limit($batchSize, $offset);
             // $c->leftJoin('modUserProfile', 'Profile', 'Profile.internalKey=modUser.id');
             $c->prepare();
-            $users = $this->modx->getCollectionGraph($this->prefix . $userClass, '{"' . $profileAlias . '":{}', $c);
+            $users = $this->modx->getCollectionGraph($userClass, '{"' . $profileAlias . '":{}', $c);
             if ($this->debug) {
                 $this->logger->write("Query completed ");
             }
