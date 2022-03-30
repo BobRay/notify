@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '309f96fa232843c0ca2a39006ffced383507d94c',
+    'reference' => '819e9d45532896b8b01440d7b5494a74ee707f0a',
     'name' => '__root__',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '309f96fa232843c0ca2a39006ffced383507d94c',
+      'reference' => '819e9d45532896b8b01440d7b5494a74ee707f0a',
     ),
     'clue/stream-filter' => 
     array (
@@ -54,12 +54,12 @@ private static $installed = array (
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.4.2',
-      'version' => '1.4.2.0',
+      'pretty_version' => '1.8.5',
+      'version' => '1.8.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
+      'reference' => '337e3ad8e5716c15f9657bd214d16cc5e69df268',
     ),
     'mailgun/mailgun-php' => 
     array (
@@ -178,6 +178,15 @@ private static $installed = array (
       array (
         0 => '1.0',
       ),
+    ),
+    'ralouphie/getallheaders' => 
+    array (
+      'pretty_version' => '3.0.3',
+      'version' => '3.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '120b605dfeb996808c31b6477290a714d356e822',
     ),
     'symfony/options-resolver' => 
     array (
