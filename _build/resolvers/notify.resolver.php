@@ -101,8 +101,42 @@ if ($object->xpdo) {
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
+
+            /* Create and connect property set if not done already */
+            $set = $modx->getObject($classPrefix . 'modPropertySet', array('name'=> 'NotifyProperties'));
+            if (!$set) {
+                $set = $modx->newObject($classPrefix . 'modPropertySet');
+                $set->save();
+            }
+
+            /* Connect snippet and propertyset */
+            $snippet = $modx->getObject($classPrefix . 'modSnippet', array('name' => 'Notify'));
+            $propertySet = $modx->getObject($classPrefix . 'modPropertySet', array('name' => 'NotifyProperties'));
+
+            if ($snippet && $propertySet) {
+                $snippetId = $snippet->get('id');
+                $propsetId = $propertySet->get('id');
+
+                $intersect = $modx->getObject($classPrefix . 'modElementPropertySet' , array('property_set' => $propsetId));
+                if (! $intersect) {
+                    $intersect = $modx->newObject($classPrefix . 'modElementPropertySet');
+                }
+                if ($intersect) {
+                    if ($intersect->get('property_set') != $propsetId) {
+                        $intersect->set('property_set', $propsetId);
+                    }
+                    $intersect->set('element', $snippetId);
+                    $intersect->set('element_class', $classPrefix . 'modSnippet');
+
+                    $intersect->save();
+                }
+            }
+
+            /* Remove unwanted property set elements and set class keys for MODX 3 */
             fixProperties($modx, 'modSnippet', 'Notify');
             fixProperties($modx, 'modPropertySet', 'NotifyProperties');
+
+
             $resource = $modx->getObject($classPrefix . 'modResource', array('alias' => 'notify-status'));
             $setting = $modx->getObject($classPrefix . 'modSystemSetting', array('key' => 'nf_status_resource_id'));
             if ($resource) {

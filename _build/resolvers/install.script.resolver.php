@@ -67,7 +67,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             $fields = array(
                 'property_set' => $ps->get('id'),
                 'element' => $sn->get('id'),
-                'element_class' => 'modSnippet',
+                'element_class' => $classPrefix . 'modSnippet',
             );
 
             $eps = $modx->getObject($classPrefix . 'modElementPropertySet', $fields );
