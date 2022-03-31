@@ -2,7 +2,7 @@
 /**
  * Resolver for Notify extra
  *
- * Copyright 2013-2017 Bob Ray <https://bobsguides.com>
+ * Copyright 2013-2022 Bob Ray <https://bobsguides.com>
  * Created on 03-13-2014
  *
  * Notify is free software; you can redistribute it and/or modify it under the

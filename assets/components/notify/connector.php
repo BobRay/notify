@@ -2,7 +2,7 @@
 /**
  * Notify
  *
- * Copyright 2013-2017 Bob Ray <https://bobsguides.com>
+ * Copyright 2013-2022 Bob Ray <https://bobsguides.com>
  *
  * @package notify
  * @var modX $modx

@@ -3,7 +3,7 @@
 /**
  * Notify
  *
- * Copyright 2012-2017 Bob Ray
+ * Copyright 2012-2022 Bob Ray
  *
  * @author Bob Ray <https://bobsguides.com>
  * 
