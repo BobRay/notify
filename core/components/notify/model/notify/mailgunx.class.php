@@ -75,7 +75,7 @@ Class MailgunX extends Mailgun implements MailService {
     public function init() {
 
         $this->prefix = $this->modx->getVersionData()['version'] >= 3
-                ? 'MODX/REVOLUTION//'
+                ? 'MODX\REVOLUTION\\'
                 : '';
         $this->logFile = $this->properties['logFile'];
         $useSandbox = $this->modx->getOption('mailgun.use_sandbox', $this->properties, false);
