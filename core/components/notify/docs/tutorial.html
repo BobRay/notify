@@ -4,6 +4,10 @@
 
 <p>(Jump to <a href="[[~[[*id]]]]#propertiesTable">Properties Table</a>.)</p>
 
+<div class="box">
+    Both the Subscribe and Login packages are required for Notify to work. You don't have to use them, but you do have to have them installed. It's recommended that you install them before installing Notify.
+</div>
+
 <p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
 
 <p>&nbsp;</p>
@@ -12,9 +16,10 @@
 <h4>New in this version:</h4>
 <ul>
     <li>Prevents issue with multiple messages</li>
-    <li>Adds allowedGroups System Setting</li>
-    <li>Improved error messages in plugin</li>
-    <li>Fixes bug with modMailX</li>
+    <li>Implements a critical security bug fix in the Guzzle library</li>
+    <li>Many modifications for MODX 3</li>
+    <li>Improved reliability with modMailX</li>
+    <li>Improved mail log</li>
     <li>Other bug and typo fixes</li>
 
 </ul>
@@ -23,7 +28,7 @@
 <div class="box">
 <h3>Upgrade Notes</h3>
 
-<p>The <code>allowedGroups</code> System Setting has been added to fix an issue with allowing groups other than Administrator to use the plugin.  Its value should match the value of the <code>allowedGroups</code> snippet property. Note that users in other groups will need the <code>view_user</code> permission. If Administrator group is your only allowed group, you can ignore this, since it's the default.
+<p>The <code>allowedGroups</code> System Setting was added in the previous version to fix an issue with allowing groups other than Administrator to use the plugin.  Its value should match the value of the <code>allowedGroups</code> snippet property (which will override the System Setting). Note that users in other groups will need the <code>view_user</code> permission. If the Administrator group is your only allowed group, you can ignore this, since it's the default.
 
 <p>A new System Setting, <code>nf_debug</code> has been added and the <code>&debug</code> property of the snippet has been removed. Setting the System Setting will write a wealth of debugging information to the Notify send log (<code>core/components/notify/notify-logs</code>) when you run Notify. Debugging information is no longer written to the MODX error log.
 
@@ -37,8 +42,7 @@
 
 
 <h3>Installing Notify for MODX Revolution</h3>
-<p>
-Go to Package Manager &mdash; Extras -> Installer on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put Notify in the search box and press Enter. Download Notify, then click on the button that takes you back to Package Management. Click on the &quot;Install&quot; button next to Notify in the grid. The Notify package should now be installed.</p>
+<p>(Install Subscribe and Login before installing Notify.) To install Notify, go to Package Manager (Extras -> Installer) on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put Notify in the search box and press Enter. Download Notify, then click on the button that takes you back to Package Management. Click on the &quot;Install&quot; button next to Notify in the grid. The Notify package should now be installed.</p>
         
 <p>During the installation, the Notify TV will be connected to the site's default template. If you need to attach it to other templates, you'll have to connect it manually by editing the TV, checking the boxes on the &quot;Template Access&quot; tab, and clicking on the &quot;Save&quot; button.</p>
         
@@ -49,7 +53,7 @@ Go to Package Manager &mdash; Extras -> Installer on the main menu in the MODX M
 
 <h3>Using Notify</h3>
 
-<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarded to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to by submitting the form with one of the update options checked.</p>
+<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarded to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to by submitting the form with one of the update options checked. Once you have it set up, this only takes a few clicks of the mouse.</p>
 
 <p>To launch the Notify form:</p>
 <ol>
@@ -62,9 +66,9 @@ Go to Package Manager &mdash; Extras -> Installer on the main menu in the MODX M
 
 <p>That will launch the Notify Form (see below for launching Notify from NewsPublisher or another snippet or plugin).</p>
 
-<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Notify will look first for the Tpl chunks prefixed with 'My', then in the Tpl chunks specified in the snippet properties or in a property set.
+<p>The Notify snippet pre-fills the Notify form. The values for the email, email subject, and Tweet come from the Notify Tpl chunks. The four radio buttons below the &quot;Launch Notify&quot; button set which chunks are used for the Email text and Tweet text. For both email and Twitter, there is a Tpl chunk for notifying users of new resources and one for announcing updates to existing resources. The two custom Tpls (one for the email and one for Twitter) can be used for anything you want. Finally, there is a blank option, which will display the form with the Email text and Tweet text fields empty. If you want to change any of the default Tpl chunks, be sure to duplicate them (adding the prefix &quot;My&quot;). Notify will look first for the Tpl chunks prefixed with 'My', then in the Tpl chunks specified in the snippet properties or in a property set.
 
-<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the checkboxes to see a preview of the email in the Preview window. You can't, however, add MODX tags to the message. All MODX tags are processed as the Tpl chunk is retrieved, so by the time you're entering the message, it's too late. You can add user field placeholders, however, in this form {{+fieldName}}. The username and all fields of the User Profile will be set as user placeholders. If you use the &useExtendedFields property, any extended fields will be set as well.</p>
+<p>You can change the text in any of the fields before submitting the form. If you change the text of the email, click on the &quot;Submit&quot; button without checking any of the &quot;Send&quot; checkboxes to see a preview of the email in the Preview window. You can't, however, add MODX tags to the message. All MODX tags are processed as the Tpl chunk is retrieved, so by the time you're entering the message, it's too late. You can add user field placeholders, however, in this form {{+fieldName}}. The username and all fields of the User Profile will be set as user placeholders. If you use the &useExtendedFields property, any extended fields will be set as well.</p>
         
 <p>When sending updates, Notify acts when you submit the form, but only when you have set at least one of the checkboxes. To send an update, just check the appropriate checkboxes, then submit the form. You can alter any field on the form, but if you do, don't use any MODX placeholders. Placeholders are only replaced when the form is first rendered. Also, any URLs you enter will not be shortened. Again, that only happens when the form is first rendered. You can, however, use user placeholders in the form {{+fieldName}}, which will be processed when the email is sent. </p>
         
@@ -72,7 +76,7 @@ Go to Package Manager &mdash; Extras -> Installer on the main menu in the MODX M
         
 <p>Notify pre-fills the email subject, email message, and Tweet fields for you, but you can put whatever you want into them. If you just want to email your subscribers to tell them what you had for breakfast, you can do that. The only page-specific information will be the URL (filled in by Notify) and any Resource Content tags that you include in the Tpl chunk (e.g. <code>pagetitle</code>, <code>introtext</code>, <code>description</code> , etc.). You're free to add, or delete any of them. In other words, you can use Notify to send any email message to your subscribers, optionally selected by Group(s) and/or Tag(s). Just remember that MODX placeholders are not available to you if you do this, though user placeholders are.</p>
 
-<p>Call your Property Set &quot;NotifyProperties&quot;. Notify already specifies that Property Set in the Notify snippet tag for you. If you use that name, Notify will also make sure to reconnect the Property Set to the snippet when you upgrade. If you use another name for the Property Set, you'll have to remember to reconnect it to the snippet when you upgrade or your updates to Twitter, Facebook, and/or the URL shortening service may stop working.</p>
+<p>Notify will create a Property Set for you, called  &quot;NotifyProperties&quot;. Notify already specifies that Property Set in the Notify snippet tag for you. If you don't change that name, Notify will also make sure  the Property Set is connected to the Notify snippet when you upgrade. If you use another name for the Property Set, you'll have to remember to reconnect it to the snippet when you upgrade or your updates to Twitter, Facebook, and/or the URL shortening service may stop working.</p>
 
 
 <p>&nbsp;</p>
@@ -115,7 +119,7 @@ DisplayedGroupName==ActualGroupName||DisplayedOtherGroupName==ActualOtherGroupNa
 
 <p>The <code>&tags</code> property is blank by default, so the email is sent to all members of User Groups specified in the <code>&groups</code> property. If you enter tags in the Tags field, only users who have those tags (interests) will receive the email.</p>
 
-<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you and it will also let users manage their own interest lists. See the <a href="[[~227]]" target="_blank">Subscribe package documentation</a> for more information on how the tags are stored.</p>
+<p>You can fill in the user interests for each user as a comma-separated list (no spaces) in the &quot;Comment&quot; field of the User Profile (or optionally in an extended field of the User Profile), but the Subscribe package will do that for you, and it will also let users manage their own interest lists. See the <a href="[[~227]]" target="_blank">Subscribe package documentation</a> for more information on how the tags are stored.</p>
 
 <p>If you are using the Subscribe package, Notify will use the sbsPrefList Tpl chunk from that package (or another chunk you specify in the Notify <code>&prefListChunkName</code> property) to put tag buttons under the tags input field. Clicking on one of the buttons will toggle that tag in the &quot;Tags&quot; input field.</p>
         
@@ -148,7 +152,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 <p>&nbsp;</p>
 
 <div class="box">
-    <p>I haven't actually tested this, but I think if the &quot;Require All Tags&quot; checkbox is checked and you don't select any tags, no users will be selected. That combination doesn't make much sense anyway.</p>
+    <p>I haven't actually tested this, but I think if the &quot;Require All Tags&quot; checkbox is checked, and you don't select any tags, no users will be selected. That combination doesn't make much sense anyway.</p>
 </div>
 
 <p>&nbsp;</p>
@@ -171,7 +175,7 @@ Caption One==Option1||Caption Two==option2||Caption Three==option3
 
 <p>The MailgunX class is included with Notify. In order to use Mailgun, you need to go to <a href="https://mailgun.com/signup" target="_blank">Mailgun</a> and create an account. Mailgun requires you to set DKIM and SPF records and verify the domain. The method for this varies depending on the domain registrar. Follow the directions at Mailgun. This is a bit of a hassle, but on the plus side, it will increase the deliverability of your emails by quite a bit and prevent them from ending up in the spam folder. If you would like to track opens and clicks, you'll also need to set a CNAME record. </p>
 
-<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet (in your NotifyProperties property set as described earlier). You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testMode property = `1`</code> to prevent the messages from being sent.</p>
+<p>Get a Mailgun API key through your Mailgun dashboard and set it in the Mailgun properties of the Notify snippet (in your NotifyProperties property set as described earlier). You may also wish to get a Mailgun sandbox domain to use during testing and set that in the Notify properties as well. Note that when using the sandbox domain, <b>Messages will still be sent to users</b>. You can set the <code>&testMode</code> to <code>Yes</code> to prevent the messages and tweets from being sent.</p>
 
 <p>Don't forget to set the <code>&mailService</code> property to <code>MailgunX</code>.</p>
 
@@ -211,29 +215,33 @@ $modx->sendRedirect($url);
 
 <h3>Notify and Articles</h3>
 
-<p>To the best of my ability to test it, Notify works fine with Articles. You need to attach the Notify TV to whatever template you use for your Articles posts, otherwise it works as expected. Notify will use the URL shortener specified in the Notify properties rather than the one used by Articles. The only other thing to remember is that the tags used by Articles and Notify are independent. Notify will ignore the Articles tags and Articles will ignore the Notify tags. This is intentional because the Notify tags match up with the limited list of Subscriber interests and the Articles tags are to help users find Articles.</p>
+<p>Notify works fine with Articles. I've sent literally hundreds of notifications about my Articles blog posts. Once you've attached the Notify TV to whatever template you use for your Articles posts, it works as expected. Notify will use the URL shortener specified in the Notify properties rather than the one used by Articles. The only other thing to remember is that the tags used by Articles and Notify are independent. Notify will ignore the Articles tags and Articles will ignore the Notify tags. This is intentional because the Notify tags match up with the limited list of Subscriber interests and the Articles tags are to help users find Articles.</p>
 
 
 <p>&nbsp;</p>
 
 <h3>Email Log</h3>
 
-<p>For each email update, Notify writes a log file to the <code>core/components/notify/notify-logs</code> directory. The file is named for the resource and date and time of the update. The log shows the message sent, the users and their tags, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs.</p>
+<p>For each email update, Notify writes a log file to the <code>core/components/notify/notify-logs</code> directory. The file is named for the resource and date and time of the update. It also includes the mail service used.</p>
+
+<p>The log shows the message sent, the users and their email addresses, and if possible any problems in sending the email to each user. The <code>&maxLogs</code> property determines how many logs are kept. When the limit is reached, Notify will delete the oldest log. The default is 5, but you can set it to any number or 0 for unlimited logs. The logs are sorted roughly by pagetitle, so the newest log could be in the middle of the list &mdash; Check the date and time.</p>
         
-<p>When using Mailgun, the Mailgun log (at mailgun.com) will give you information about bounces and other issues that won't appear in the Notify send log.</p>
+<p>When using Mailgun, the Mailgun log (at mailgun.com) can give you information about bounces, clicks, opens, and other issues that won't appear in the Notify send log.</p>
 
 
 <p>&nbsp;</p>
 
 <h3>Setting the Notify Properties</h3>
 
-<p>Notify has many properties, but for most of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a Property Set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded. If you use a Property Set, don't forget to specify it in the Notify snippet tag on the Notify page like this:</p>
+<p>Notify has many properties, but for most of them, the default values will work fine. You'll need to set the Twitter properties to send Tweets. If you use MailGun, you'll need to fill in the MailGun settings.</p>
+
+<p>Depending on the URL shortening service you use, you may also have to set the URL shortener properties if you want short URLs. If you want to change the Tpl chunks, you'll want to duplicate them and use a Property Set as described above to set the properties that tell Notify their names so your changes won't be overwritten when Notify is upgraded. If you use a Property Set, don't forget to specify it in the Notify snippet tag on the Notify page like this:</p>
 
 <pre><fixedpre>
 [[!Notify@NotifyProperties]]
 </fixedpre></pre>
 
-<p>The tag above is already set in the install, so if you name your property set &quot;NotifyProperties&quot; it will be used automatically.</p>
+<p>The tag above is already set in the install, so if you change the name of your property set, you'll have to change that snippet tag to match.</p>
 
 <p>&nbsp;</p>
 
@@ -364,7 +372,7 @@ Class SendGridX extends SendGrid implements MailService {}
     <td></td>
 </tr>
 <tr>
-    <td>debug</td>
+    <td>nf_debug</td>
     <td>Set to Yes to output debugging information</td>
     <td></td>
 </tr>
@@ -504,7 +512,7 @@ Class SendGridX extends SendGrid implements MailService {}
 <tr>
     <td>profileClass</td>
     <td>(optional) class of the user profile object. Only necessary if you have subclassed the user profile object</td>
-    <td>modUserProfile</td>
+    <td>modUserProfile or MODX\Revolution\modUserProfile</td>
 </tr>
 <tr>
     <td>requireAllTagsDefault</td>
@@ -519,7 +527,7 @@ Class SendGridX extends SendGrid implements MailService {}
 <tr>
     <td>sortByAlias</td>
     <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
-    <td>modUser</td>
+    <td>modUser or MODX\Revolution\modUser</td>
 </tr>
 
 <tr>
@@ -588,7 +596,7 @@ Class SendGridX extends SendGrid implements MailService {}
 <tr>
     <td>userClass</td>
     <td>(optional) class of the user object. Only necessary if you have subclassed the user object</td>
-    <td>modUser</td>
+    <td>modUser or MODX\Revolution\modUser</td>
 </tr>
 <tr>
     <td>injectUnsubscribeUrl</td>
@@ -599,11 +607,8 @@ Class SendGridX extends SendGrid implements MailService {}
 <tr>
     <td>nfTestEmailAddress</td>
     <td>Default username or email to send single email to.</td>
-    <td></td>
+    <td>Current user's email address</td>
 </tr>
-
-
-
 
 </table>
 
