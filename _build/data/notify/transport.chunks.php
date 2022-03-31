@@ -2,7 +2,7 @@
 /**
  * chunks transport file for Notify extra
  *
- * Copyright 2013-2019 Bob Ray <https://bobsguides.com>
+ * Copyright 2013-2022 Bob Ray <https://bobsguides.com>
  * Created on 02-17-2014
  *
  * @package notify
