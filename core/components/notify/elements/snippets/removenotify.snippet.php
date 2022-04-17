@@ -36,7 +36,7 @@
 /* @var $modx modX */
 /* @var $category modCategory */
 /* @var $tv modTemplateVar */
-/* @var $chunk modChunk */
+/* @var $chunk modElement */
 /* @var $plugin modPlugin */
 /* @var $pluginEvent modPluginEvent */
 /* @var $propertySet modPropertySet */

@@ -123,7 +123,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
      * @param $percent int - percentage complete
      * @param $text1 string - First text message
      * @param $text2 string - Second text message
-     * @param $pb_target modChunk (object) - chunk used to record the data
+     * @param $pb_target modElement (object) - chunk used to record the data
      */
     public function update($percent, $text1, $text2, &$pb_target) {
 
@@ -374,7 +374,7 @@ class NfSendEmailProcessor extends DynamicProcessorParent {
         $offset = 0;
         $batchNumber = 1;
         $stepSize = floor(100 / $batches);
-        /** @var $statusChunk modChunk */
+        /** @var $statusChunk modElement */
         $statusChunk = $this->modx->getObject($this->prefix . 'modChunk', array('name' => 'NfStatus'));
         $this->update(0, "", '', $statusChunk);
         $processMsg1 = $this->modx->lexicon('nf.processing_batch');

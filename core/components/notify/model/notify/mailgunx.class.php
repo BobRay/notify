@@ -250,8 +250,6 @@ Class MailgunX extends Mailgun implements MailService {
      *    tags: %recipient.tagName%
      */
     public function prepareTpl($text) {
-        /*$chunk = $modx->getObject('modChunk', array('name' => $tpl));
-        $text = $chunk->getContent();*/
         $text = str_replace('{{+', '%recipient.', $text);
         $text = str_replace('}}', '%', $text);
         
