@@ -4,7 +4,7 @@
 /**
  * modMailX class file for Notify extra
  *
- * Copyright 2013-2017 Bob Ray <https://bobsguides.com>
+ * Copyright 2013-2022 Bob Ray <https://bobsguides.com>
  * Created on 03-18-2016
  *
  * Notify is free software; you can redistribute it and/or modify it under the
