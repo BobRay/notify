@@ -1,10 +1,14 @@
 Changelog for Notify
 
-Notify 1.4.9-pl
+Notify 1.5.3-pl
 -----------------
  - Prevent issue with multiple messages
+ - Many updates for MODX 3 -- fully compatible
+ - Implement critical security bug fix in Guzzle library
  - Add allowedGroups System Setting
  - Improve error messages in plugin
+ - Improve debugging messages
+ - Write debug info to send log
  - Catch MailGun exceptions and retry
  - Make sure reply-to is set
  - Fix bug with modMailX
