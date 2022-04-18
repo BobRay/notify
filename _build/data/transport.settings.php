@@ -27,13 +27,13 @@ $systemSettings = array();
 
 $systemSettings[1] = $modx->newObject('modSystemSetting');
 $systemSettings[1]->fromArray(array (
-  'key' => 'nf_status_resource_id',
-  'value' => '',
-  'xtype' => 'integer',
+  'key' => 'nf_debug',
+  'value' => false,
+  'xtype' => 'combo-boolean',
   'namespace' => 'notify',
   'area' => '',
-  'name' => 'Notify Status Resource ID',
-  'description' => 'ID of Notify Status Resource',
+  'name' => 'setting_nf_debug',
+  'description' => 'setting_nf_debug_desc',
 ), '', true, true);
 $systemSettings[2] = $modx->newObject('modSystemSetting');
 $systemSettings[2]->fromArray(array (
@@ -47,12 +47,12 @@ $systemSettings[2]->fromArray(array (
 ), '', true, true);
 $systemSettings[3] = $modx->newObject('modSystemSetting');
 $systemSettings[3]->fromArray(array (
-  'key' => 'nf_debug',
-  'value' => false,
-  'xtype' => 'combo-boolean',
+  'key' => 'nf_status_resource_id',
+  'value' => '',
+  'xtype' => 'integer',
   'namespace' => 'notify',
   'area' => '',
-  'name' => 'Debug Notify',
-  'description' => 'Write debugging info to Notify log file',
+  'name' => 'Notify Status Resource ID',
+  'description' => 'ID of Notify Status Resource',
 ), '', true, true);
 return $systemSettings;

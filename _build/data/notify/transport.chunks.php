@@ -29,31 +29,31 @@ $chunks[1] = $modx->newObject('modChunk');
 $chunks[1]->fromArray(array (
   'id' => 1,
   'property_preprocess' => false,
-  'name' => 'NfTweetTplExisting',
-  'description' => 'Notify Tweet Tpl for existing resource',
+  'name' => 'NfSubscriberEmailTplCustom',
+  'description' => 'HTML for Notify custom subscriber email',
   'properties' => NULL,
 ), '', true, true);
-$chunks[1]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nftweettplexisting.chunk.html'));
+$chunks[1]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfsubscriberemailtplcustom.chunk.html'));
 
 $chunks[2] = $modx->newObject('modChunk');
 $chunks[2]->fromArray(array (
   'id' => 2,
   'property_preprocess' => false,
-  'name' => 'NfTweetTplNew',
-  'description' => 'Notify Tweet Tpl for new resource',
+  'name' => 'NfNotifyFormTpl',
+  'description' => 'Form Tpl for Notify Extra',
   'properties' => NULL,
 ), '', true, true);
-$chunks[2]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nftweettplnew.chunk.html'));
+$chunks[2]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfnotifyformtpl.chunk.html'));
 
 $chunks[3] = $modx->newObject('modChunk');
 $chunks[3]->fromArray(array (
   'id' => 3,
   'property_preprocess' => false,
-  'name' => 'NfTweetTplCustom',
-  'description' => 'Custom Notify Tweet Tpl',
+  'name' => 'NfSubscriberEmail-fancyTpl',
+  'description' => 'HTML for Fancy Notify subscriber email',
   'properties' => NULL,
 ), '', true, true);
-$chunks[3]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nftweettplcustom.chunk.html'));
+$chunks[3]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfsubscriberemail-fancytpl.chunk.html'));
 
 $chunks[4] = $modx->newObject('modChunk');
 $chunks[4]->fromArray(array (
@@ -111,47 +111,35 @@ $chunks[9] = $modx->newObject('modChunk');
 $chunks[9]->fromArray(array (
   'id' => 9,
   'property_preprocess' => false,
-  'name' => 'NfSubscriberEmail-fancyTpl',
-  'description' => 'HTML for Fancy Notify subscriber email',
+  'name' => 'NfTweetTplNew',
+  'description' => 'Notify Tweet Tpl for new resource',
   'properties' => NULL,
 ), '', true, true);
-$chunks[9]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfsubscriberemail-fancytpl.chunk.html'));
+$chunks[9]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nftweettplnew.chunk.html'));
 
 $chunks[10] = $modx->newObject('modChunk');
 $chunks[10]->fromArray(array (
   'id' => 10,
   'property_preprocess' => false,
-  'name' => 'NfNotifyFormTpl',
-  'description' => 'Form Tpl for Notify Extra',
+  'name' => 'NfTweetTplCustom',
+  'description' => 'Custom Notify Tweet Tpl',
   'properties' => NULL,
 ), '', true, true);
-$chunks[10]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfnotifyformtpl.chunk.html'));
+$chunks[10]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nftweettplcustom.chunk.html'));
 
 $chunks[11] = $modx->newObject('modChunk');
 $chunks[11]->fromArray(array (
   'id' => 11,
   'property_preprocess' => false,
-  'name' => 'NfSubscriberEmailTplCustom',
-  'description' => 'HTML for Notify custom subscriber email',
+  'name' => 'NfTweetTplExisting',
+  'description' => 'Notify Tweet Tpl for existing resource',
   'properties' => NULL,
 ), '', true, true);
-$chunks[11]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfsubscriberemailtplcustom.chunk.html'));
+$chunks[11]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nftweettplexisting.chunk.html'));
 
 $chunks[12] = $modx->newObject('modChunk');
 $chunks[12]->fromArray(array (
   'id' => 12,
-  'property_preprocess' => false,
-  'name' => 'NfStatus',
-  'description' => 'Status chunk for Notify progress bar. DO NOT RENAME!',
-  'properties' => 
-  array (
-  ),
-), '', true, true);
-$chunks[12]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfstatus.chunk.html'));
-
-$chunks[13] = $modx->newObject('modChunk');
-$chunks[13]->fromArray(array (
-  'id' => 13,
   'property_preprocess' => false,
   'name' => 'NfLogHeaderTpl',
   'description' => 'Chunk for top of Notify mail log',
@@ -159,6 +147,18 @@ $chunks[13]->fromArray(array (
   array (
   ),
 ), '', true, true);
-$chunks[13]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nflogheadertpl.chunk.html'));
+$chunks[12]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nflogheadertpl.chunk.html'));
+
+$chunks[13] = $modx->newObject('modChunk');
+$chunks[13]->fromArray(array (
+  'id' => 13,
+  'property_preprocess' => false,
+  'name' => 'NfStatus',
+  'description' => 'Status chunk for Notify progress bar. DO NOT RENAME!',
+  'properties' => 
+  array (
+  ),
+), '', true, true);
+$chunks[13]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/nfstatus.chunk.html'));
 
 return $chunks;
