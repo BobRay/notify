@@ -2,40 +2,22 @@
 <h3>Overview</h3>
 <p>Notify will let you send an email notification to Subscribers on your site, or to members of selected groups, (or to all active users) when a page is created or updated (or just when you feel like sending them a message). Rather than sending the whole page, Notify sends a message with a link to the new or updated page. Optionally, you can specify tags for the message and only subscribers with those tags set will receive the email. Notify works in conjunction with the Subscribe extra, which lets users register at your site and manage their preferences (tags), and user-group memberships if you choose to enable that.</p>
 
+<div class="box">
+    <h3>Update Notes for Version 1.5.4</h3>
+    <p>The only changes are to the url-shortening class. If you have url-shortening turned off, this won't affect you.</p>
+
+    <p>If you have the url-shortening turned on, it still shouldn't affect you unless you use the Bitly shortener.<p>
+
+    <p><b>Important</b>: Bitly has gone to using OAuth instead of a straight API token. You need to go to <a href="http://bitly.com/" target="_blank" rel="noopener nofollow noreferrer">Bitly.com</a> -> Log in -> Settings -> API -> Generate Token. Copy and paste the new token into Notify's <code>bitlyApiKey</code> property in your notify property set. If you don't do this, Bitly will soon stop working for you.</p>
+</div>
+
 <p>(Jump to <a href="[[~[[*id]]]]#propertiesTable">Properties Table</a>.)</p>
 
 <div class="box">
     Both the Subscribe and Login packages are required for Notify to work. You don't have to use them, but you do have to have them installed. It's recommended that you install them before installing Notify.
 </div>
 
-<p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using any of a variety of URL shortening services (TinyUrl, Google, StumbleUpon, bit.ly, is.gd,  and to.ly at present).</p>
-
-<p>&nbsp;</p>
-
-<h3>What's New</h3>
-
-<h4>New in this version:</h4>
-<ul>
-    <li>Prevents issue with multiple messages</li>
-    <li>Implements a critical security bug fix in the Guzzle library</li>
-    <li>Many modifications for MODX 3</li>
-    <li>Improved reliability with modMailX</li>
-    <li>Improved mail log</li>
-    <li>Other bug and typo fixes</li>
-</ul>
-
-<p>&nbsp;</p>
-<div class="box">
-<h3>Upgrade Notes</h3>
-
-<p>The <code>allowedGroups</code> System Setting was added in the previous version to fix an issue with allowing groups other than Administrator to use the plugin.  Its value should match the value of the <code>allowedGroups</code> snippet property (which will override the System Setting). Note that users in other groups will need the <code>view_user</code> permission. If the Administrator group is your only allowed group, you can ignore this, since it's the default.
-
-<p>A new System Setting, <code>nf_debug</code> has been added and the <code>&debug</code> property of the snippet has been removed. Setting the System Setting will write a wealth of debugging information to the Notify-send log (<code>core/components/notify/notify-logs</code>) when you run Notify. Debugging information is no longer written to the MODX error log.
-
-<p>The Mandrill mail service no longer exists so the option to use it and the relevant code have been removed.</p>
-
-</div>
-
+<p>Notify will also send Tweets to Twitter and (optionally) post the Tweets to your Facebook page. There is an option to shorten any URLs present in any of the Notify Tpl chunks using several URL shortening services (TinyUrl, bit.ly, and is.gd) Other services present in earlier versions of Notify no longer exist.</p>
 
 <p>&nbsp;</p>
 
@@ -52,7 +34,7 @@
 
 <h3>Using Notify</h3>
 
-<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarded to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, twitter, or facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to by submitting the form with one of the update options checked. Once you have it set up, this only takes a few clicks of the mouse.</p>
+<p>Notify uses a front-end form to send notifications to subscribers, and Messages to Twitter and/or Facebook. When you click on the &quot;Launch Notify&quot; button of the Notify TV when editing a resource, (having set the desired radio-button option) you are forwarded to the Notify resource, where the Notify snippet pre-fills and displays the Notify form. Note that sending updates with Notify is always strictly manual. No updates to subscribers, Twitter, or Facebook are ever sent automatically. For some people, receiving an update every time you save a page can get pretty annoying, so Notify only sends updates when you tell it to by submitting the form with one of the update options checked. Once you have it set up, this only takes a few clicks of the mouse.</p>
 
 <p>To launch the Notify form:</p>
 <ol>
@@ -380,11 +362,7 @@ Class SendGridX extends SendGrid implements MailService {}
     <td>Set to Yes to output debugging information</td>
     <td></td>
 </tr>
-<tr>
-    <td>googleApiKey</td>
-    <td>Google API key</td>
-    <td></td>
-</tr>
+
 <tr>
     <td>groupListChunkName</td>
     <td>Specifies the chunk that will be used for the buttons under the Groups input in the form</td>
@@ -534,16 +512,6 @@ Class SendGridX extends SendGrid implements MailService {}
     <td>modUser or MODX\Revolution\modUser</td>
 </tr>
 
-<tr>
-    <td>suprApiKey</td>
-    <td>StumbleUpon API key (optional)</td>
-    <td></td>
-</tr>
-<tr>
-    <td>suprUsername</td>
-    <td>Stumble Upon Username (optional)</td>
-    <td></td>
-</tr>
 <tr>
     <td>tags</td>
     <td>(optional) Comma-separated list of tags (no spaces). If set, only users in specified Groups with the interest(s) set will receive

@@ -1,5 +1,9 @@
 Changelog for Notify
 
+Notify 1.5.4-pl
+-----------------
+Update url-shortening classes
+
 Notify 1.5.3-pl
 -----------------
  - Prevent issue with multiple messages
