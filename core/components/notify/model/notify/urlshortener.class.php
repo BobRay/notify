@@ -38,7 +38,7 @@ class UrlShortener
 {
     /* @var $props array */
     protected $props;
-    /* @var $curl object */
+    /* @var $curl resource */
     protected $curl;
 
     function __construct(&$props)
@@ -56,33 +56,31 @@ class UrlShortener
     {
         /* remove the period */
         $service = str_replace('.', '', $service);
-
         $func = strtolower($service);
 
 
-        //curl_setopt($this->curl, CURLOPT_FRESH_CONNECT, 1);
+        curl_setopt($this->curl, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 10);
-        /* note: Goo.gl chokes if you urlencode the url */
+        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($this->curl, CURLOPT_HTTP_VERSION , CURL_HTTP_VERSION_1_1);
         $shortUrl = $this->$func($longUrl);
 
         return trim($shortUrl);
     }
 
     /* Shorten URLs in $text using $service */
-    public function process (&$text, $service) {
+    public function process ($text, $service) {
         /* pad with spaces or URL at end of text is missed */
                 $text = ' ' . $text . ' ';
         $pattern = '|([\\w]{1,20}+://(?=\S{1,2000}\s)[\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]*+(?:[\'.,;:!?)][\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]++)*)(\)?)|';
 
-        $matches = array();
-        preg_match_all($pattern,$text,$matches);
-
-        foreach ($matches[0] as $match) {
-            $text = str_replace($match, $this->getShortUrl($match,$service),$text);
-        }
-        reset($matches);
-        return trim($text,' ');
+       $matches = array();
+       $newText =  preg_replace_callback($pattern,
+           function($matches) use($service) {
+               return trim($this->getShortUrl($matches[1], $service));
+           },
+           $text);
+        return trim($newText,' ');
     }
     /* is.gd */
     protected function isgd($longUrl)
@@ -91,92 +89,77 @@ class UrlShortener
         /* note: you can see statistics for a link by adding a hyphen to
          * the end of the URL and visiting it (scroll down to the bottom)
         */
-        curl_setopt($this->curl, CURLOPT_URL, 'http://is.gd/api.php?longurl=' . $longUrl);
-        //$shortUrl = curl_exec($this->curl);
-        return curl_exec($this->curl);
-    }
 
-    protected function toly($longUrl) {
-        /* No API key required (or available at this time) */
-        curl_setopt($this->curl, CURLOPT_URL, "http://to.ly/api.php?longurl=" . $longUrl);
-        return curl_exec($this->curl);
+        $serviceUrl = 'https://is.gd/create.php?format=simple&url=' . $longUrl;
+        curl_setopt($this->curl, CURLOPT_URL,
+            $serviceUrl);
+        $response = curl_exec($this->curl);
+
+        if (curl_errno($this->curl)) {
+            return '[' . curl_error($this->curl) . ']';
+        }
+
+        return $response;
     }
 
     /* TinyUrl */
     protected function tinyurl($longUrl) {
-        /* No API key required */
+        /* API key optional */
 
         if (!empty ($this->props['tinyurlApiKey']) && !empty($this->props['tinyurlUsername'])) {
             curl_setopt($this->curl, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $longUrl . '&login=' . $this->props['tinyurlUsername'] . '&apiKey='. $this->props['tinyurlApiKey'] . '&version=2.0,3');
         } else {
-            curl_setopt($this->curl, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $longUrl . '&customUrl='. 'zzz');
+            curl_setopt($this->curl, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $longUrl);
         }
         return curl_exec($this->curl);
     }
 
-    /* goo.gl (google) */
-    protected function googl($longUrl) {
-        /* May require API key.
-         * Get it at: http://code.google.com/apis/console/
-         * (while logged in to Google) */
-
-        $postData = array('longUrl' => $longUrl);
-        if (!empty($this->props['googleApiKey'])) {
-            $postData['key'] = $this->props['googleApiKey'];
-        }
-        $jsonData = json_encode($postData);
-        $options = array(
-            CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
-            CURLOPT_URL => 'https://www.googleapis.com/urlshortener/v1/url',
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $jsonData,
-        );
-        curl_setopt_array($this->curl, $options);
-
-        $response = curl_exec($this->curl);
-
-        //change the response json string to object
-        $json = json_decode($response);
-        return $json->id;
-    }
-
-    /* su.pr (stumbleupon) */
-    protected function supr($longUrl) {
-        /* api key and username are optional */
-        $supr_api = "http://su.pr/api/simpleshorten";
-        if (empty ($this->props['suprUsername']) || empty($this->props['suprApiKey'])) {
-            $supr_args = array('url' => $longUrl);
-        } else {
-            $supr_args = array(
-                'url' => $longUrl,
-                'login' => $this->props['suprUsername'],
-                'apiKey' => $this->props['suprApiKey']
-            );
-        }
-
-        $url = $supr_api . '?' . http_build_query($supr_args);
-
-        curl_setopt($this->curl, CURLOPT_URL, $url);
-        return curl_exec($this->curl);
-    }
     /* bit.ly */
     protected function bitly($longUrl) {
-        /* requires API key
-         * Get it at http://bitly.com/a/sign_in?rd=/a/your_api_key
+        /* requires OAuth token
+         * Get it at http://bitly.com/ -> Settings -> API -> Generate Token
          * (after registering at http://bitly.com/a/sign_up)
+         *
+         * Use it for the value of the &bitlyApiKey property in your snippet
          */
+        $access_token = $this->props['bitlyApiKey']; /* Really, an OAuth token */
+        $json_payload = @json_encode(array(
+            "group_guid" => "",
+            "domain" => "bit.ly",
+            "long_url" => $longUrl,
+        ));
 
-        $bitly_args = array (
-            'login' => $this->props['bitlyUsername'],
-            'apiKey' => $this->props['bitlyApiKey'],
-            'uri' => $longUrl,
-            'format' => 'txt',
-        );
-        $url = 'http://api.bit.ly/v3/shorten?' . http_build_query($bitly_args, "", '&');
+        @curl_setopt_array($this->curl, array(
+            CURLOPT_URL => "https://api-ssl.bitly.com/v4/shorten",
+            CURLOPT_FOLLOWLOCATION => TRUE,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $json_payload,
+            CURLOPT_HTTPHEADER => array(
+                "Host: api-ssl.bitly.com",
+                "Authorization: Bearer " . $access_token . "",
+                "Content-Type: application/json",
+            ),
+        ));
 
+        $url = 'https://api-ssl.bitly.com/v4/shorten';
             curl_setopt($this->curl, CURLOPT_URL, $url);
-            return curl_exec($this->curl);
-    }
+            $response =  curl_exec($this->curl);
+        if ($response === false) {
+            return curl_error($this->curl);
+        }
+        $json_decoded = @json_decode($response);
 
+
+        $http_code = @curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+
+        # return results for further processing
+        $response =  (array("json" => $json_decoded, "http" => $http_code));
+
+        if (! isset ($response['json']->link) || $http_code !== 200) {
+            $retval = curl_error($this->curl);
+        } else {
+            $retval = $response['json']->link;
+        }
+        return $retval;
+    }
 }
