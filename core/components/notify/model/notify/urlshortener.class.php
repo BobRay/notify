@@ -69,18 +69,18 @@ class UrlShortener
     }
 
     /* Shorten URLs in $text using $service */
-    public function process ($text, $service) {
+    public function process (&$text, $service) {
         /* pad with spaces or URL at end of text is missed */
                 $text = ' ' . $text . ' ';
         $pattern = '|([\\w]{1,20}+://(?=\S{1,2000}\s)[\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]*+(?:[\'.,;:!?)][\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]++)*)(\)?)|';
 
        $matches = array();
-       $newText =  preg_replace_callback($pattern,
+       $text =  preg_replace_callback($pattern,
            function($matches) use($service) {
                return trim($this->getShortUrl($matches[1], $service));
            },
            $text);
-        return trim($newText,' ');
+        return trim($text,' ');
     }
     /* is.gd */
     protected function isgd($longUrl)
