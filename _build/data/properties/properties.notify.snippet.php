@@ -326,29 +326,12 @@ $properties = array (
         'value' => 'tinyurl',
         'name' => 'TinyUrl',
       ),
-      3 => 
-      array (
-        'text' => 'to.ly',
-        'value' => 'toly',
-        'name' => 'to.ly',
-      ),
-      4 => 
-      array (
-        'text' => 'goo.gl (Google)',
-        'value' => 'googl',
-        'name' => 'goo.gl (Google)',
-      ),
-      5 => 
+
+      3 =>
       array (
         'text' => 'is.gd',
         'value' => 'isgd',
         'name' => 'is.gd',
-      ),
-      6 => 
-      array (
-        'text' => 'su.pr (StumbleUpon)',
-        'value' => 'supr',
-        'name' => 'su.pr (StumbleUpon)',
       ),
     ),
     'value' => 'none',
